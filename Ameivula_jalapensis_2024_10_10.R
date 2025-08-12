@@ -3,8 +3,6 @@
 
 rm(list = ls())
 
-#Heitor
-# getwd()
 library(ggplot2)
 library(BaSTA)
 library(openCR)
