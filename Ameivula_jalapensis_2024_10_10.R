@@ -1,11 +1,9 @@
-#######################################################
-## Define o diretorio de trabalho
-## Essa linha deve ser alterada de acordo com o usuario
-#######################################################
+
+# Set working directory and load packages ---------------------------------
+
 rm(list = ls())
 
-setwd("C:/Users/geisa/OneDrive/Área de Trabalho/Lab/Ajalapensis_Demography/Analysis")
-setwd("~/Documents/UFT/Geisa")#Heitor
+#Heitor
 # getwd()
 library(ggplot2)
 library(BaSTA)
