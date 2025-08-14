@@ -5439,7 +5439,10 @@ bbox.arms[1:4] <- c(bbox.arms[1] - 0.05,
                     bbox.arms[3] + 0.05, 
                     bbox.arms[4] + 0.01)
 
-imagery <- get_tiles(bbox.arms, crop = TRUE, provider = "Esri.WorldImagery")
+imagery <- get_tiles(bbox.arms, 
+                     crop = TRUE, 
+                     provider = "Esri.WorldImagery", 
+                     zoom = 15)
 plot(imagery)
 plot(st_geometry(arms.pts), col = "red", pch = 21, add=T)
 
