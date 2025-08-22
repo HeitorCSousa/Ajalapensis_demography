@@ -14,6 +14,7 @@ library(tidyverse)
 library(brms)
 library(projpred)
 library(GGally)
+library(emmeans)
 
 # If needed, install INLA by uncommenting the following lines
 # install.packages("INLA", repos = c(getOption("repos"),
@@ -86,7 +87,7 @@ print(b)
 barplot(t(b),
   beside = TRUE, legend.text = T, args.legend = list(x = "topleft"),
   main = expression(italic("Ameivula jalapensis")),
-  ylim = c(0, 50), ylab = "Abundância"
+  ylim = c(0, 50), ylab = "Captures"
 )
 
 table(Sex, Plot)
@@ -138,7 +139,6 @@ ggplot(
   labs(x = "", y = "Snout-vent length (mm)")
 
 # SVL among plots
-windows(10, 10)
 ggplot(
   data,
   aes(x = as.factor(Plot), y = SVL)
@@ -169,64 +169,60 @@ ggplot(
 
 detach(data)
 
-##########################################################################
-## BaSTA
-##########################################################################
+# ## BaSTA ---------------------
+# 
+# ## Install packages
+# ## ****************
+# 
+# 
+# ## Clean data
+# ## **********
+# head(data)
+# # detach(data)
+# 
+# demografia <- data[data$Dead != "Y", ] # remove dead animals
+# table(demografia$Fieldtrip)
+# table(demografia$VoucherNumber)
+# 
+# completos <- complete.cases(demografia[, c("VoucherNumber", "Fieldtrip")]) # remove NAs
+# demografia.planilha <- droplevels(demografia[completos, ])
+# head(demografia.planilha)
+# tail(demografia.planilha)
+# table(demografia.planilha$Recapture, demografia.planilha$Species)
+# str(demografia.planilha)
+# table(demografia.planilha$Fieldtrip)
+# table(demografia.planilha$VoucherNumber)
+# 
+# demo.Ameivula <- demografia.planilha[demografia.planilha$Species == "Ameivula_jalapensis", ]
+# 
+# ## Prepare input file and run monthly data ("fieldtrip")
+# ## ****************************************************
+# 
+# # Create capture histories
+# 
+# Y.Ameivula <- CensusToCaptHist(ID = demo.Ameivula$VoucherNumber, d = demo.Ameivula$Fieldtrip, timeInt = "M")
+# str(Y.Ameivula)
+# head(Y.Ameivula)
+# Y.Ameivula
+# length(Y.Ameivula$ID)
+# ch.Ameivula <- data.frame(ch = rep(NA, length(Y.Ameivula$ID)))
+# 
+# for (i in 1:length(Y.Ameivula$ID)) {
+#   ch.Ameivula[i, ] <- c(paste0(Y.Ameivula[i, 2:ncol(Y.Ameivula)], sep = "", collapse = ""))
+# }
+# ch.Ameivula
 
-## Install packages
-## ****************
+# Pradel-Jolly-Seber Model ------------------------------------------------
 
+pts.arms <- read.table("Points_Traps.txt", h = T)
+pts.arms.SGT <- pts.arms[pts.arms$locality == "EESGT", ]
 
-## Clean data
-## **********
-head(data)
-# detach(data)
-
-demografia <- data[data$Dead != "Y", ] # remove dead animals
-table(demografia$Fieldtrip)
-table(demografia$VoucherNumber)
-
-completos <- complete.cases(demografia[, c("VoucherNumber", "Fieldtrip")]) # remove NAs
-demografia.planilha <- droplevels(demografia[completos, ])
-head(demografia.planilha)
-tail(demografia.planilha)
-table(demografia.planilha$Recapture, demografia.planilha$Species)
-str(demografia.planilha)
-table(demografia.planilha$Fieldtrip)
-table(demografia.planilha$VoucherNumber)
-
-demo.Ameivula <- demografia.planilha[demografia.planilha$Species == "Ameivula_jalapensis", ]
-
-## Prepare input file and run monthly data ("fieldtrip")
-## ****************************************************
-
-# Create capture histories
-
-Y.Ameivula <- CensusToCaptHist(ID = demo.Ameivula$VoucherNumber, d = demo.Ameivula$Fieldtrip, timeInt = "M")
-str(Y.Ameivula)
-head(Y.Ameivula)
-Y.Ameivula
-length(Y.Ameivula$ID)
-ch.Ameivula <- data.frame(ch = rep(NA, length(Y.Ameivula$ID)))
-
-for (i in 1:length(Y.Ameivula$ID)) {
-  ch.Ameivula[i, ] <- c(paste0(Y.Ameivula[i, 2:ncol(Y.Ameivula)], sep = "", collapse = ""))
-}
-ch.Ameivula
-
-########
-# OPENCR#
-########
-
-pts.arms <- read.table("Pontos_Armadilhas.txt", h = T)
-pts.arms.SGT <- pts.arms[pts.arms$local == "EESGT", ]
-
-# (arms.pts.SGT <- subset(arms.pts,local=="SGT"))
+# (arms.pts.SGT <- subset(arms.pts,locality=="SGT"))
 coordinates(pts.arms.SGT) <- c("long", "lat")
 proj4string(pts.arms.SGT) <- CRS("+proj=longlat +datum=WGS84")
 pts.arms.SGT.utm <- spTransform(pts.arms.SGT, CRS = CRS("+init=epsg:32722"))
 
-pts.arms.SGT <- pts.arms[pts.arms$local == "EESGT", ]
+pts.arms.SGT <- pts.arms[pts.arms$locality == "EESGT", ]
 pts.arms.SGT$X <- coordinates(pts.arms.SGT.utm)[, 1]
 pts.arms.SGT$Y <- coordinates(pts.arms.SGT.utm)[, 2]
 
@@ -248,7 +244,7 @@ capts.1 <- data.frame(
   occasion = as.integer(as.factor(Ajalapensis.planilha.XY$Date[Ajalapensis.planilha.XY$Fieldtrip == 1])),
   X = Ajalapensis.planilha.XY$X[Ajalapensis.planilha.XY$Fieldtrip == 1],
   Y = Ajalapensis.planilha.XY$Y[Ajalapensis.planilha.XY$Fieldtrip == 1],
-  data = Ajalapensis.planilha.XY$Date[Ajalapensis.planilha.XY$Fieldtrip == 1],
+  date = Ajalapensis.planilha.XY$Date[Ajalapensis.planilha.XY$Fieldtrip == 1],
   Plot = Ajalapensis.planilha.XY$Plot[Ajalapensis.planilha.XY$Fieldtrip == 1]
 )
 
@@ -262,7 +258,7 @@ capts.2 <- data.frame(
   occasion = as.integer(as.factor(Ajalapensis.planilha.XY$Date[Ajalapensis.planilha.XY$Fieldtrip == 2])),
   X = Ajalapensis.planilha.XY$X[Ajalapensis.planilha.XY$Fieldtrip == 2],
   Y = Ajalapensis.planilha.XY$Y[Ajalapensis.planilha.XY$Fieldtrip == 2],
-  data = Ajalapensis.planilha.XY$Date[Ajalapensis.planilha.XY$Fieldtrip == 2],
+  date = Ajalapensis.planilha.XY$Date[Ajalapensis.planilha.XY$Fieldtrip == 2],
   Plot = Ajalapensis.planilha.XY$Plot[Ajalapensis.planilha.XY$Fieldtrip == 2]
 )
 
@@ -275,7 +271,7 @@ capts.3 <- data.frame(
   occasion = as.integer(as.factor(Ajalapensis.planilha.XY$Date[Ajalapensis.planilha.XY$Fieldtrip == 3])),
   X = Ajalapensis.planilha.XY$X[Ajalapensis.planilha.XY$Fieldtrip == 3],
   Y = Ajalapensis.planilha.XY$Y[Ajalapensis.planilha.XY$Fieldtrip == 3],
-  data = Ajalapensis.planilha.XY$Date[Ajalapensis.planilha.XY$Fieldtrip == 3],
+  date = Ajalapensis.planilha.XY$Date[Ajalapensis.planilha.XY$Fieldtrip == 3],
   Plot = Ajalapensis.planilha.XY$Plot[Ajalapensis.planilha.XY$Fieldtrip == 3]
 )
 
@@ -288,7 +284,7 @@ capts.4 <- data.frame(
   occasion = as.integer(as.factor(Ajalapensis.planilha.XY$Date[Ajalapensis.planilha.XY$Fieldtrip == 4])),
   X = Ajalapensis.planilha.XY$X[Ajalapensis.planilha.XY$Fieldtrip == 4],
   Y = Ajalapensis.planilha.XY$Y[Ajalapensis.planilha.XY$Fieldtrip == 4],
-  data = Ajalapensis.planilha.XY$Date[Ajalapensis.planilha.XY$Fieldtrip == 4],
+  date = Ajalapensis.planilha.XY$Date[Ajalapensis.planilha.XY$Fieldtrip == 4],
   Plot = Ajalapensis.planilha.XY$Plot[Ajalapensis.planilha.XY$Fieldtrip == 4]
 )
 capts <- rbind(
@@ -301,8 +297,8 @@ capts <- rbind(
 # mass = oreadicus.planilha.XY$mass,
 # sex = as.factor(oreadicus.planilha.XY$sex))
 
-completos <- complete.cases(capts[, c("ID", "X", "Y")]) # remove NAs
-capts <- droplevels(capts[completos, ])
+complete <- complete.cases(capts[, c("ID", "X", "Y")]) # remove NAs
+capts <- droplevels(capts[complete, ])
 
 traps.xy <- data.frame(
   trapID = interaction(pts.arms.SGT$Plot, pts.arms.SGT$Trap),
@@ -379,78 +375,10 @@ plot(Ajalapensis.CHxy$`3`, tracks = T, add = T)
 plot(mesh)
 plot(Ajalapensis.CHxy$`4`, tracks = T, add = T)
 
-# phi = taxa de sobrevivência
-# p = taxa de recaptura/captura
-# f = taxa de recrutamento
+# phi = survival probability
+# p = capture probability
+# f = per capita recruitment
 # CJS non-spatial
-
-# Nulo
-fit0 <- openCR.fit(Ajalapensis.CHxy, type = "CJS")
-summary(fit0)
-
-# Variando pelo tempo
-fit1 <- openCR.fit(Ajalapensis.CHxy, type = "CJS", model = list(
-  phi ~ -1 + t,
-  p ~ -1 + t
-))
-summary(fit1)
-
-# Variando por plot
-fit2 <- openCR.fit(Ajalapensis.CHxy, type = "CJS", model = list(
-  phi ~ -1 + Plot,
-  p ~ -1 + Plot
-))
-summary(fit2)
-predict(fit2, all = T)
-
-# Variando por pacela e pelo tempo
-fit3 <- openCR.fit(Ajalapensis.CHxy, type = "CJS", model = list(
-  phi ~ -1 + Plot + t,
-  p ~ -1 + Plot + t
-))
-summary(fit3)
-predict(fit3, all = T)
-# Modelo nao convergiu
-
-AIC(fit0, fit1, fit2, fit3)
-
-# Variando por pacela e pelo tempo
-fit3 <- openCR.fit(Ajalapensis.CHxy,
-  type = "CJS",
-  model = list(
-    phi ~ -1 + Plot * t,
-    p ~ -1 + Plot * t
-  ),
-  method = "CG"
-)
-summary(fit3)
-predict(fit3, all = T)
-# Modelo nao convergiu
-
-AIC(fit0, fit1, fit2, fit3)
-
-(plot.dat <- expand.grid(
-  Plot = factor(c("A2", "A1", "A3", "A4"), levels = c("A2", "A1", "A3", "A4")),
-  t = factor(1:4)
-))
-
-quartz(8, 8)
-plot(fit3,
-  newdata = plot.dat[plot.dat$Plot == "A2", ], # add = TRUE,
-  xoffset = 0.1, col = "forestgreen", pch = 16, type = "o"
-)
-plot(fit3,
-  newdata = plot.dat[plot.dat$Plot == "A1", ], add = TRUE,
-  xoffset = 0.1, col = "navyblue", pch = 16, type = "o"
-)
-plot(fit3,
-  newdata = plot.dat[plot.dat$Plot == "A3", ], add = TRUE,
-  xoffset = 0.1, col = "orange", pch = 16, type = "o"
-)
-plot(fit3,
-  newdata = plot.dat[plot.dat$Plot == "A4", ], add = TRUE,
-  xoffset = 0.1, col = "red", pch = 16, type = "o"
-)
 
 # Pradel non-spatial
 pradel.fit0 <- openCR.fit(Ajalapensis.CHxy, type = "JSSAfCL")
@@ -571,7 +499,7 @@ names(f_coefs) <- gsub("f.Plot", "Plot", names(f_coefs))
 #--- Step 4: Create the Data for the Grid and Run qdrg() ---
 
 # Define the levels of your factor
-factor_levels <- c("A2", "A1", "A3", "A4")
+factor_levels <- c("A1", "A2", "A3", "A4")
 
 # THE FIX: Create a data frame containing your factor
 grid_data <- data.frame(Plot = factor_levels)
@@ -653,2032 +581,1616 @@ predict(pradel.fit3, all = T)
 
 AIC(pradel.fit0, pradel.fit1, pradel.fit2, pradel.fit3)
 
-quartz(8, 8)
-plot(pradel.fit3,
-  newdata = plot.dat[plot.dat$Plot == "A2", ], # add = TRUE,
-  xoffset = 0.1, col = "forestgreen", pch = 16, type = "o"
-)
-plot(pradel.fit3,
-  newdata = plot.dat[plot.dat$Plot == "A1", ], add = TRUE,
-  xoffset = 0.1, col = "navyblue", pch = 16, type = "o"
-)
-plot(pradel.fit3,
-  newdata = plot.dat[plot.dat$Plot == "A3", ], add = TRUE,
-  xoffset = 0.1, col = "orange", pch = 16, type = "o"
-)
-plot(pradel.fit3,
-  newdata = plot.dat[plot.dat$Plot == "A4", ], add = TRUE,
-  xoffset = 0.1, col = "red", pch = 16, type = "o"
-)
 
-quartz(8, 8)
-plot(pradel.fit3,
-  newdata = plot.dat[plot.dat$Plot == "A2", ], # add = TRUE,
-  xoffset = 0.1, col = "forestgreen", pch = 16, type = "o", par = "f", ylim = c(0, 2)
-)
-plot(pradel.fit3,
-  newdata = plot.dat[plot.dat$Plot == "A1", ], add = TRUE,
-  xoffset = 0.1, col = "navyblue", pch = 16, type = "o", par = "f"
-)
-plot(pradel.fit3,
-  newdata = plot.dat[plot.dat$Plot == "A3", ], add = TRUE,
-  xoffset = 0.1, col = "orange", pch = 16, type = "o", par = "f"
-)
-plot(pradel.fit3,
-  newdata = plot.dat[plot.dat$Plot == "A4", ], add = TRUE,
-  xoffset = 0.1, col = "red", pch = 16, type = "o", par = "f"
-)
-
-quartz(8, 8)
-plot(pradel.fit3,
-  newdata = plot.dat[plot.dat$Plot == "A2", ], # add = TRUE,
-  xoffset = 0.1, col = "forestgreen", pch = 16, type = "o", par = "p", ylim = c(0, .05)
-)
-plot(pradel.fit3,
-  newdata = plot.dat[plot.dat$Plot == "A1", ], add = TRUE,
-  xoffset = 0.1, col = "navyblue", pch = 16, type = "o", par = "p"
-)
-plot(pradel.fit3,
-  newdata = plot.dat[plot.dat$Plot == "A3", ], add = TRUE,
-  xoffset = 0.1, col = "orange", pch = 16, type = "o", par = "p"
-)
-plot(pradel.fit3,
-  newdata = plot.dat[plot.dat$Plot == "A4", ], add = TRUE,
-  xoffset = 0.1, col = "red", pch = 16, type = "o", par = "p"
-)
-
-d.pradel3 <- derived(pradel.fit3, all = T)
-print(d.pradel3, legend = T)
-
-quartz(8, 8)
-ggplot(d.pradel3[[1]]$estimates, aes(x = session, y = N, group = 1)) +
-  geom_point(aes(x = session, y = N), size = 3, color = "forestgreen") +
-  geom_line(aes(x = session, y = N), size = 1, color = "forestgreen") +
-  geom_point(data = d.pradel3[[2]]$estimates, aes(x = session, y = N), size = 3, color = "navyblue") +
-  geom_line(data = d.pradel3[[2]]$estimates, aes(x = session, y = N), size = 1, color = "navyblue") +
-  geom_point(data = d.pradel3[[3]]$estimates, aes(x = session, y = N), size = 3, color = "orange") +
-  geom_line(data = d.pradel3[[3]]$estimates, aes(x = session, y = N), size = 1, color = "orange") +
-  geom_point(data = d.pradel3[[4]]$estimates, aes(x = session, y = N), size = 3, color = "red") +
-  geom_line(data = d.pradel3[[4]]$estimates, aes(x = session, y = N), size = 1, color = "red") +
-  labs(x = "Fieldtrip", y = "Tamanho populacional") +
-  theme(plot.margin = unit(c(0, 0, 2, 0), "lines"), text = element_text(size = 10), legend.position = c(0.1, 0.5))
-
-ggplot(d.pradel3[[1]]$estimates, aes(x = session, y = phi, group = 1)) +
-  geom_point(aes(x = session, y = phi), size = 3, color = "forestgreen") +
-  geom_line(aes(x = session, y = phi), size = 1, color = "forestgreen") +
-  geom_point(data = d.pradel3[[2]]$estimates, aes(x = session, y = phi), size = 3, color = "navyblue") +
-  geom_line(data = d.pradel3[[2]]$estimates, aes(x = session, y = phi), size = 1, color = "navyblue") +
-  geom_point(data = d.pradel3[[3]]$estimates, aes(x = session, y = phi), size = 3, color = "orange") +
-  geom_line(data = d.pradel3[[3]]$estimates, aes(x = session, y = phi), size = 1, color = "orange") +
-  geom_point(data = d.pradel3[[4]]$estimates, aes(x = session, y = phi), size = 3, color = "red") +
-  geom_line(data = d.pradel3[[4]]$estimates, aes(x = session, y = phi), size = 1, color = "red") +
-  labs(x = "Campaign", y = "Survival") +
-  theme(plot.margin = unit(c(0, 0, 2, 0), "lines"), text = element_text(size = 10), legend.position = c(0.1, 0.5))
-
-ggplot(d.pradel3[[1]]$estimates, aes(x = session, y = p, group = 1)) +
-  geom_point(aes(x = session, y = p), size = 3, color = "forestgreen") +
-  geom_line(aes(x = session, y = p), size = 1, color = "forestgreen") +
-  geom_point(data = d.pradel3[[2]]$estimates, aes(x = session, y = p), size = 3, color = "navyblue") +
-  geom_line(data = d.pradel3[[2]]$estimates, aes(x = session, y = p), size = 1, color = "navyblue") +
-  geom_point(data = d.pradel3[[3]]$estimates, aes(x = session, y = p), size = 3, color = "orange") +
-  geom_line(data = d.pradel3[[3]]$estimates, aes(x = session, y = p), size = 1, color = "orange") +
-  geom_point(data = d.pradel3[[4]]$estimates, aes(x = session, y = p), size = 3, color = "red") +
-  geom_line(data = d.pradel3[[4]]$estimates, aes(x = session, y = p), size = 1, color = "red") +
-  labs(x = "Campaign", y = "Capture probability") +
-  theme(plot.margin = unit(c(0, 0, 2, 0), "lines"), text = element_text(size = 10), legend.position = c(0.1, 0.5))
-
-ggplot(d.pradel3[[1]]$estimates, aes(x = session, y = f, group = 1)) +
-  geom_point(aes(x = session, y = f), size = 3, color = "forestgreen") +
-  geom_line(aes(x = session, y = f), size = 1, color = "forestgreen") +
-  geom_point(data = d.pradel3[[2]]$estimates, aes(x = session, y = f), size = 3, color = "navyblue") +
-  geom_line(data = d.pradel3[[2]]$estimates, aes(x = session, y = f), size = 1, color = "navyblue") +
-  geom_point(data = d.pradel3[[3]]$estimates, aes(x = session, y = f), size = 3, color = "orange") +
-  geom_line(data = d.pradel3[[3]]$estimates, aes(x = session, y = f), size = 1, color = "orange") +
-  geom_point(data = d.pradel3[[4]]$estimates, aes(x = session, y = f), size = 3, color = "red") +
-  geom_line(data = d.pradel3[[4]]$estimates, aes(x = session, y = f), size = 1, color = "red") +
-  labs(x = "Campaign", y = "Recruitment") +
-  theme(plot.margin = unit(c(0, 0, 2, 0), "lines"), text = element_text(size = 10), legend.position = c(0.1, 0.5))
-
-# Pradel SCR
-pradel.scr.fit.0 <- openCR.fit(Ajalapensis.CHxy,
-  type = "JSSAsecrfCL", mask = mesh,
-  model = list(
-    phi ~ 1,
-    sigma ~ 1,
-    f ~ 1
-  ),
-  kernelradius = 5,
-  method = "Nelder-Mead",
-  link = list(phi = "sin"),
-  details = list(control = list(maxit = 5000)),
-  start = pradel.fit0,
-  trace = 2,
-  ncores = 6
-)
-
-summary(pradel.scr.fit.0)
-predict(pradel.scr.fit.0, all = T)
-
-pradel.scr.fit.BVN0 <- openCR.fit(Ajalapensis.CHxy,
-  type = "JSSAsecrfCL", mask = mesh,
-  movementmodel = "BVN",
-  model = list(
-    phi ~ 1,
-    sigma ~ 1,
-    f ~ 1
-  ),
-  kernelradius = 5,
-  method = "Nelder-Mead",
-  link = list(phi = "sin"),
-  details = list(control = list(maxit = 5000)),
-  start = pradel.fit0,
-  trace = 2,
-  ncores = 6
-)
-
-summary(pradel.scr.fit.BVN0)
-predict(pradel.scr.fit.BVN0, all = T)
-
-
-pradel.scr.fit.BVNzi0 <- openCR.fit(Ajalapensis.CHxy,
-  type = "JSSAsecrfCL", mask = mesh,
-  movementmodel = "BVNzi",
-  model = list(
-    phi ~ 1,
-    sigma ~ 1,
-    f ~ 1
-  ),
-  kernelradius = 5,
-  method = "Nelder-Mead",
-  link = list(phi = "sin"),
-  details = list(control = list(maxit = 5000)),
-  start = pradel.fit0,
-  trace = 2,
-  ncores = 6
-)
-
-summary(pradel.scr.fit.BVNzi0)
-predict(pradel.scr.fit.BVNzi0, all = T)
-
-pradel.scr.fit.UNIzi0 <- openCR.fit(Ajalapensis.CHxy,
-  type = "JSSAsecrfCL", mask = mesh,
-  movementmodel = "UNIzi",
-  model = list(
-    phi ~ 1,
-    sigma ~ 1,
-    f ~ 1
-  ),
-  kernelradius = 10,
-  method = "Nelder-Mead",
-  link = list(phi = "sin", move.a = "sin"),
-  details = list(control = list(maxit = 5000)),
-  start = pradel.fit0,
-  trace = 2,
-  ncores = 6
-)
-
-summary(pradel.scr.fit.UNIzi0)
-predict(pradel.scr.fit.UNIzi0, all = T)
-
-AIC(pradel.scr.fit.0, pradel.scr.fit.BVN0, pradel.scr.fit.BVNzi0, pradel.scr.fit.UNIzi0)
-
-pradel.scr.fit.t <- openCR.fit(Ajalapensis.CHxy,
-  type = "JSSAsecrfCL",
-  mask = mesh,
-  movementmodel = "UNIzi",
-  kernelradius = 10,
-  model = list(
-    phi ~ -1 + t,
-    lambda0 ~ -1 + t,
-    sigma ~ 1,
-    f ~ -1 + t,
-    move.a ~ -1 + t
-  ),
-  link = list(phi = "sin", move.a = "sin"),
-  method = "Nelder-Mead",
-  details = list(control = list(
-    maxit = 10000,
-    reltol = 1e-6
-  )),
-  start = list(pradel.scr.fit.UNIzi0, pradel.fit1),
-  trace = 2,
-  ncores = 6
-)
-
-summary(pradel.scr.fit.t)
-
-pradel.scr.fit.plot <- openCR.fit(Ajalapensis.CHxy,
-  type = "JSSAsecrfCL", mask = mesh,
-  model = list(
-    phi ~ -1 + Plot,
-    lambda0 ~ -1 + Plot,
-    sigma ~ 1,
-    f ~ -1 + Plot,
-    move.a ~ -1 + Plot
-  ),
-  # link = list(phi = "sin", move.a = "sin"),
-  movementmodel = "UNIzi",
-  kernelradius = 10,
-  method = "BFGS",
-  details = list(control = list(
-    maxit = 10000,
-    reltol = 1e-6
-  )),
-  start = list(pradel.scr.fit.UNIzi0, pradel.fit2),
-  trace = 2,
-  ncores = 6
-)
-
-summary(pradel.scr.fit.plot)
-predict(pradel.scr.fit.plot, all = T)
-
-AIC(
-  pradel.scr.fit.plot,
-  pradel.scr.fit.t, pradel.scr.fit.UNIzi0
-)
-
-pradel.scr.fit.full <- openCR.fit(Ajalapensis.CHxy,
-  type = "JSSAsecrfCL", mask = mesh,
-  model = list(
-    phi ~ -1 + Plot * t,
-    lambda0 ~ -1 + Plot * t,
-    # sigma ~ -1 +Plot + t,
-    f ~ -1 + Plot * t
-  ),
-  movementmodel = "UNIzi",
-  kernelradius = 5,
-  method = "Nelder-Mead",
-  details = list(control = list(maxit = 10000)),
-  link = list(phi = "sin", move.b = "sin"),
-  start = list(pradel.scr.fit.UNIzi0, pradel.fit3),
-  ncores = 6
-)
-
-summary(pradel.scr.fit.full)
-predict(pradel.scr.fit.full, all = T)
-
-AIC(
-  pradel.scr.fit.full, pradel.scr.fit.plot,
-  pradel.scr.fit.t, pradel.scr.fit.0
-)
-
-k0 <- make.kernel(pradel.scr.fit.BVNzi0, truncate = 150)
-summary(k0)
-plot(k0)
-plot(k0, type = "Fr")
-
-kC1 <- make.kernel("BVNzi", kernelradius = 5, spacing = 30, move.a = 150, move.b = 0.53, sparsekernel = T, truncate = 150)
-summary(kC1)
-plot(kC1)
-plot(kC1, type = "Fr")
-
-kBP <- make.kernel("BVNzi", kernelradius = 5, spacing = 30, move.a = 150, move.b = 0.7, sparsekernel = T)
-summary(kBP)
-plot(kBP, contour = T)
-plot(kBP, type = "Fr")
-
-kBT <- make.kernel("BVNzi", kernelradius = 5, spacing = 30, move.a = 150, move.b = 0.87, sparsekernel = T)
-summary(kBT)
-plot(kBT)
-plot(kBT, type = "Fr")
-
-ka <- make.kernel("BVN", kernelradius = 5, spacing = 30, move.a = 150, move.b = 0.53)
-summary(ka)
-plot(ka)
-plot(ka, type = "gr")
-plot(ka, type = "fr")
-plot(ka, type = "Fr")
-
-plot(c(0:150), pkernel(c(0:150), "BVNzi", move.a = 150, move.b = 0.53),
-  type = "l", bty = "n", ylim = c(0.5, 1), ylab = "Cumulative probability", xlab = "Distance (m)"
-)
-lines(c(0:150), pkernel(c(0:150), "BVNzi", move.a = 150, move.b = 0.7), type = "l", bty = "n", col = "orange")
-lines(c(0:150), pkernel(c(0:150), "BVNzi", move.a = 150, move.b = 0.87), type = "l", bty = "n", col = "red")
-
-plot(c(0:150), qkernel(c(0:150), "BVN", move.a = 150, move.b = 0.53), type = "l", bty = "n")
-
-
-p.fit.scr.t <- predict(pradel.scr.fit.t, all = T)
-
-quartz(8, 8)
-ggplot(p.fit.scr.t$phi, aes()) +
-  geom_pointrange(aes(x = session, y = estimate, ymin = lcl, ymax = ucl), size = 1) +
-  labs(x = "Occasion", y = "Survival") +
-  theme(plot.margin = unit(c(0, 0, 2, 0), "lines"), text = element_text(size = 10), legend.position = c(0.1, 0.5))
-
-quartz(8, 8)
-ggplot(p.fit.scr$lambda0, aes()) +
-  geom_pointrange(aes(x = session, y = estimate, ymin = lcl, ymax = ucl), size = 1) +
-  labs(x = "Occasion", y = "Capture") +
-  theme(plot.margin = unit(c(0, 0, 2, 0), "lines"), text = element_text(size = 10), legend.position = c(0.1, 0.5))
-
-quartz(8, 8)
-ggplot(p.fit.scr$f, aes()) +
-  geom_pointrange(aes(x = session, y = estimate, ymin = lcl, ymax = ucl), size = 1) +
-  labs(x = "Occasion", y = "Recruitment") +
-  theme(plot.margin = unit(c(0, 0, 2, 0), "lines"), text = element_text(size = 10), legend.position = c(0.1, 0.5))
-
-p.fit.scr.plot <- predict(pradel.scr.fit.plot, all = T)
-
-quartz(8, 8)
-ggplot(p.fit.scr.plot$phi[c(1, 5, 9, 13), ], aes()) +
-  geom_pointrange(aes(x = Plot, y = estimate, ymin = lcl, ymax = ucl), size = 1) +
-  labs(x = "Plot", y = "Survival") +
-  theme(plot.margin = unit(c(0, 0, 2, 0), "lines"), text = element_text(size = 10), legend.position = c(0.1, 0.5))
-
-quartz(8, 8)
-ggplot(p.fit.scr.plot$lambda0[c(1, 5, 9, 13), ], aes()) +
-  geom_pointrange(aes(x = Plot, y = estimate, ymin = lcl, ymax = ucl), size = 1) +
-  labs(x = "Plot", y = "Capture") +
-  theme(plot.margin = unit(c(0, 0, 2, 0), "lines"), text = element_text(size = 10), legend.position = c(0.1, 0.5))
-
-quartz(8, 8)
-ggplot(p.fit.scr.plot$f[c(1, 5, 9, 13), ], aes()) +
-  geom_pointrange(aes(x = Plot, y = estimate, ymin = lcl, ymax = ucl), size = 1) +
-  labs(x = "Plot", y = "Recruitment") +
-  theme(plot.margin = unit(c(0, 0, 2, 0), "lines"), text = element_text(size = 10), legend.position = c(0.1, 0.5))
-
-quartz(8, 8)
-ggplot(p.fit.scr.plot$move.a[c(1, 5, 9, 13), ], aes()) +
-  geom_pointrange(aes(x = Plot, y = 1 - estimate, ymin = 1 - lcl, ymax = 1 - ucl), size = 1) +
-  labs(x = "Plot", y = "Dispersal probability") +
-  theme(plot.margin = unit(c(0, 0, 2, 0), "lines"), text = element_text(size = 10), legend.position = c(0.1, 0.5))
-
-
-
-plot(pradel.scr.fit.full,
-  newdata = plot.dat[plot.dat$Plot == "A2", ], # add = TRUE,
-  xoffset = 0.1, col = "forestgreen", pch = 16, type = "o", par = "phi"
-)
-plot(pradel.scr.fit.full,
-  newdata = plot.dat[plot.dat$Plot == "A1", ], add = TRUE,
-  xoffset = 0.1, col = "navyblue", pch = 16, type = "o", par = "phi"
-)
-plot(pradel.scr.fit.full,
-  newdata = plot.dat[plot.dat$Plot == "A3", ], add = TRUE,
-  xoffset = 0.1, col = "orange", pch = 16, type = "o", par = "phi"
-)
-plot(pradel.scr.fit.full,
-  newdata = plot.dat[plot.dat$Plot == "A4", ], add = TRUE,
-  xoffset = 0.1, col = "red", pch = 16, type = "o", par = "phi"
-)
-
-
-plot(pradel.scr.fit.full,
-  newdata = plot.dat[plot.dat$Plot == "A2", ], # add = TRUE,
-  xoffset = 0.1, col = "forestgreen", pch = 16, type = "o", par = "f", ylim = c(0, 2)
-)
-plot(pradel.scr.fit.full,
-  newdata = plot.dat[plot.dat$Plot == "A1", ], add = TRUE,
-  xoffset = 0.1, col = "navyblue", pch = 16, type = "o", par = "f"
-)
-plot(pradel.scr.fit.full,
-  newdata = plot.dat[plot.dat$Plot == "A3", ], add = TRUE,
-  xoffset = 0.1, col = "orange", pch = 16, type = "o", par = "f"
-)
-plot(pradel.scr.fit.full,
-  newdata = plot.dat[plot.dat$Plot == "A4", ], add = TRUE,
-  xoffset = 0.1, col = "red", pch = 16, type = "o", par = "f"
-)
-
-plot(pradel.scr.fit.full,
-  newdata = plot.dat[plot.dat$Plot == "A2", ], # add = TRUE,
-  xoffset = 0.1, col = "forestgreen", pch = 16, type = "o", par = "lambda0", ylim = c(0, .01)
-)
-plot(pradel.scr.fit.full,
-  newdata = plot.dat[plot.dat$Plot == "A1", ], add = TRUE,
-  xoffset = 0.1, col = "navyblue", pch = 16, type = "o", par = "lambda0"
-)
-plot(pradel.scr.fit.full,
-  newdata = plot.dat[plot.dat$Plot == "A3", ], add = TRUE,
-  xoffset = 0.1, col = "orange", pch = 16, type = "o", par = "lambda0"
-)
-plot(pradel.scr.fit.full,
-  newdata = plot.dat[plot.dat$Plot == "A4", ], add = TRUE,
-  xoffset = 0.1, col = "red", pch = 16, type = "o", par = "lambda0"
-)
-
-d.pradel.scr.full <- derived(pradel.scr.fit.full, all = T)
-print(d.pradel.scr.full)
-
-saveRDS(fit.t, "best.scr.rds")
-
-
-ggplot(p.predict.maximiliani$p, aes(time, estimate, ymin = lcl, ymax = ucl)) +
-  geom_errorbar(width = 0.2) +
-  geom_point() +
-  geom_line() +
-  xlab("\nMeses") +
-  ylab("Recapture\n")
-
-
-# Bayesian CJS/Pradel/Growth Model ---------------------------------------------------
-
-library(runjags)
-library(parallel)
-library(rjags)
-library(reshape)
-library(lubridate)
-
-demo.Ameivula$Date <- as.Date(demo.Ameivula$Date, format = "%d/%m/%Y")
-
-demo.Ameivula$TimeWeek <- 1 + lubridate::interval(
-  "2021-02-22",
-  demo.Ameivula$Date
-) %/%
-  weeks(1)
-
-demo.Ameivula$TimeMonth <- 1 + lubridate::interval(
-  "2021-02-22",
-  demo.Ameivula$Date
-) %/%
-  months(1)
-
-demo.Ameivula$TimeMonth[demo.Ameivula$TimeMonth == 14] <- 13
-demo.Ameivula$TimeMonth[demo.Ameivula$TimeMonth == 17] <- 16
-demo.Ameivula$TimeMonth
-
-## Prepare input file and run monthly data ("TimeMonth")
-###################################################
-
-# Create ID
-IDENT <- paste0(demo.Ameivula$Plot, demo.Ameivula$VoucherNumber)
-head(IDENT)
-demo.Ameivula <- data.frame(IDENT, demo.Ameivula)
-rm(IDENT)
-str(demo.Ameivula)
-
-# Filter the variables of interest
-table1 <- demo.Ameivula[, c("IDENT", "TimeWeek", "Sex", "SVL", "Plot")]
-str(table1)
-
-
-# Identifies captures without ID and SVL
-table2 <- complete.cases(table1[, c("IDENT", "SVL")])
-
-# Removes captures without ID and SVL
-table3 <- table1[table2, ]
-
-# Order the data by ID and TimeMonth
-table4 <- table3[order(table3$IDENT, table3$TimeWeek), ]
-str(table4)
-summary(table4)
-
-# Drop unused levels
-table5 <- droplevels(table4)
-str(table5)
-
-
-# Calculates recapture frequencies
-recap.table <- data.frame(table(table5$IDENT))
-names(recap.table) <- c("ID", "captures")
-recap.table
-table(recap.table$captures)
-table(recap.table$captures) * as.numeric(names(table(recap.table$captures)))
-sum(table(recap.table$captures) * as.numeric(names(table(recap.table$captures))))
-
-# Sanity check
-sum(table(recap.table$captures) * as.numeric(names(table(recap.table$captures)))) == nrow(table5)
-
-## Filters dataset to use in the analyses##
-###########################################
-head(table5)
-
-Age <- c(rep(NA, nrow(table5)))
-Age
-
-datA <- data.frame(table5$TimeWeek, table5$Sex, table5$IDENT, table5$SVL, Age, table5$Plot)
-names(datA) <- c("TimeWeek", "Sex", "TrueID", "SVL", "Age", "Site")
-datA$Age[datA$SVL <= 35] <- 0
-# datA<-datA[datA$TrueID!="Q3021",]
-# datA<-datA[datA$TrueID!="BP1191",]
-# datA<-datA[datA$TrueID!="BP2101",]
-# datA<-datA[datA$TrueID!="BP3511",]
-head(datA)
-tail(datA)
-str(datA)
-
-
-## Creates variables for growth model
-####################################
-###  del is the time period since first individual's capture (0 in first capture)
-
-del <- c() ### time since first capture
-
-for (i in 1:nrow(datA)) {
-  del[i] <- datA$TimeWeek[i] - min(datA$TimeWeek[datA$TrueID == datA$TrueID[i]])
-}
-
-plot <- cast(datA, TrueID ~ ., value = "Site", fun.aggregate = function(x) tail(x, 1)) ### determine the site from each individual - filters the last value
-plot <- as.character(plot[, 2])
-plot
-# Ordering by fire severity
-plot[plot == "A1"] <- 1
-plot[plot == "A2"] <- 2
-plot[plot == "A3"] <- 3
-plot[plot == "A4"] <- 4
-
-plot <- as.numeric(plot)
-plot
-ind <- as.numeric(factor(datA$TrueID))
-y <- datA$SVL
-(n <- max(ind)) ### number of individuals
-(m <- nrow(datA)) ### number of observations (captures)
-
-age <- c() ## idade na primeira captura
-for (a in 1:n) {
-  age[a] <- datA$Age[ind == a][1]
-}
-
-time <- c()
-for (a in 1:n) {
-  time[a] <- datA$TimeWeek[ind == a][1]
-}
-
-head(datA)
-tail(datA)
-str(datA)
-
-##### #Cria data de recupera??o de marca para o modelo de sobreviv?ncia## ##################################################################
-known.states.cjs <- function(ch) {
-  state <- ch
-  for (i in 1:dim(ch)[1]) {
-    n1 <- min(which(ch[i, ] == 1))
-    n2 <- max(which(ch[i, ] == 1))
-    state[i, n1:n2] <- 1
-    state[i, n1] <- NA
-  }
-  state[state == 0] <- NA
-  return(state)
-}
-
-cjs.init.z <- function(ch, f) {
-  for (i in 1:dim(ch)[1]) {
-    if (sum(ch[i, ]) == 1) next
-    n2 <- max(which(ch[i, ] == 1))
-    ch[i, f[i]:n2] <- NA
-  }
-  for (i in 1:dim(ch)[1])
-  {
-    ch[i, 1:f[i]] <- NA
-  }
-  return(ch)
-}
-
-eh <- cast(datA, TrueID ~ TimeWeek, fun.aggregate = function(x) as.numeric(length(x) > 0), value = "SVL")
-eh <- eh[, 2:ncol(eh)]
-eh.all <- seq(min(datA$TimeWeek), max(datA$TimeWeek)) # fill ignore time periods
-missing <- eh.all[!(eh.all %in% names(eh))]
-col <- matrix(0, nrow = nrow(eh), ncol = length(missing))
-colnames(col) <- missing
-eh <- cbind(eh, col)
-eh <- eh[, order(as.integer(colnames(eh)))]
-
-# Sanity check
-which(colSums(eh) == 0) == missing
-
-head(eh)
-(f <- apply(eh, 1, function(x) which(x == 1)[1])) # Time of first capture (individual)
-(nind <- nrow(eh))
-(n.occasions <- ncol(eh))
-m
-n
-
-mplot <- data.frame(
-  C = as.numeric(plot == 1),
-  Q = as.numeric(plot == 2),
-  BP = as.numeric(plot == 3),
-  BM = as.numeric(plot == 4),
-  BT = as.numeric(plot == 5)
-)
-
-# Create matrix X indicating svl
-x <- reshape2::acast(datA, TrueID ~ TimeWeek,
-  fun.aggregate = function(x) mean(x, na.rm = T),
-  value.var = "SVL"
-)
-
-x[is.nan(x) == T] <- NA
-
-x.all <- seq(min(datA$TimeWeek), max(datA$TimeWeek)) # fill ignore time periods
-missing.x <- x.all[!(x.all %in% colnames(x))]
-missing.x == missing # Sanity check
-col <- matrix(NA, nrow = nrow(x), ncol = length(missing))
-colnames(col) <- missing
-x <- cbind(x, col)
-x <- x[, order(as.integer(colnames(x)))]
-
-head(x)
-
-ncol(x) == ncol(eh)
-
-missing.cjs <- function(ch, plot) {
-  state <- ch
-  state[state == 0] <- NA
-  for (s in 1:4) {
-    state[plot == s, which(colSums(eh[plot == s, ]) < 1)] <- 0
-  }
-  state[is.na(state)] <- 1
-  return(state)
-}
-
-missing.samp <- missing.cjs(eh, plot) # 1 for months samples, 0 for months not sampled
-View(missing.samp)
-
-hist(datA$SVL[datA$SVL <= 35])
-mean(datA$SVL[datA$SVL <= 35], na.rm = T)
-var(datA$SVL[datA$SVL <= 35], na.rm = T)
-
-hist(datA$SVL)
-hist(datA$SVL[datA$SVL > 55])
-
-mean(datA$SVL[datA$SVL > 55], na.rm = T)
-var(datA$SVL[datA$SVL > 55], na.rm = T)
-
-hist(data$SVL[data$Recapture == "N"])
-hist(data$SVL[data$Recapture == "Y"])
-
-bugs.data <- list(
-  first = f, nind = dim(eh)[1], n.occasions = dim(eh)[2],
-  y = eh, x = as.matrix(x), z = known.states.cjs(eh),
-  missing = missing.samp,
-  mu.L0 = mean(datA$SVL[datA$SVL <= 35], na.rm = T),
-  tau.L0 = var(datA$SVL[datA$SVL <= 35], na.rm = T),
-  AFC = as.numeric(age),
-  # mplot = mplot,
-  plot = plot
-)
-# Valores iniciais
-inits <- function() {}
-
-# Defina os parametros a serem monitorados
-parameters <- c(
-  "alpha.phi", "beta.phi", "beta2.phi",
-  "alpha.p", "beta.p", "beta2.p",
-  "p.AFC", "r.AFC", "var.AFC", "mn.AFC",
-  "mu.K", "mu.LI"
-)
-
-# Specify model in BUGS language
-sink("cjs-Ajalapensis-svl.jags")
-cat("
-
-model {
-
-  #########################
-  ## SURVIVAL/GROWTH MODEL#
-  #########################
-
-
-   for(i in 1:nind){
-    AFC[i] ~ dnegbin(p.AFC , r.AFC)T(0,50)  ###Change trucationfor different species. AFC is age of first capture - known in many cases (for newborns) and estimated when not known
-    L0[i] ~ dnorm(mu.L0, tau.L0)  ### draw values for intial size
-    LI[i] ~ dnorm(mu.LI,tau.LI)T(0,) ### asymptotic size - taubeta allows for individual variation, while mean size is plot dependent
-    newLI[i] ~ dnorm(mu.LI,tau.LI)T(0,)
-    LLoldLI[i] <-logdensity.norm(LI[i],mu.LI,tau.LI)
-    LLnewLI[i] <-logdensity.norm(newLI[i],mu.LI,tau.LI)
-    logit(K[i]) <- K.L[i]  ## mean growth rate is plot dependent with variation defined by xi*theta
-    K.L[i] ~ dnorm(mu.K[plot[i]],tau.K)
-  }
-
-  ### Priors for the growth model
-  for(i in 1:4){
-    mu.K1[i] ~ dunif(0.5,1)
-    mu.K[i] <- log(mu.K1[i]) - log(1-mu.K1[i])
-  }
-  r.AFC ~ dgamma(0.01,0.01)
-  p.AFC <- r.AFC/(r.AFC+mn.AFC)
-  mn.AFC ~ dgamma(0.01,0.01)
-  var.AFC <- r.AFC*(1-p.AFC)/(p.AFC*p.AFC)
-  sd.sample ~ dt(0,0.0004,3)T(0,) ### t priors as in Schofield et al. 2013
-  mu.LI ~ dnorm(57,1) #Change for different species
-  sd.LI ~ dt(0,0.0004,3)T(0,)
-  sd.K ~ dt(0,0.0004,3)T(0,)
-  tau.sample <- 1/(sd.sample^2)
-  tau.LI <- 1/(sd.LI^2)
-  tau.K <- 1/(sd.K^2)
-
-
-# Priors and constraints
-for (i in 1:nind){
-  for (t in first[i]:(n.occasions-1)){
-  logit(phi[i,t]) <- alpha.phi + beta.phi*x[i,t] + beta2.phi*pow(x[i,t],2)
-  logit(p[i,t]) <-  (alpha.p + beta.p*x[i,t] + beta2.p*pow(x[i,t],2)) * missing[i,t]
-  } #t
-} #i
-
-#### PRIORS
-alpha.phi ~ dnorm(0, 0.25) # Prior for survival intercept
-beta.phi ~ dnorm(0, 0.25) # Prior for slope parameter
-beta2.phi ~ dnorm(0, 0.25) #Prior for quadratic slope parameter
-alpha.p ~ dnorm(0, 0.25) #Prior for capture intercept
-beta.p ~ dnorm(0, 0.25) # Prior for slope parameter
-beta2.p ~ dnorm(0, 0.25) # Prior for quadratic slope parameter
-
-
-
-# Likelihood
-for (i in 1:nind){
-   # Define latent state at first capture
-   z[i,first[i]] <- 1
-   for (t in (first[i]+1):n.occasions){
-      # State process
-      z[i,t] ~ dbern(mu1[i,t])
-      mu1[i,t] <- phi[i,t-1] * z[i,t-1]
-      # Observation process
-      y[i,t] ~ dbern(mu2[i,t])
-      mu2[i,t] <- p[i,t-1] * z[i,t]
-      x[i,t-1] ~ dnorm(L[i,t-1],tau.sample)T(0,)
-      L[i,t-1] <- (L0[i] + (LI[i]-L0[i])*(1-K[i]^(AFC[i]+(t-1)-first[i])))
-      } #t
-   } #i
-
-
-
-}
-", fill = TRUE)
-sink()
-
-# MCMC settings
-ni <- 50000
-nt <- 1
-nb <- 90000
-nc <- 4
-na <- 10000
-
-# Call JAGS from R (BRT 3 min)
-bugs.data$y <- as.matrix(bugs.data$y)
-bugs.data$z <- as.matrix(bugs.data$z)
-bugs.data$missing <- as.matrix(bugs.data$missing)
-
-runjags.options(jagspath = "/usr/local/bin/jags")
-# setwd("C:/Users/UFT/Desktop/Ameivula_jalapensis_2022_2023")
-
-cjs.Ajalapensis <- run.jags(
-  data = bugs.data, inits = inits, monitor = parameters,
-  model = "cjs-Ajalapensis-svl.jags",
-  n.chains = nc, adapt = na, thin = nt, sample = ni,
-  burnin = nb,
-  method = "bgparallel", jags.refresh = 10,
-  keep.jags.files = TRUE,
-  summarise = TRUE,
-  modules = c("glm")
-)
-
-# chain1 <- read.table("C:/Users/UFT/Desktop/Ameivula_jalapensis_2022_2023/runjagsfiles_1/sim.1/CODAchain1.txt")
-# chain2 <- read.table("C:/Users/UFT/Desktop/Ameivula_jalapensis_2022_2023/runjagsfiles_1/sim.1/CODAchain2.txt")
-# CODAindex <- read.table("C:/Users/UFT/Desktop/Ameivula_jalapensis_2022_2023/runjagsfiles_1/sim.1/CODAindex.txt")
-#
-# chain1$par <- NA
-# chain2$par <- NA
-# for(i in 1:nrow(CODAindex)){
-#   chain1$par[CODAindex$V2[i]:CODAindex$V3[i]] <- CODAindex$V1[i]
+# 
+# 
+# # Bayesian CJS/Pradel/Growth Model ---------------------------------------------------
+# 
+# library(runjags)
+# library(parallel)
+# library(rjags)
+# library(reshape)
+# library(lubridate)
+# 
+# demo.Ameivula$Date <- as.Date(demo.Ameivula$Date, format = "%d/%m/%Y")
+# 
+# demo.Ameivula$TimeWeek <- 1 + lubridate::interval(
+#   "2021-02-22",
+#   demo.Ameivula$Date
+# ) %/%
+#   weeks(1)
+# 
+# demo.Ameivula$TimeMonth <- 1 + lubridate::interval(
+#   "2021-02-22",
+#   demo.Ameivula$Date
+# ) %/%
+#   months(1)
+# 
+# demo.Ameivula$TimeMonth[demo.Ameivula$TimeMonth == 14] <- 13
+# demo.Ameivula$TimeMonth[demo.Ameivula$TimeMonth == 17] <- 16
+# demo.Ameivula$TimeMonth
+# 
+# ## Prepare input file and run monthly data ("TimeMonth")
+# ###################################################
+# 
+# # Create ID
+# IDENT <- paste0(demo.Ameivula$Plot, demo.Ameivula$VoucherNumber)
+# head(IDENT)
+# demo.Ameivula <- data.frame(IDENT, demo.Ameivula)
+# rm(IDENT)
+# str(demo.Ameivula)
+# 
+# # Filter the variables of interest
+# table1 <- demo.Ameivula[, c("IDENT", "TimeWeek", "Sex", "SVL", "Plot")]
+# str(table1)
+# 
+# 
+# # Identifies captures without ID and SVL
+# table2 <- complete.cases(table1[, c("IDENT", "SVL")])
+# 
+# # Removes captures without ID and SVL
+# table3 <- table1[table2, ]
+# 
+# # Order the data by ID and TimeMonth
+# table4 <- table3[order(table3$IDENT, table3$TimeWeek), ]
+# str(table4)
+# summary(table4)
+# 
+# # Drop unused levels
+# table5 <- droplevels(table4)
+# str(table5)
+# 
+# 
+# # Calculates recapture frequencies
+# recap.table <- data.frame(table(table5$IDENT))
+# names(recap.table) <- c("ID", "captures")
+# recap.table
+# table(recap.table$captures)
+# table(recap.table$captures) * as.numeric(names(table(recap.table$captures)))
+# sum(table(recap.table$captures) * as.numeric(names(table(recap.table$captures))))
+# 
+# # Sanity check
+# sum(table(recap.table$captures) * as.numeric(names(table(recap.table$captures)))) == nrow(table5)
+# 
+# ## Filters dataset to use in the analyses##
+# ###########################################
+# head(table5)
+# 
+# Age <- c(rep(NA, nrow(table5)))
+# Age
+# 
+# datA <- data.frame(table5$TimeWeek, table5$Sex, table5$IDENT, table5$SVL, Age, table5$Plot)
+# names(datA) <- c("TimeWeek", "Sex", "TrueID", "SVL", "Age", "Site")
+# datA$Age[datA$SVL <= 35] <- 0
+# # datA<-datA[datA$TrueID!="Q3021",]
+# # datA<-datA[datA$TrueID!="BP1191",]
+# # datA<-datA[datA$TrueID!="BP2101",]
+# # datA<-datA[datA$TrueID!="BP3511",]
+# head(datA)
+# tail(datA)
+# str(datA)
+# 
+# 
+# ## Creates variables for growth model
+# ####################################
+# ###  del is the time period since first individual's capture (0 in first capture)
+# 
+# del <- c() ### time since first capture
+# 
+# for (i in 1:nrow(datA)) {
+#   del[i] <- datA$TimeWeek[i] - min(datA$TimeWeek[datA$TrueID == datA$TrueID[i]])
 # }
-#
-# for(i in 1:nrow(CODAindex)){
-#   chain2$par[CODAindex$V2[i]:CODAindex$V3[i]] <- CODAindex$V1[i]
+# 
+# plot <- cast(datA, TrueID ~ ., value = "Site", fun.aggregate = function(x) tail(x, 1)) ### determine the site from each individual - filters the last value
+# plot <- as.character(plot[, 2])
+# plot
+# # Ordering by fire severity
+# plot[plot == "A1"] <- 1
+# plot[plot == "A2"] <- 2
+# plot[plot == "A3"] <- 3
+# plot[plot == "A4"] <- 4
+# 
+# plot <- as.numeric(plot)
+# plot
+# ind <- as.numeric(factor(datA$TrueID))
+# y <- datA$SVL
+# (n <- max(ind)) ### number of individuals
+# (m <- nrow(datA)) ### number of observations (captures)
+# 
+# age <- c() ## idade na primeira captura
+# for (a in 1:n) {
+#   age[a] <- datA$Age[ind == a][1]
 # }
-#
-# names(chain1) <- c("niter", "value", "par")
-# names(chain2) <- c("niter", "value", "par")
-#
-# m.chain1 <- pivot_wider(data = chain1,
-#             names_from = "par",
-#             values_from = "value")
-# m.chain2 <- pivot_wider(data = chain2,
-#                         names_from = "par",
-#                         values_from = "value")
-#
-# results.cjs.Ajalapensis <- as.mcmc.list(list(as.mcmc(m.chain1[,-1]), as.mcmc(m.chain2[,-1])))
-
-library(MCMCvis)
-
-results.cjs.Ajalapensis <- results.jags(cjs.Ajalapensis) # runjagsfiles
-
-results.cjs.Ajalapensis.extend1 <- extend.jags(results.cjs.Ajalapensis,
-  adapt = 10000, burnin = 40000, sample = 50000,
-  combine = F, keep.jags.files = TRUE,
-  method = "bgparallel"
-)
-
-results.cjs.Ajalapensis <- results.jags(results.cjs.Ajalapensis.extend1)
-# results.cjs.Ajalapensis<- add.summary(results.cjs.Ajalapensis)
-
-results.cjs.Ajalapensis.extend2 <- extend.jags(results.cjs.Ajalapensis,
-  adapt = 10000, sample = 100000,
-  combine = F, keep.jags.files = TRUE,
-  method = "bgparallel"
-)
-
-results.cjs.Ajalapensis <- results.jags(results.cjs.Ajalapensis.extend2)
-
-results.cjs.Ajalapensis.extend3 <- extend.jags(results.cjs.Ajalapensis,
-  adapt = 10000, sample = 100000,
-  combine = T, keep.jags.files = TRUE,
-  method = "bgparallel"
-)
-
-results.cjs.Ajalapensis <- results.jags(results.cjs.Ajalapensis.extend3)
-
-results.cjs.Ajalapensis.extend4 <- extend.jags(results.cjs.Ajalapensis,
-  adapt = 10000, burnin = 140000, sample = 300000,
-  combine = F, keep.jags.files = TRUE,
-  method = "bgparallel"
-)
-
-results.cjs.Ajalapensis <- results.jags(results.cjs.Ajalapensis.extend4)
-
-results.cjs.Ajalapensis.extend5 <- extend.jags(results.cjs.Ajalapensis,
-  adapt = 10000, sample = 200000,
-  combine = T, keep.jags.files = TRUE,
-  method = "bgparallel"
-)
-
-results.cjs.Ajalapensis <- results.jags(results.cjs.Ajalapensis.extend5)
-
-
-
-results.cjs.Ajalapensis.df <- summary(results.cjs.Ajalapensis)
-View(results.cjs.Ajalapensis.df)
-
-write.csv(results.cjs.Ajalapensis.df, "results_cjs_Ajalapensis_df.csv")
-
-saveRDS(results.cjs.Ajalapensis, "results_cjs_Ajalapensis.rds")
-
-library(ggmcmc)
-
-S <- ggs(results.cjs.Ajalapensis$mcmc)
-
-ggs_density(S, family = "alpha.p")
-ggs_density(S, family = "beta.p")
-ggs_density(S, family = "beta2.p")
-
-ggs_traceplot(S, family = "alpha.p")
-ggs_traceplot(S, family = "beta.p")
-ggs_traceplot(S, family = "beta2.p")
-
-# Plots
-
-# Function to estimate size from age
-age_to_size <- function(x, mu.L0, mu.LI, K) mu.L0 + (mu.LI - mu.L0) * (1 - plogis(K)^x)
-
-# Function to estimate age from size
-size_to_age <- function(x, mu.L0, mu.LI, K) log(1 - ((x - mu.L0) / (mu.LI - mu.L0))) / log(inv_logit(K))
-
-# Function to estimate size in t1 from size in t0
-sizet0_t1 <- function(x, mu.L0, mu.LI, K) age_to_size(size_to_age(x, mu.L0, mu.LI, K) + 1, mu.L0, mu.LI, K)
-
-results.cjs.Ajalapensis.df <- read.csv("results_cjs_Ajalapensis_df.csv")
-
-(xx <- 0:12)
-
-(mu.L0 <- min(data$SVL, na.rm = T))
-(mu.LI <- results.cjs.Ajalapensis.df$Mean[grep(
-  pattern = "mu.LI",
-  x = results.cjs.Ajalapensis.df$X
-)])
-
-(K <- results.cjs.Ajalapensis.df$Mean[grep(
-  pattern = "mu.K",
-  x = results.cjs.Ajalapensis.df$X
-)])
-
-(K.lw <- results.cjs.Ajalapensis.df$Lower95[grep(
-  pattern = "mu.K",
-  x = results.cjs.Ajalapensis.df$X
-)])
-
-(K.up <- results.cjs.Ajalapensis.df$Upper95[grep(
-  pattern = "mu.K",
-  x = results.cjs.Ajalapensis.df$X
-)])
-
-
-
-curve(mu.L0 + (mu.LI - mu.L0) * (1 - plogis(K[1])^x),
-  xlim = c(0, 12),
-  ylab = "Snout-vent length (mm)", xlab = "Time (weeks)", bty = "n", col = turbo(4)[1], lwd = 1.2
-)
-curve(mu.L0 + (mu.LI - mu.L0) * (1 - plogis(K[2])^x), xlim = c(0, 48), col = turbo(4)[2], lwd = 1.2, add = T)
-curve(mu.L0 + (mu.LI - mu.L0) * (1 - plogis(K[3])^x), xlim = c(0, 48), col = turbo(4)[3], lwd = 1.2, add = T)
-curve(mu.L0 + (mu.LI - mu.L0) * (1 - plogis(K[4])^x), xlim = c(0, 48), col = turbo(4)[4], lwd = 1.2, add = T)
-
-growth.df <- data.frame(
-  plot = as.factor(rep(1:4, each = length(xx))),
-  mean = c(
-    age_to_size(xx, mu.L0, mu.LI, K[1]),
-    age_to_size(xx, mu.L0, mu.LI, K[2]),
-    age_to_size(xx, mu.L0, mu.LI, K[3]),
-    age_to_size(xx, mu.L0, mu.LI, K[4])
-  ),
-  lower = c(
-    age_to_size(xx, mu.L0, mu.LI, K.lw[1]),
-    age_to_size(xx, mu.L0, mu.LI, K.lw[2]),
-    age_to_size(xx, mu.L0, mu.LI, K.lw[3]),
-    age_to_size(xx, mu.L0, mu.LI, K.lw[4])
-  ),
-  upper = c(
-    age_to_size(xx, mu.L0, mu.LI, K.up[1]),
-    age_to_size(xx, mu.L0, mu.LI, K.up[2]),
-    age_to_size(xx, mu.L0, mu.LI, K.up[3]),
-    age_to_size(xx, mu.L0, mu.LI, K.up[4])
-  ),
-  time = rep(xx, 4)
-)
-
-quartz(width = 10, height = 8)
-ggplot(data = growth.df, aes(x = time, y = mean, colour = plot)) +
-  geom_line() +
-  geom_ribbon(aes(ymin = lower, ymax = upper, fill = plot), alpha = 0.2, colour = NA) +
-  labs(x = "Time (weeks)", y = "Snout-vent length (mm)") +
-  scale_colour_manual(values = turbo(4), name = "Fire severity") +
-  scale_fill_manual(values = turbo(4), name = "Fire severity") +
-  facet_wrap("plot")
-
-ggplot(data = growth.df, aes(x = time, y = mean, colour = plot)) +
-  geom_line() +
-  geom_ribbon(aes(ymin = lower, ymax = upper, fill = plot), alpha = 0.2, colour = NA) +
-  labs(x = "Time (weeks)", y = "Snout-vent length (mm)") +
-  scale_colour_manual(values = turbo(4), name = "Fire severity") +
-  scale_fill_manual(values = turbo(4), name = "Fire severity")
-
-
-# Pradel model ------------------------------------------------------------
-# Filter the variables of interest
-table1 <- demo.Ameivula[, c("IDENT", "TimeMonth", "Sex", "Plot")]
-str(table1)
-summary(table1)
-
-# Identifies captures without ID and SVL
-table2 <- complete.cases(table1[, c("IDENT")])
-
-# Removes captures without ID and SVL
-table3 <- table1[table2, ]
-
-# Order the data by ID and TimeMonth
-table4 <- table3[order(table3$IDENT, table3$TimeMonth), ]
-str(table4)
-summary(table4)
-
-# Drop unused levels
-table5 <- droplevels(table4)
-str(table5)
-
-
-# Calculates recapture frequencies
-recap.table <- data.frame(table(table5$IDENT))
-names(recap.table) <- c("ID", "captures")
-recap.table
-table(recap.table$captures)
-table(recap.table$captures) * as.numeric(names(table(recap.table$captures)))
-sum(table(recap.table$captures) * as.numeric(names(table(recap.table$captures))))
-
-# Sanity check
-sum(table(recap.table$captures) * as.numeric(names(table(recap.table$captures)))) == nrow(table5)
-
-## Filters dataset to use in the analyses##
-###########################################
-head(table5)
-
-datA <- data.frame(table5$TimeMonth, table5$Sex, table5$IDENT, table5$Plot)
-names(datA) <- c("TimeMonth", "Sex", "TrueID", "Site")
-
-head(datA)
-tail(datA)
-str(datA)
-
-eh <- cast(datA, TrueID ~ TimeMonth, fun.aggregate = function(x) as.numeric(length(x) > 0), value = "Site")
-eh <- eh[, 2:ncol(eh)]
-eh.all <- seq(min(datA$TimeMonth), max(datA$TimeMonth)) # fill ignore time periods
-missing <- eh.all[!(eh.all %in% names(eh))]
-col <- matrix(0, nrow = nrow(eh), ncol = length(missing))
-colnames(col) <- missing
-eh <- cbind(eh, col)
-eh <- eh[, order(as.integer(colnames(eh)))]
-
-# Sanity check
-which(colSums(eh) == 0) == missing
-
-head(eh)
-
-plot <- cast(datA, TrueID ~ ., value = "Site", fun.aggregate = function(x) tail(x, 1)) ### determine the site from each individual - filters the last value
-plot <- as.character(plot[, 2])
-plot
-# Ordering by fire severity
-plot[plot == "A1"] <- 1
-plot[plot == "A2"] <- 2
-plot[plot == "A3"] <- 3
-plot[plot == "A4"] <- 4
-
-plot <- as.numeric(plot)
-plot
-(f <- apply(eh, 1, function(x) which(x == 1)[1])) # Time of first capture (individual)
-(nind <- nrow(eh))
-(n.occasions <- ncol(eh))
-ind <- as.numeric(factor(datA$TrueID))
-
-(n <- max(ind)) ### number of individuals
-(m <- nrow(datA)) ### number of observations (captures)
-
-# Sanity checks
-
-missing.cjs <- function(ch, plot) {
-  state <- ch
-  state[state == 0] <- NA
-  for (s in 1:4) {
-    state[plot == s, which(colSums(eh[plot == s, ]) < 1)] <- 0
-  }
-  state[is.na(state)] <- 1
-  return(state)
-}
-
-missing.samp <- missing.cjs(eh, plot) # 1 for months samples, 0 for months not sampled
-View(missing.samp)
-
-# Derivar data para o modelo:
-# e = indice da observacao mais antiga
-get.first <- function(x) min(which(x != 0))
-e <- apply(eh, 1, get.first)
-e <- data.frame(plot = plot, e = e)
-
-
-# l = indice da ultima observacao
-get.last <- function(x) max(which(x != 0))
-l <- apply(eh, 1, get.last)
-l <- data.frame(plot = plot, l = l)
-
-
-# u = numero de animais observados pela primeira vez em i
-u1 <- data.frame(table(e$e[e$plot == 1]))
-u2 <- data.frame(table(e$e[e$plot == 2]))
-u3 <- data.frame(table(e$e[e$plot == 3]))
-u4 <- data.frame(table(e$e[e$plot == 4]))
-
-u.all <- seq(1, n.occasions) # Preencher todos os anos ignorados
-missing <- u.all[!(u.all %in% u1$Var1)]
-df <- data.frame(e = as.factor(missing), Freq = rep(0, length(missing)))
-names(u1) <- names(df)
-u1 <- rbind(u1, df)
-u1$e <- as.numeric(levels(u1$e))[u1$e]
-u1 <- u1[order(u1$e), ]
-u1 <- u1$Freq
-u1
-
-missing <- u.all[!(u.all %in% u2$Var1)]
-df <- data.frame(e = as.factor(missing), Freq = rep(0, length(missing)))
-names(u2) <- names(df)
-u2 <- rbind(u2, df)
-u2$e <- as.numeric(levels(u2$e))[u2$e]
-u2 <- u2[order(u2$e), ]
-u2 <- u2$Freq
-u2
-
-missing <- u.all[!(u.all %in% u3$Var1)]
-df <- data.frame(e = as.factor(missing), Freq = rep(0, length(missing)))
-names(u3) <- names(df)
-u3 <- rbind(u3, df)
-u3$e <- as.numeric(levels(u3$e))[u3$e]
-u3 <- u3[order(u3$e), ]
-u3 <- u3$Freq
-u3
-
-missing <- u.all[!(u.all %in% u4$Var1)]
-df <- data.frame(e = as.factor(missing), Freq = rep(0, length(missing)))
-names(u4) <- names(df)
-u4 <- rbind(u4, df)
-u4$e <- as.numeric(levels(u4$e))[u4$e]
-u4 <- u4[order(u4$e), ]
-u4 <- u4$Freq
-u4
-
-(u <- rbind(u1, u2, u3, u4))
-
-# n = numero de animais observados em i
-n1 <- colSums(eh[plot == 1, ])
-n2 <- colSums(eh[plot == 2, ])
-n3 <- colSums(eh[plot == 3, ])
-n4 <- colSums(eh[plot == 4, ])
-
-n <- rbind(n1, n2, n3, n4)
-
-colSums(n) == colSums(eh)
-
-# v = numero de animais observados pela ultima vez em i
-v1 <- data.frame(table(l$l[l$plot == 1]))
-v2 <- data.frame(table(l$l[l$plot == 2]))
-v3 <- data.frame(table(l$l[l$plot == 3]))
-v4 <- data.frame(table(l$l[l$plot == 4]))
-
-v.all <- seq(1, n.occasions) # Preencher todos os anos ignorados
-missing <- v.all[!(v.all %in% v1$Var1)]
-df <- data.frame(l = as.factor(missing), Freq = rep(0, length(missing)))
-names(v1) <- names(df)
-v1 <- rbind(v1, df)
-v1$l <- as.numeric(levels(v1$l))[v1$l]
-v1 <- v1[order(v1$l), ]
-v1 <- v1$Freq
-v1
-
-missing <- v.all[!(v.all %in% v2$Var1)]
-df <- data.frame(l = as.factor(missing), Freq = rep(0, length(missing)))
-names(v2) <- names(df)
-v2 <- rbind(v2, df)
-v2$l <- as.numeric(levels(v2$l))[v2$l]
-v2 <- v2[order(v2$l), ]
-v2 <- v2$Freq
-v2
-
-missing <- v.all[!(v.all %in% v3$Var1)]
-df <- data.frame(l = as.factor(missing), Freq = rep(0, length(missing)))
-names(v3) <- names(df)
-v3 <- rbind(v3, df)
-v3$l <- as.numeric(levels(v3$l))[v3$l]
-v3 <- v3[order(v3$l), ]
-v3 <- v3$Freq
-v3
-
-missing <- v.all[!(v.all %in% v4$Var1)]
-df <- data.frame(l = as.factor(missing), Freq = rep(0, length(missing)))
-names(v4) <- names(df)
-v4 <- rbind(v4, df)
-v4$l <- as.numeric(levels(v4$l))[v4$l]
-v4 <- v4[order(v4$l), ]
-v4 <- v4$Freq
-v4
-
-v <- rbind(v1, v2, v3, v4)
-v
-
-# d = numero de animais removidos da populacao no momento i
-d <- rep(0, dim(eh)[2])
-d <- rbind(d, d, d, d, d)
-d
-
-# Environmental variables
-env.data <- readRDS("env_data_SGT.rds")
-str(env.data)
-unique(datA$TimeMonth)
-
-env.data$TimeMonth[env.data$fieldtrip == 1] <- 1
-env.data$TimeMonth[env.data$fieldtrip == 2] <- 5
-env.data$TimeMonth[env.data$fieldtrip == 3] <- 13
-env.data$TimeMonth[env.data$fieldtrip == 4] <- 16
-env.data$TimeMonth
-
-env.data <- env.data %>%
-  group_by(plot, TimeMonth) %>%
-  summarise(
-    t.med = mean(t.med),
-    t.max = mean(t.max),
-    t.max.abs = mean(t.max.abs),
-    rh.min.abs = mean(rh.min.abs),
-    rh.max.abs = mean(rh.max.abs),
-    VARI.all = mean(VARI.all),
-    zentropy = mean(zentropy),
-    tree.density = mean(tree.density),
-    Ajalapensis_perf = mean(Ajalapensis_perf),
-    Ajalapensis_ha90 = mean(Ajalapensis_ha90),
-    TSLF = mean(TSLF)
-  )
-
-TimeMonth.plot <- expand.grid(
-  TimeMonth = 1:16,
-  plot = factor(c("A1", "A2", "A3", "A4"),
-    levels = c("A1", "A2", "A3", "A4")
-  )
-)
-
-env.data <- full_join(env.data, TimeMonth.plot, by = c("plot", "TimeMonth"))
-
-env.data <- env.data[order(env.data$TimeMonth), ]
-View(env.data)
-
-amb <- array(
-  c(
-    rbind(
-      (env.data$t.med[env.data$plot == "A1"] - mean(env.data$t.med, na.rm = T)) / sd(env.data$t.med, na.rm = T),
-      (env.data$t.med[env.data$plot == "A2"] - mean(env.data$t.med, na.rm = T)) / sd(env.data$t.med, na.rm = T),
-      (env.data$t.med[env.data$plot == "A3"] - mean(env.data$t.med, na.rm = T)) / sd(env.data$t.med, na.rm = T),
-      (env.data$t.med[env.data$plot == "A4"] - mean(env.data$t.med, na.rm = T)) / sd(env.data$t.med, na.rm = T)
-    ),
-    rbind(
-      (env.data$t.max[env.data$plot == "A1"] - mean(env.data$t.max, na.rm = T)) / sd(env.data$t.max, na.rm = T),
-      (env.data$t.max[env.data$plot == "A2"] - mean(env.data$t.max, na.rm = T)) / sd(env.data$t.max, na.rm = T),
-      (env.data$t.max[env.data$plot == "A3"] - mean(env.data$t.max, na.rm = T)) / sd(env.data$t.max, na.rm = T),
-      (env.data$t.max[env.data$plot == "A4"] - mean(env.data$t.max, na.rm = T)) / sd(env.data$t.max, na.rm = T)
-    ),
-    rbind(
-      (env.data$t.max.abs[env.data$plot == "A1"] - mean(env.data$t.max.abs, na.rm = T)) / sd(env.data$t.max.abs, na.rm = T),
-      (env.data$t.max.abs[env.data$plot == "A2"] - mean(env.data$t.max.abs, na.rm = T)) / sd(env.data$t.max.abs, na.rm = T),
-      (env.data$t.max.abs[env.data$plot == "A3"] - mean(env.data$t.max.abs, na.rm = T)) / sd(env.data$t.max.abs, na.rm = T),
-      (env.data$t.max.abs[env.data$plot == "A4"] - mean(env.data$t.max.abs, na.rm = T)) / sd(env.data$t.max.abs, na.rm = T)
-    ),
-    rbind(
-      (env.data$rh.min.abs[env.data$plot == "A1"] - mean(env.data$rh.min.abs, na.rm = T)) / sd(env.data$rh.min.abs, na.rm = T),
-      (env.data$rh.min.abs[env.data$plot == "A2"] - mean(env.data$rh.min.abs, na.rm = T)) / sd(env.data$rh.min.abs, na.rm = T),
-      (env.data$rh.min.abs[env.data$plot == "A3"] - mean(env.data$rh.min.abs, na.rm = T)) / sd(env.data$rh.min.abs, na.rm = T),
-      (env.data$rh.min.abs[env.data$plot == "A4"] - mean(env.data$rh.min.abs, na.rm = T)) / sd(env.data$rh.min.abs, na.rm = T)
-    ),
-    rbind(
-      (env.data$rh.max.abs[env.data$plot == "A1"] - mean(env.data$rh.max.abs, na.rm = T)) / sd(env.data$rh.max.abs, na.rm = T),
-      (env.data$rh.max.abs[env.data$plot == "A2"] - mean(env.data$rh.max.abs, na.rm = T)) / sd(env.data$rh.max.abs, na.rm = T),
-      (env.data$rh.max.abs[env.data$plot == "A3"] - mean(env.data$rh.max.abs, na.rm = T)) / sd(env.data$rh.max.abs, na.rm = T),
-      (env.data$rh.max.abs[env.data$plot == "A4"] - mean(env.data$rh.max.abs, na.rm = T)) / sd(env.data$rh.max.abs, na.rm = T)
-    ),
-    rbind(
-      (env.data$VARI.all[env.data$plot == "A1"] - mean(env.data$VARI.all, na.rm = T)) / sd(env.data$VARI.all, na.rm = T),
-      (env.data$VARI.all[env.data$plot == "A2"] - mean(env.data$VARI.all, na.rm = T)) / sd(env.data$VARI.all, na.rm = T),
-      (env.data$VARI.all[env.data$plot == "A3"] - mean(env.data$VARI.all, na.rm = T)) / sd(env.data$VARI.all, na.rm = T),
-      (env.data$VARI.all[env.data$plot == "A4"] - mean(env.data$VARI.all, na.rm = T)) / sd(env.data$VARI.all, na.rm = T)
-    ),
-    rbind(
-      (env.data$zentropy[env.data$plot == "A1"] - mean(env.data$zentropy, na.rm = T)) / sd(env.data$zentropy, na.rm = T),
-      (env.data$zentropy[env.data$plot == "A2"] - mean(env.data$zentropy, na.rm = T)) / sd(env.data$zentropy, na.rm = T),
-      (env.data$zentropy[env.data$plot == "A3"] - mean(env.data$zentropy, na.rm = T)) / sd(env.data$zentropy, na.rm = T),
-      (env.data$zentropy[env.data$plot == "A4"] - mean(env.data$zentropy, na.rm = T)) / sd(env.data$zentropy, na.rm = T)
-    ),
-    rbind(
-      (env.data$tree.density[env.data$plot == "A1"] - mean(env.data$tree.density, na.rm = T)) / sd(env.data$tree.density, na.rm = T),
-      (env.data$tree.density[env.data$plot == "A2"] - mean(env.data$tree.density, na.rm = T)) / sd(env.data$tree.density, na.rm = T),
-      (env.data$tree.density[env.data$plot == "A3"] - mean(env.data$tree.density, na.rm = T)) / sd(env.data$tree.density, na.rm = T),
-      (env.data$tree.density[env.data$plot == "A4"] - mean(env.data$tree.density, na.rm = T)) / sd(env.data$tree.density, na.rm = T)
-    ),
-    rbind(
-      (env.data$Ajalapensis_perf[env.data$plot == "A1"] - mean(env.data$Ajalapensis_perf, na.rm = T)) / sd(env.data$Ajalapensis_perf, na.rm = T),
-      (env.data$Ajalapensis_perf[env.data$plot == "A2"] - mean(env.data$Ajalapensis_perf, na.rm = T)) / sd(env.data$Ajalapensis_perf, na.rm = T),
-      (env.data$Ajalapensis_perf[env.data$plot == "A3"] - mean(env.data$Ajalapensis_perf, na.rm = T)) / sd(env.data$Ajalapensis_perf, na.rm = T),
-      (env.data$Ajalapensis_perf[env.data$plot == "A4"] - mean(env.data$Ajalapensis_perf, na.rm = T)) / sd(env.data$Ajalapensis_perf, na.rm = T)
-    ),
-    rbind(
-      (env.data$Ajalapensis_ha90[env.data$plot == "A1"] - mean(env.data$Ajalapensis_ha90, na.rm = T)) / sd(env.data$Ajalapensis_ha90, na.rm = T),
-      (env.data$Ajalapensis_ha90[env.data$plot == "A2"] - mean(env.data$Ajalapensis_ha90, na.rm = T)) / sd(env.data$Ajalapensis_ha90, na.rm = T),
-      (env.data$Ajalapensis_ha90[env.data$plot == "A3"] - mean(env.data$Ajalapensis_ha90, na.rm = T)) / sd(env.data$Ajalapensis_ha90, na.rm = T),
-      (env.data$Ajalapensis_ha90[env.data$plot == "A4"] - mean(env.data$Ajalapensis_ha90, na.rm = T)) / sd(env.data$Ajalapensis_ha90, na.rm = T)
-    ),
-    rbind(
-      (env.data$TSLF[env.data$plot == "A1"] - mean(env.data$TSLF, na.rm = T)) / sd(env.data$TSLF, na.rm = T),
-      (env.data$TSLF[env.data$plot == "A2"] - mean(env.data$TSLF, na.rm = T)) / sd(env.data$TSLF, na.rm = T),
-      (env.data$TSLF[env.data$plot == "A3"] - mean(env.data$TSLF, na.rm = T)) / sd(env.data$TSLF, na.rm = T),
-      (env.data$TSLF[env.data$plot == "A4"] - mean(env.data$TSLF, na.rm = T)) / sd(env.data$TSLF, na.rm = T)
-    )
-  ),
-  dim = c(4, 16, 11)
-)
-dim(amb)
-str(amb)
-
-# Valores iniciais
-inits <- function() {
-  list(
-    tauphib = 1, betaTphi = rep(0, 11), varphi = rep(0, 11),
-    sigma.phiJS = runif(1, 1, 2),
-    sigma.f = runif(1, 0.5, 1),
-    taufb = 1, betaTf = rep(0, 11), varf = rep(0, 11),
-    # alpha.pJS = runif(1, -0.5, 0.5),
-    taupb = 1, betaTp = rep(0, 11), varp = rep(0, 11),
-    sigma.pJS = runif(1, 0.1, 0.5)
-  )
-}
-
-# Defina os parametros a serem monitorados
-parameters <- c(
-  "phiJS", "alpha.phiJS", "sigma.phiJS",
-  "betaphiJS", "varphi",
-  "f", "alpha.f", "sigma.f",
-  "betaf", "varf",
-  "pJS", "alpha.pJS", "sigma.pJS",
-  "betap", "varp",
-  "rho"
-)
-
-
-
-
-sink("pradel-Ajalapensis-noenv.jags")
-cat("
-
-data{
-for(j in 1:4){
-C[j]<-10000
-zeros[j]<-0
-}}
-
-model {
-
-
-   #################
-   #Pradel JS model#
-   #################
-
-###########PRIORS#######################
-for(j in 1:4){
-gamma[j, 1]<-0
-phiJS[j, n.occasions]<-0
-}
-
-for(t in 1:n.occasions){
-for(j in 1:4){
-muJS[j,t]~dunif(0,1)
-}}
-
-#logit constraint for survival probability(phiJS)
-for(j in 1:4){
-alpha.phiJS[j] ~ dnorm(0.5,0.01)
-mean.phiJS[j] <- 1/(1+exp(-alpha.phiJS[j]))#alpha.phiJS on prob scale
-for(t in 1:(n.occasions-1)){
-phiJS[j, t] <- 1/(1+exp(-logit.phiJS[j, t]))
-logit.phiJS[j, t] <- alpha.phiJS[j] + eps.phiJS[j,t]
-eps.phiJS[j,t] ~ dnorm(0,tau.phiJS)
-}
-}
-
-#log constraint for recruitment rate(f)
-
-for(j in 1:4){
-alpha.f[j] ~ dnorm(-0.5,0.01)
-mean.f[j] <- exp(alpha.f[j])#alpha.f on prob scale
-for(t in 1:(n.occasions-1)){
-f[j,t] <- exp(log.f[j,t])
-log.f[j,t]<- alpha.f[j] + eps.f[j,t]
-eps.f[j,t] ~ dnorm(0,tau.f)
-}
-}
-
-for(j in 1:4){
-alpha.pJS[j] ~ dnorm(-0.5,0.01)
-mean.pJS[j] <- 1/(1+exp(-alpha.pJS[j])) #alpha.pJS on prob scale
-for(t in 1:n.occasions){
-#logit constraint for detectability (p)
-pJS[j,t] <- (1/(1+exp(-logit.pJS[j,t]))) * missing[j,t]
-logit.pJS[j,t] <- (alpha.pJS[j] + eps.pJS[j,t])
-eps.pJS[j,t] ~ dnorm(0,tau.pJS)
-}}
-
-
-#temporal random variation
-tau.f<-1/(sigma.f*sigma.f)
-sigma.f~dunif(0,2)
-
-tau.phiJS<-1/(sigma.phiJS*sigma.phiJS)
-sigma.phiJS~dunif(0,2)
-
-tau.pJS<-1/(sigma.pJS*sigma.pJS)
-sigma.pJS~dunif(0,2)
-
-###########LIKELIHOOD(ZERO-TRICK)######
-for(j in 1:4){
-zeros[j]~dpois(zero.mean[j])
-zero.mean[j]<--LJS[j]+C[j]
-LJS[j]<-sum(l.num[j, 1:n.occasions])-l.denom[j]
-
-#####log-likelihood for the first occasion
-l.num[j,1]<-(u[j,1]*log(xi[j,1]))+(n[j,1]*log(pJS[j,1]))+(secondexpo[j,1]*log(1-pJS[j,1]))+
-(thirdexpo[j,1]*log(phiJS[j,1]))+(fourthexpo[j,1]*log(muJS[j,1]))+
-(d[j,1]*log(1-muJS[j,1]))+(fifthexpo[j,1]*log(1-(pJS[j,1]*(1-muJS[j,1]))))+
-(sixthexpo[j,1]*log(chi[j,1]))
-xi[j,1]<-1
-secondexpo_a[j,1]<-sum(u[j, 1:1])
-secondexpo_b[j,1]<-0
-secondexpo[j,1]<-secondexpo_a[j,1]-secondexpo_b[j,1]-n[j,1]
-thirdexpo[j,1]<-sum(v[j,2:n.occasions])
-fourthexpo[j,1]<-n[j,1]-d[j,1]
-fifthexpo[j,1]<-sum(u[j,2:n.occasions])
-sixthexpo[j,1]<-v[j,1]-d[j,1]
-
-#####log-likelihood for the last occasion
-l.num[j,n.occasions]<-(u[j,n.occasions]*log(xi[j,n.occasions]))+(firstexpo[j,n.occasions]*(log(phiJS[j,n.occasions-1])-log(phiJS[j,n.occasions-1]+f[j,n.occasions-1])))+
-(n[j,n.occasions]*log(pJS[j,n.occasions]))+(secondexpo[j,n.occasions]*log(1-pJS[j,n.occasions]))+
-(fourthexpo[j,n.occasions]*log(muJS[j,n.occasions]))+(d[j,n.occasions]*log(1-muJS[j,n.occasions]))+
-(fifthexpo[j,n.occasions]*log(1-(pJS[j,n.occasions]*(1-muJS[j,n.occasions]))))+
-(sixthexpo[j,n.occasions]*log(chi[j,n.occasions]))
-chi[j,n.occasions]<-1
-
-firstexpo[j,n.occasions]<-sum(u[j,1:(n.occasions-1)])
-secondexpo_a[j,n.occasions]<-sum(u[j,1:n.occasions])
-secondexpo_b[j,n.occasions]<-sum(v[j,1:(n.occasions-1)])
-secondexpo[j,n.occasions]<-secondexpo_a[j,n.occasions]-secondexpo_b[j,n.occasions]-n[j,n.occasions]
-fourthexpo[j,n.occasions]<-n[j,n.occasions]-d[j,n.occasions]
-fifthexpo[j,n.occasions]<-0
-sixthexpo[j,n.occasions]<-v[j,n.occasions]-d[j,n.occasions]
-}
-
-#####likelihood from occasion 2 to n.occasions-1
-for(j in 1:4){
-for(i in 2:(n.occasions-1)){
-l.num[j,i]<-(u[j,i]*log(xi[j,i]))+(firstexpo[j,i]*(log(phiJS[j,i-1])-log(phiJS[j,i-1]+f[j,i-1])))+
-(n[j,i]*log(pJS[j,i]))+(secondexpo[j,i]*log(1-pJS[j,i]))+
-(thirdexpo[j,i]*log(phiJS[j,i]))+(fourthexpo[j,i]*log(muJS[j,i]))+
-(d[j,i]*log(1-muJS[j,i]))+(fifthexpo[j,i]*log(1-(pJS[j,i]*(1-muJS[j,i]))))+
-(sixthexpo[j,i]*log(chi[j,i]))
-
-#first exponent
-firstexpo[j,i]<-sum(u[j,1:(i-1)])
-
-#second exponent
-secondexpo_a[j,i]<-sum(u[j,1:i])
-secondexpo_b[j,i]<-sum(v[j,1:(i-1)])
-secondexpo[j,i]<-secondexpo_a[j,i]-secondexpo_b[j,i]-n[j,i]
-
-#third exponent
-thirdexpo[j,i]<-sum(v[j,(i+1):n.occasions])
-
-#fourth exponent
-fourthexpo[j,i]<-n[j,i]-d[j,i]
-
-#fifth exponent
-fifthexpo[j,i]<-sum(u[j,(i+1):n.occasions])
-
-#sixth exponent
-sixthexpo[j,i]<-v[j,i]-d[j,i]
-}
-}
-
-#####likelihood denominator
-#1st product
-PROD1.1[1]<-1
-PROD1.2[1]<-1
-PROD1.3[1]<-1
-PROD1.4[1]<-1
-
-for(j in 1:(n.occasions-1)){
-PROD1_tmp1[1,j]<-0
-PROD1_tmp2[1,j]<-0
-PROD1_tmp3[1,j]<-0
-PROD1_tmp4[1,j]<-0
-}
-
-#fill part of PROD1_tmp
-for(i in 2:(n.occasions-1)){
-for(j in i:(n.occasions-1)){
-PROD1_tmp1[i,j]<-0
-PROD1_tmp2[i,j]<-0
-PROD1_tmp3[i,j]<-0
-PROD1_tmp4[i,j]<-0
-}
-}
-
-for(i in 2:n.occasions){
-for(j in 1:(i-1)){
-PROD1_tmp1[i,j]<-phiJS[1,j]*(1-(pJS[1,j]*(1-muJS[1,j])))
-PROD1_tmp2[i,j]<-phiJS[2,j]*(1-(pJS[2,j]*(1-muJS[2,j])))
-PROD1_tmp3[i,j]<-phiJS[3,j]*(1-(pJS[3,j]*(1-muJS[3,j])))
-PROD1_tmp4[i,j]<-phiJS[4,j]*(1-(pJS[4,j]*(1-muJS[4,j])))
-}
-}
-
-
-PROD1.1[2]<-PROD1_tmp1[2,1]
-PROD1.2[2]<-PROD1_tmp2[2,1]
-PROD1.3[2]<-PROD1_tmp3[2,1]
-PROD1.4[2]<-PROD1_tmp4[2,1]
-
-for(i in 3:n.occasions){
-PROD1.1[i]<-prod(PROD1_tmp1[i,1:(i-1)])
-PROD1.2[i]<-prod(PROD1_tmp2[i,1:(i-1)])
-PROD1.3[i]<-prod(PROD1_tmp3[i,1:(i-1)])
-PROD1.4[i]<-prod(PROD1_tmp4[i,1:(i-1)])
-}
-
-#2nd product
-PROD2.1[n.occasions]<-1
-PROD2.2[n.occasions]<-1
-PROD2.3[n.occasions]<-1
-PROD2.4[n.occasions]<-1
-
-for(i in 1:(n.occasions-1)){
-for(j in (i+1):n.occasions){
-PROD2_tmp1[i,j]<-gamma[1,j]
-PROD2_tmp2[i,j]<-gamma[2,j]
-PROD2_tmp3[i,j]<-gamma[3,j]
-PROD2_tmp4[i,j]<-gamma[4,j]
-}
-}
-
-#fill part of PROD2_tmp
-for(i in 1:(n.occasions-1)){
-for(j in 1:i){
-PROD2_tmp1[i,j]<-0
-PROD2_tmp2[i,j]<-0
-PROD2_tmp3[i,j]<-0
-PROD2_tmp4[i,j]<-0
-}
-}
-
-PROD2.1[n.occasions-1]<-PROD2_tmp1[(n.occasions-1),n.occasions]
-PROD2.2[n.occasions-1]<-PROD2_tmp2[(n.occasions-1),n.occasions]
-PROD2.3[n.occasions-1]<-PROD2_tmp3[(n.occasions-1),n.occasions]
-PROD2.4[n.occasions-1]<-PROD2_tmp4[(n.occasions-1),n.occasions]
-
-for(i in 1:(n.occasions-2)){
-PROD2.1[i]<-prod(PROD2_tmp1[i,(i+1):n.occasions])
-PROD2.2[i]<-prod(PROD2_tmp2[i,(i+1):n.occasions])
-PROD2.3[i]<-prod(PROD2_tmp3[i,(i+1):n.occasions])
-PROD2.4[i]<-prod(PROD2_tmp4[i,(i+1):n.occasions])
-
-}
-for(i in 1:n.occasions){
-denom_base_tmp1[i]<-xi[1,i]*PROD1.1[i]*PROD2.1[i]*pJS[1,i]
-denom_base_tmp2[i]<-xi[2,i]*PROD1.2[i]*PROD2.2[i]*pJS[2,i]
-denom_base_tmp3[i]<-xi[3,i]*PROD1.3[i]*PROD2.3[i]*pJS[3,i]
-denom_base_tmp4[i]<-xi[4,i]*PROD1.4[i]*PROD2.4[i]*pJS[4,i]
-
-}
-
-denom_base1 <- sum(denom_base_tmp1[])
-denom_base2 <- sum(denom_base_tmp2[])
-denom_base3 <- sum(denom_base_tmp3[])
-denom_base4 <- sum(denom_base_tmp4[])
-
-denom_expo1 <- sum(u[1,1:n.occasions])
-denom_expo2 <- sum(u[2,1:n.occasions])
-denom_expo3 <- sum(u[3,1:n.occasions])
-denom_expo4 <- sum(u[4,1:n.occasions])
-
-l.denom[1] <- denom_expo1 * log(denom_base1)
-l.denom[2] <- denom_expo2 * log(denom_base2)
-l.denom[3] <- denom_expo3 * log(denom_base3)
-l.denom[4] <- denom_expo4 * log(denom_base4)
-
-
-#################Define xi and chi
-for(i in 2:n.occasions){
-for(j in 1:4){
-xi.tmp[j,i]<-(1-gamma[j,i])+
-(gamma[j,i]*((1-pJS[j,i-1])/(1-(pJS[j,i-1]*(1-muJS[j,i-1]))))*xi[j,i-1])
-xi[j,i]<-max(xi.tmp[j,i],0.00001)
-}
-}
-
-for(i in 1:(n.occasions-1)){
-for(j in 1:4){
-chi[j,i]<-(1-phiJS[j,i])+(phiJS[j,i]*(1-pJS[j,i+1])*chi[j,i+1])
-}
-}
-
-#################Gamma and rho as derived parameter
-for(i in 2:n.occasions){
-for(j in 1:4){
-rho[j,i]<-phiJS[j,i-1]+f[j,i-1]
-}
-}
-
-for(i in 2:n.occasions){
-for(j in 1:4){
-gamma[j,i]<-phiJS[j,i-1]/(phiJS[j,i-1]+f[j,i-1])
-}
-}
-
-}
-", fill = TRUE)
-sink()
-
-# MCMC settings
-ni <- 100000
-nt <- 1
-nb <- 200000
-nc <- 4
-na <- 50000
-
-# Call JAGS from R (BRT 3 min)
-bugs.data <- list(
-  u = u, n = n, v = v, d = d, n.occasions = dim(eh)[2],
-  amb = amb, missing = missing.samp[1:4, ]
-)
-
-bugs.data$missing <- as.matrix(bugs.data$missing)
-runjags.options(jagspath = "/usr/local/bin/jags")
-
-pradel.Ajalapensis <- run.jags(
-  data = bugs.data, inits = inits, monitor = parameters, model = "pradel-Ajalapensis-noenv.jags",
-  n.chains = nc, adapt = na, thin = nt, sample = ni, burnin = nb,
-  method = "bgparallel", jags.refresh = 30, keep.jags.files = TRUE,
-  summarise = FALSE,
-  modules = c("glm")
-)
-
-results.pradel.Ajalapensis <- results.jags(pradel.Ajalapensis)
-
-results.pradel.Ajalapensis.df <- summary(results.pradel.Ajalapensis)
-View(results.pradel.Ajalapensis.df)
-
-write.csv(results.pradel.Ajalapensis.df, "results_pradel_Ajalapensis_df.csv")
-saveRDS(results.pradel.Ajalapensis, "results_pradel_Ajalapensis.rds")
-
-# Specify model in BUGS language
-sink("pradel-Ajalapensis-env.jags")
-cat("
-
-data{
-for(j in 1:4){
-C[j]<-10000
-zeros[j]<-0
-}}
-
-model {
-
-
-   #################
-   #Pradel JS model#
-   #################
-
-###########PRIORS#######################
-for(j in 1:4){
-gamma[j, 1]<-0
-phiJS[j, n.occasions]<-0
-}
-
-for(t in 1:n.occasions){
-for(j in 1:4){
-muJS[j,t]~dunif(0,1)
-}}
-
-#logit constraint for survival probability(phiJS)
-for(j in 1:4){
-alpha.phiJS[j] ~ dnorm(0.5,0.01)
-mean.phiJS[j] <- 1/(1+exp(-alpha.phiJS[j]))#alpha.phiJS on prob scale
-for(t in 1:(n.occasions-1)){
-phiJS[j, t] <- 1/(1+exp(-logit.phiJS[j, t]))
-logit.phiJS[j, t] <- alpha.phiJS[j] + eps.phiJS[j,t] + inprod(amb[j,t,],betaphiJS)
-eps.phiJS[j,t] ~ dnorm(0,tau.phiJS)
-}
-}
-
-for(j in 1:11){
-varphi[j]~dbern(0.5)
-betaTphi[j]~dnorm(0,tauphib)
-betaphiJS[j]<-varphi[j]*betaTphi[j]
-}
-
-#environmental parameters
-tauphib~dgamma(1,0.001)
-
-#log constraint for recruitment rate(f)
-
-for(j in 1:4){
-alpha.f[j] ~ dnorm(-0.5,0.01)
-mean.f[j] <- exp(alpha.f[j])#alpha.f on prob scale
-for(t in 1:(n.occasions-1)){
-f[j,t] <- exp(log.f[j,t])
-log.f[j,t]<- alpha.f[j] + eps.f[j,t]+ inprod(amb[j,t,],betaf)
-eps.f[j,t] ~ dnorm(0,tau.f)
-}
-}
-
-for(j in 1:11){
-varf[j]~dbern(0.5)
-betaTf[j]~dnorm(0,taufb)
-betaf[j]<-varf[j]*betaTf[j]
-}
-
-#environmental parameters
-taufb~dgamma(1,0.001)
-
-for(j in 1:4){
-alpha.pJS[j] ~ dnorm(-0.5,0.01)
-mean.pJS[j] <- 1/(1+exp(-alpha.pJS[j])) #alpha.pJS on prob scale
-for(t in 1:n.occasions){
-#logit constraint for detectability (p)
-pJS[j,t] <- (1/(1+exp(-logit.pJS[j,t])))
-logit.pJS[j,t] <- alpha.pJS[j] + eps.pJS[j,t] + inprod(amb[j,t,],betap)
-eps.pJS[j,t] ~ dnorm(0,tau.pJS)
-}}
-
-for(j in 1:11){
-varp[j]~dbern(0.5)
-betaTp[j]~dnorm(0,taupb)
-betap[j]<-varp[j]*betaTp[j]
-}
-
-#environmental parameters
-taupb~dgamma(1,0.001)
-
-#temporal random variation
-tau.f<-1/(sigma.f*sigma.f)
-sigma.f~dunif(0,2)
-
-tau.phiJS<-1/(sigma.phiJS*sigma.phiJS)
-sigma.phiJS~dunif(0,2)
-
-tau.pJS<-1/(sigma.pJS*sigma.pJS)
-sigma.pJS~dunif(0,2)
-
-###########LIKELIHOOD(ZERO-TRICK)######
-for(j in 1:4){
-zeros[j]~dpois(zero.mean[j])
-zero.mean[j]<--LJS[j]+C[j]
-LJS[j]<-sum(l.num[j, 1:n.occasions])-l.denom[j]
-
-#####log-likelihood for the first occasion
-l.num[j,1]<-(u[j,1]*log(xi[j,1]))+(n[j,1]*log(pJS[j,1]))+(secondexpo[j,1]*log(1-pJS[j,1]))+
-(thirdexpo[j,1]*log(phiJS[j,1]))+(fourthexpo[j,1]*log(muJS[j,1]))+
-(d[j,1]*log(1-muJS[j,1]))+(fifthexpo[j,1]*log(1-(pJS[j,1]*(1-muJS[j,1]))))+
-(sixthexpo[j,1]*log(chi[j,1]))
-xi[j,1]<-1
-secondexpo_a[j,1]<-sum(u[j, 1:1])
-secondexpo_b[j,1]<-0
-secondexpo[j,1]<-secondexpo_a[j,1]-secondexpo_b[j,1]-n[j,1]
-thirdexpo[j,1]<-sum(v[j,2:n.occasions])
-fourthexpo[j,1]<-n[j,1]-d[j,1]
-fifthexpo[j,1]<-sum(u[j,2:n.occasions])
-sixthexpo[j,1]<-v[j,1]-d[j,1]
-
-#####log-likelihood for the last occasion
-l.num[j,n.occasions]<-(u[j,n.occasions]*log(xi[j,n.occasions]))+(firstexpo[j,n.occasions]*(log(phiJS[j,n.occasions-1])-log(phiJS[j,n.occasions-1]+f[j,n.occasions-1])))+
-(n[j,n.occasions]*log(pJS[j,n.occasions]))+(secondexpo[j,n.occasions]*log(1-pJS[j,n.occasions]))+
-(fourthexpo[j,n.occasions]*log(muJS[j,n.occasions]))+(d[j,n.occasions]*log(1-muJS[j,n.occasions]))+
-(fifthexpo[j,n.occasions]*log(1-(pJS[j,n.occasions]*(1-muJS[j,n.occasions]))))+
-(sixthexpo[j,n.occasions]*log(chi[j,n.occasions]))
-chi[j,n.occasions]<-1
-
-firstexpo[j,n.occasions]<-sum(u[j,1:(n.occasions-1)])
-secondexpo_a[j,n.occasions]<-sum(u[j,1:n.occasions])
-secondexpo_b[j,n.occasions]<-sum(v[j,1:(n.occasions-1)])
-secondexpo[j,n.occasions]<-secondexpo_a[j,n.occasions]-secondexpo_b[j,n.occasions]-n[j,n.occasions]
-fourthexpo[j,n.occasions]<-n[j,n.occasions]-d[j,n.occasions]
-fifthexpo[j,n.occasions]<-0
-sixthexpo[j,n.occasions]<-v[j,n.occasions]-d[j,n.occasions]
-}
-
-#####likelihood from occasion 2 to n.occasions-1
-for(j in 1:4){
-for(i in 2:(n.occasions-1)){
-l.num[j,i]<-(u[j,i]*log(xi[j,i]))+(firstexpo[j,i]*(log(phiJS[j,i-1])-log(phiJS[j,i-1]+f[j,i-1])))+
-(n[j,i]*log(pJS[j,i]))+(secondexpo[j,i]*log(1-pJS[j,i]))+
-(thirdexpo[j,i]*log(phiJS[j,i]))+(fourthexpo[j,i]*log(muJS[j,i]))+
-(d[j,i]*log(1-muJS[j,i]))+(fifthexpo[j,i]*log(1-(pJS[j,i]*(1-muJS[j,i]))))+
-(sixthexpo[j,i]*log(chi[j,i]))
-
-#first exponent
-firstexpo[j,i]<-sum(u[j,1:(i-1)])
-
-#second exponent
-secondexpo_a[j,i]<-sum(u[j,1:i])
-secondexpo_b[j,i]<-sum(v[j,1:(i-1)])
-secondexpo[j,i]<-secondexpo_a[j,i]-secondexpo_b[j,i]-n[j,i]
-
-#third exponent
-thirdexpo[j,i]<-sum(v[j,(i+1):n.occasions])
-
-#fourth exponent
-fourthexpo[j,i]<-n[j,i]-d[j,i]
-
-#fifth exponent
-fifthexpo[j,i]<-sum(u[j,(i+1):n.occasions])
-
-#sixth exponent
-sixthexpo[j,i]<-v[j,i]-d[j,i]
-}
-}
-
-#####likelihood denominator
-#1st product
-PROD1.1[1]<-1
-PROD1.2[1]<-1
-PROD1.3[1]<-1
-PROD1.4[1]<-1
-
-for(j in 1:(n.occasions-1)){
-PROD1_tmp1[1,j]<-0
-PROD1_tmp2[1,j]<-0
-PROD1_tmp3[1,j]<-0
-PROD1_tmp4[1,j]<-0
-}
-
-#fill part of PROD1_tmp
-for(i in 2:(n.occasions-1)){
-for(j in i:(n.occasions-1)){
-PROD1_tmp1[i,j]<-0
-PROD1_tmp2[i,j]<-0
-PROD1_tmp3[i,j]<-0
-PROD1_tmp4[i,j]<-0
-}
-}
-
-for(i in 2:n.occasions){
-for(j in 1:(i-1)){
-PROD1_tmp1[i,j]<-phiJS[1,j]*(1-(pJS[1,j]*(1-muJS[1,j])))
-PROD1_tmp2[i,j]<-phiJS[2,j]*(1-(pJS[2,j]*(1-muJS[2,j])))
-PROD1_tmp3[i,j]<-phiJS[3,j]*(1-(pJS[3,j]*(1-muJS[3,j])))
-PROD1_tmp4[i,j]<-phiJS[4,j]*(1-(pJS[4,j]*(1-muJS[4,j])))
-}
-}
-
-
-PROD1.1[2]<-PROD1_tmp1[2,1]
-PROD1.2[2]<-PROD1_tmp2[2,1]
-PROD1.3[2]<-PROD1_tmp3[2,1]
-PROD1.4[2]<-PROD1_tmp4[2,1]
-
-for(i in 3:n.occasions){
-PROD1.1[i]<-prod(PROD1_tmp1[i,1:(i-1)])
-PROD1.2[i]<-prod(PROD1_tmp2[i,1:(i-1)])
-PROD1.3[i]<-prod(PROD1_tmp3[i,1:(i-1)])
-PROD1.4[i]<-prod(PROD1_tmp4[i,1:(i-1)])
-}
-
-#2nd product
-PROD2.1[n.occasions]<-1
-PROD2.2[n.occasions]<-1
-PROD2.3[n.occasions]<-1
-PROD2.4[n.occasions]<-1
-
-for(i in 1:(n.occasions-1)){
-for(j in (i+1):n.occasions){
-PROD2_tmp1[i,j]<-gamma[1,j]
-PROD2_tmp2[i,j]<-gamma[2,j]
-PROD2_tmp3[i,j]<-gamma[3,j]
-PROD2_tmp4[i,j]<-gamma[4,j]
-}
-}
-
-#fill part of PROD2_tmp
-for(i in 1:(n.occasions-1)){
-for(j in 1:i){
-PROD2_tmp1[i,j]<-0
-PROD2_tmp2[i,j]<-0
-PROD2_tmp3[i,j]<-0
-PROD2_tmp4[i,j]<-0
-}
-}
-
-PROD2.1[n.occasions-1]<-PROD2_tmp1[(n.occasions-1),n.occasions]
-PROD2.2[n.occasions-1]<-PROD2_tmp2[(n.occasions-1),n.occasions]
-PROD2.3[n.occasions-1]<-PROD2_tmp3[(n.occasions-1),n.occasions]
-PROD2.4[n.occasions-1]<-PROD2_tmp4[(n.occasions-1),n.occasions]
-
-for(i in 1:(n.occasions-2)){
-PROD2.1[i]<-prod(PROD2_tmp1[i,(i+1):n.occasions])
-PROD2.2[i]<-prod(PROD2_tmp2[i,(i+1):n.occasions])
-PROD2.3[i]<-prod(PROD2_tmp3[i,(i+1):n.occasions])
-PROD2.4[i]<-prod(PROD2_tmp4[i,(i+1):n.occasions])
-
-}
-for(i in 1:n.occasions){
-denom_base_tmp1[i]<-xi[1,i]*PROD1.1[i]*PROD2.1[i]*pJS[1,i]
-denom_base_tmp2[i]<-xi[2,i]*PROD1.2[i]*PROD2.2[i]*pJS[2,i]
-denom_base_tmp3[i]<-xi[3,i]*PROD1.3[i]*PROD2.3[i]*pJS[3,i]
-denom_base_tmp4[i]<-xi[4,i]*PROD1.4[i]*PROD2.4[i]*pJS[4,i]
-
-}
-
-denom_base1 <- sum(denom_base_tmp1[])
-denom_base2 <- sum(denom_base_tmp2[])
-denom_base3 <- sum(denom_base_tmp3[])
-denom_base4 <- sum(denom_base_tmp4[])
-
-denom_expo1 <- sum(u[1,1:n.occasions])
-denom_expo2 <- sum(u[2,1:n.occasions])
-denom_expo3 <- sum(u[3,1:n.occasions])
-denom_expo4 <- sum(u[4,1:n.occasions])
-
-l.denom[1] <- denom_expo1 * log(denom_base1)
-l.denom[2] <- denom_expo2 * log(denom_base2)
-l.denom[3] <- denom_expo3 * log(denom_base3)
-l.denom[4] <- denom_expo4 * log(denom_base4)
-
-
-#################Define xi and chi
-for(i in 2:n.occasions){
-for(j in 1:4){
-xi.tmp[j,i]<-(1-gamma[j,i])+
-(gamma[j,i]*((1-pJS[j,i-1])/(1-(pJS[j,i-1]*(1-muJS[j,i-1]))))*xi[j,i-1])
-xi[j,i]<-max(xi.tmp[j,i],0.00001)
-}
-}
-
-for(i in 1:(n.occasions-1)){
-for(j in 1:4){
-chi[j,i]<-(1-phiJS[j,i])+(phiJS[j,i]*(1-pJS[j,i+1])*chi[j,i+1])
-}
-}
-
-#################Gamma and rho as derived parameter
-for(i in 2:n.occasions){
-for(j in 1:4){
-rho[j,i]<-phiJS[j,i-1]+f[j,i-1]
-}
-}
-
-for(i in 2:n.occasions){
-for(j in 1:4){
-gamma[j,i]<-phiJS[j,i-1]/(phiJS[j,i-1]+f[j,i-1])
-}
-}
-
-}
-", fill = TRUE)
-sink()
-
-bugs.data <- list(
-  u = u[, c(1, 5, 13, 16)], n = n[, c(1, 5, 13, 16)], v = v[, c(1, 5, 13, 16)], d = d[, c(1, 5, 13, 16)], n.occasions = dim(eh[, c(1, 5, 13, 16)])[2],
-  amb = amb[, c(1, 5, 13, 16), ]
-)
-
-pradel.Ajalapensis <- run.jags(
-  data = bugs.data, inits = inits, monitor = parameters, model = "pradel-Ajalapensis-env.jags",
-  n.chains = nc, adapt = na, thin = nt, sample = ni, burnin = nb,
-  method = "bgparallel", jags.refresh = 30, keep.jags.files = TRUE,
-  summarise = FALSE,
-  modules = c("glm")
-)
-
-results.pradel.Ajalapensis <- results.jags(pradel.Ajalapensis)
-
-results.pradel.Ajalapensis.df <- summary(results.pradel.Ajalapensis)
-View(results.pradel.Ajalapensis.df)
-
-write.csv(results.pradel.Ajalapensis.df, "results_pradel_env_Ajalapensis_df.csv")
-saveRDS(results.pradel.Ajalapensis, "results_pradel_env_Ajalapensis.rds")
-
-# Plots
-pradel.Ajalapensis.df <- read.csv("results_pradel_Ajalapensis_df.csv")
-
-f.pradel <- pradel.Ajalapensis.df[grep(pattern = "f", x = pradel.Ajalapensis.df$X)[1:60], ]
-
-phi.pradel <- pradel.Ajalapensis.df[grep(pattern = "phi", x = pradel.Ajalapensis.df$X)[1:60], ]
-
-p.pradel <- pradel.Ajalapensis.df[grep(pattern = "pJS", x = pradel.Ajalapensis.df$X)[1:64], ]
-
-
-f.pradel$plot <- rep(1:4, 15)
-f.pradel$time <- rep(1:15, each = 4)
-
-phi.pradel$plot <- rep(1:4, 15)
-phi.pradel$time <- rep(1:15, each = 4)
-
-p.pradel$plot <- rep(1:4, 16)
-p.pradel$time <- rep(1:16, each = 4)
-
-
-phi.pradel$plot <- as.factor(phi.pradel$plot)
-f.pradel$plot <- as.factor(f.pradel$plot)
-p.pradel$plot <- as.factor(p.pradel$plot)
-
-
-ggplot(phi.pradel, aes(x = time, y = Mean, fill = plot, colour = plot)) +
-  geom_line(aes(x = time, y = Mean, colour = plot), alpha = 0.5, linewidth = 2) +
-  geom_ribbon(aes(x = time, ymin = Lower95, ymax = Upper95, fill = plot), colour = NA, alpha = 0.2) +
-  # ylim(c(0.75,1))+
-  scale_color_manual(values = turbo(4)) +
-  scale_fill_manual(values = turbo(4)) +
-  labs(x = "Months", y = "Survival")
-
-ggplot(p.pradel, aes(x = time, y = Mean, fill = plot, colour = plot)) +
-  geom_line(aes(x = time, y = Mean, colour = plot), alpha = 0.5, linewidth = 2) +
-  geom_ribbon(aes(x = time, ymin = Lower95, ymax = Upper95, fill = plot), colour = NA, alpha = 0.2) +
-  # ylim(c(0.75,1))+
-  scale_color_manual(values = turbo(4)) +
-  scale_fill_manual(values = turbo(4)) +
-  labs(x = "Months", y = "Capture probability")
-
-ggplot(f.pradel, aes(x = time, y = Mean, fill = plot, colour = plot)) +
-  geom_line(aes(x = time, y = Mean, colour = plot), alpha = 0.5, linewidth = 2) +
-  geom_ribbon(aes(x = time, ymin = Lower95, ymax = Upper95, fill = plot), colour = NA, alpha = 0.2) +
-  # ylim(c(0.75,1))+
-  scale_color_manual(values = turbo(4)) +
-  scale_fill_manual(values = turbo(4)) +
-  labs(x = "Months", y = "Recruitment")
-
-f.pradel.mean <- pradel.Ajalapensis.df[grep(pattern = "f", x = pradel.Ajalapensis.df$X)[61:64], ]
-
-phi.pradel.mean <- pradel.Ajalapensis.df[grep(pattern = "phi", x = pradel.Ajalapensis.df$X)[65:68], ]
-
-p.pradel.mean <- pradel.Ajalapensis.df[grep(pattern = "pJS", x = pradel.Ajalapensis.df$X)[65:68], ]
-
-f.pradel.mean$plot <- as.factor(1:4)
-phi.pradel.mean$plot <- as.factor(1:4)
-p.pradel.mean$plot <- as.factor(1:4)
-
-# Rescale
-f.pradel.mean$Mean <- exp(f.pradel.mean$Mean)
-f.pradel.mean$Lower95 <- exp(f.pradel.mean$Lower95)
-f.pradel.mean$Upper95 <- exp(f.pradel.mean$Upper95)
-
-phi.pradel.mean$Mean <- plogis(phi.pradel.mean$Mean)
-phi.pradel.mean$Lower95 <- plogis(phi.pradel.mean$Lower95)
-phi.pradel.mean$Upper95 <- plogis(phi.pradel.mean$Upper95)
-
-p.pradel.mean$Mean <- plogis(p.pradel.mean$Mean)
-p.pradel.mean$Lower95 <- plogis(p.pradel.mean$Lower95)
-p.pradel.mean$Upper95 <- plogis(p.pradel.mean$Upper95)
-
-quartz(height = 8, width = 8)
-ggplot(phi.pradel.mean, aes(x = plot, colour = plot)) +
-  geom_pointrange(aes(x = plot, y = Mean, ymin = Lower95, ymax = Upper95, colour = plot), size = 1.5, linewidth = 1.2) +
-  scale_color_manual(values = turbo(4), name = "Fire severity") +
-  labs(x = "", y = "Survival")
-
-quartz(height = 8, width = 8)
-ggplot(f.pradel.mean, aes(x = plot, colour = plot)) +
-  geom_pointrange(aes(x = plot, y = Mean, ymin = Lower95, ymax = Upper95, colour = plot), size = 1.5, linewidth = 1.2) +
-  scale_color_manual(values = turbo(4), name = "Fire severity") +
-  labs(x = "", y = "Recruitment")
-
-quartz(height = 8, width = 8)
-ggplot(p.pradel.mean, aes(x = plot, colour = plot)) +
-  geom_pointrange(aes(x = plot, y = Mean, ymin = Lower95, ymax = Upper95, colour = plot), size = 1.5, linewidth = 1.2) +
-  scale_color_manual(values = turbo(4), name = "Fire severity") +
-  labs(x = "", y = "Capture probability")
+# 
+# time <- c()
+# for (a in 1:n) {
+#   time[a] <- datA$TimeWeek[ind == a][1]
+# }
+# 
+# head(datA)
+# tail(datA)
+# str(datA)
+# 
+# ##### #Cria data de recupera??o de marca para o modelo de sobreviv?ncia## ##################################################################
+# known.states.cjs <- function(ch) {
+#   state <- ch
+#   for (i in 1:dim(ch)[1]) {
+#     n1 <- min(which(ch[i, ] == 1))
+#     n2 <- max(which(ch[i, ] == 1))
+#     state[i, n1:n2] <- 1
+#     state[i, n1] <- NA
+#   }
+#   state[state == 0] <- NA
+#   return(state)
+# }
+# 
+# cjs.init.z <- function(ch, f) {
+#   for (i in 1:dim(ch)[1]) {
+#     if (sum(ch[i, ]) == 1) next
+#     n2 <- max(which(ch[i, ] == 1))
+#     ch[i, f[i]:n2] <- NA
+#   }
+#   for (i in 1:dim(ch)[1])
+#   {
+#     ch[i, 1:f[i]] <- NA
+#   }
+#   return(ch)
+# }
+# 
+# eh <- cast(datA, TrueID ~ TimeWeek, fun.aggregate = function(x) as.numeric(length(x) > 0), value = "SVL")
+# eh <- eh[, 2:ncol(eh)]
+# eh.all <- seq(min(datA$TimeWeek), max(datA$TimeWeek)) # fill ignore time periods
+# missing <- eh.all[!(eh.all %in% names(eh))]
+# col <- matrix(0, nrow = nrow(eh), ncol = length(missing))
+# colnames(col) <- missing
+# eh <- cbind(eh, col)
+# eh <- eh[, order(as.integer(colnames(eh)))]
+# 
+# # Sanity check
+# which(colSums(eh) == 0) == missing
+# 
+# head(eh)
+# (f <- apply(eh, 1, function(x) which(x == 1)[1])) # Time of first capture (individual)
+# (nind <- nrow(eh))
+# (n.occasions <- ncol(eh))
+# m
+# n
+# 
+# mplot <- data.frame(
+#   C = as.numeric(plot == 1),
+#   Q = as.numeric(plot == 2),
+#   BP = as.numeric(plot == 3),
+#   BM = as.numeric(plot == 4),
+#   BT = as.numeric(plot == 5)
+# )
+# 
+# # Create matrix X indicating svl
+# x <- reshape2::acast(datA, TrueID ~ TimeWeek,
+#   fun.aggregate = function(x) mean(x, na.rm = T),
+#   value.var = "SVL"
+# )
+# 
+# x[is.nan(x) == T] <- NA
+# 
+# x.all <- seq(min(datA$TimeWeek), max(datA$TimeWeek)) # fill ignore time periods
+# missing.x <- x.all[!(x.all %in% colnames(x))]
+# missing.x == missing # Sanity check
+# col <- matrix(NA, nrow = nrow(x), ncol = length(missing))
+# colnames(col) <- missing
+# x <- cbind(x, col)
+# x <- x[, order(as.integer(colnames(x)))]
+# 
+# head(x)
+# 
+# ncol(x) == ncol(eh)
+# 
+# missing.cjs <- function(ch, plot) {
+#   state <- ch
+#   state[state == 0] <- NA
+#   for (s in 1:4) {
+#     state[plot == s, which(colSums(eh[plot == s, ]) < 1)] <- 0
+#   }
+#   state[is.na(state)] <- 1
+#   return(state)
+# }
+# 
+# missing.samp <- missing.cjs(eh, plot) # 1 for months samples, 0 for months not sampled
+# View(missing.samp)
+# 
+# hist(datA$SVL[datA$SVL <= 35])
+# mean(datA$SVL[datA$SVL <= 35], na.rm = T)
+# var(datA$SVL[datA$SVL <= 35], na.rm = T)
+# 
+# hist(datA$SVL)
+# hist(datA$SVL[datA$SVL > 55])
+# 
+# mean(datA$SVL[datA$SVL > 55], na.rm = T)
+# var(datA$SVL[datA$SVL > 55], na.rm = T)
+# 
+# hist(data$SVL[data$Recapture == "N"])
+# hist(data$SVL[data$Recapture == "Y"])
+# 
+# bugs.data <- list(
+#   first = f, nind = dim(eh)[1], n.occasions = dim(eh)[2],
+#   y = eh, x = as.matrix(x), z = known.states.cjs(eh),
+#   missing = missing.samp,
+#   mu.L0 = mean(datA$SVL[datA$SVL <= 35], na.rm = T),
+#   tau.L0 = var(datA$SVL[datA$SVL <= 35], na.rm = T),
+#   AFC = as.numeric(age),
+#   # mplot = mplot,
+#   plot = plot
+# )
+# # Valores iniciais
+# inits <- function() {}
+# 
+# # Defina os parametros a serem monitorados
+# parameters <- c(
+#   "alpha.phi", "beta.phi", "beta2.phi",
+#   "alpha.p", "beta.p", "beta2.p",
+#   "p.AFC", "r.AFC", "var.AFC", "mn.AFC",
+#   "mu.K", "mu.LI"
+# )
+# 
+# # Specify model in BUGS language
+# sink("cjs-Ajalapensis-svl.jags")
+# cat("
+# 
+# model {
+# 
+#   #########################
+#   ## SURVIVAL/GROWTH MODEL#
+#   #########################
+# 
+# 
+#    for(i in 1:nind){
+#     AFC[i] ~ dnegbin(p.AFC , r.AFC)T(0,50)  ###Change trucationfor different species. AFC is age of first capture - known in many cases (for newborns) and estimated when not known
+#     L0[i] ~ dnorm(mu.L0, tau.L0)  ### draw values for intial size
+#     LI[i] ~ dnorm(mu.LI,tau.LI)T(0,) ### asymptotic size - taubeta allows for individual variation, while mean size is plot dependent
+#     newLI[i] ~ dnorm(mu.LI,tau.LI)T(0,)
+#     LLoldLI[i] <-logdensity.norm(LI[i],mu.LI,tau.LI)
+#     LLnewLI[i] <-logdensity.norm(newLI[i],mu.LI,tau.LI)
+#     logit(K[i]) <- K.L[i]  ## mean growth rate is plot dependent with variation defined by xi*theta
+#     K.L[i] ~ dnorm(mu.K[plot[i]],tau.K)
+#   }
+# 
+#   ### Priors for the growth model
+#   for(i in 1:4){
+#     mu.K1[i] ~ dunif(0.5,1)
+#     mu.K[i] <- log(mu.K1[i]) - log(1-mu.K1[i])
+#   }
+#   r.AFC ~ dgamma(0.01,0.01)
+#   p.AFC <- r.AFC/(r.AFC+mn.AFC)
+#   mn.AFC ~ dgamma(0.01,0.01)
+#   var.AFC <- r.AFC*(1-p.AFC)/(p.AFC*p.AFC)
+#   sd.sample ~ dt(0,0.0004,3)T(0,) ### t priors as in Schofield et al. 2013
+#   mu.LI ~ dnorm(57,1) #Change for different species
+#   sd.LI ~ dt(0,0.0004,3)T(0,)
+#   sd.K ~ dt(0,0.0004,3)T(0,)
+#   tau.sample <- 1/(sd.sample^2)
+#   tau.LI <- 1/(sd.LI^2)
+#   tau.K <- 1/(sd.K^2)
+# 
+# 
+# # Priors and constraints
+# for (i in 1:nind){
+#   for (t in first[i]:(n.occasions-1)){
+#   logit(phi[i,t]) <- alpha.phi + beta.phi*x[i,t] + beta2.phi*pow(x[i,t],2)
+#   logit(p[i,t]) <-  (alpha.p + beta.p*x[i,t] + beta2.p*pow(x[i,t],2)) * missing[i,t]
+#   } #t
+# } #i
+# 
+# #### PRIORS
+# alpha.phi ~ dnorm(0, 0.25) # Prior for survival intercept
+# beta.phi ~ dnorm(0, 0.25) # Prior for slope parameter
+# beta2.phi ~ dnorm(0, 0.25) #Prior for quadratic slope parameter
+# alpha.p ~ dnorm(0, 0.25) #Prior for capture intercept
+# beta.p ~ dnorm(0, 0.25) # Prior for slope parameter
+# beta2.p ~ dnorm(0, 0.25) # Prior for quadratic slope parameter
+# 
+# 
+# 
+# # Likelihood
+# for (i in 1:nind){
+#    # Define latent state at first capture
+#    z[i,first[i]] <- 1
+#    for (t in (first[i]+1):n.occasions){
+#       # State process
+#       z[i,t] ~ dbern(mu1[i,t])
+#       mu1[i,t] <- phi[i,t-1] * z[i,t-1]
+#       # Observation process
+#       y[i,t] ~ dbern(mu2[i,t])
+#       mu2[i,t] <- p[i,t-1] * z[i,t]
+#       x[i,t-1] ~ dnorm(L[i,t-1],tau.sample)T(0,)
+#       L[i,t-1] <- (L0[i] + (LI[i]-L0[i])*(1-K[i]^(AFC[i]+(t-1)-first[i])))
+#       } #t
+#    } #i
+# 
+# 
+# 
+# }
+# ", fill = TRUE)
+# sink()
+# 
+# # MCMC settings
+# ni <- 50000
+# nt <- 1
+# nb <- 90000
+# nc <- 4
+# na <- 10000
+# 
+# # Call JAGS from R (BRT 3 min)
+# bugs.data$y <- as.matrix(bugs.data$y)
+# bugs.data$z <- as.matrix(bugs.data$z)
+# bugs.data$missing <- as.matrix(bugs.data$missing)
+# 
+# runjags.options(jagspath = "/usr/local/bin/jags")
+# # setwd("C:/Users/UFT/Desktop/Ameivula_jalapensis_2022_2023")
+# 
+# cjs.Ajalapensis <- run.jags(
+#   data = bugs.data, inits = inits, monitor = parameters,
+#   model = "cjs-Ajalapensis-svl.jags",
+#   n.chains = nc, adapt = na, thin = nt, sample = ni,
+#   burnin = nb,
+#   method = "bgparallel", jags.refresh = 10,
+#   keep.jags.files = TRUE,
+#   summarise = TRUE,
+#   modules = c("glm")
+# )
+# 
+# # chain1 <- read.table("C:/Users/UFT/Desktop/Ameivula_jalapensis_2022_2023/runjagsfiles_1/sim.1/CODAchain1.txt")
+# # chain2 <- read.table("C:/Users/UFT/Desktop/Ameivula_jalapensis_2022_2023/runjagsfiles_1/sim.1/CODAchain2.txt")
+# # CODAindex <- read.table("C:/Users/UFT/Desktop/Ameivula_jalapensis_2022_2023/runjagsfiles_1/sim.1/CODAindex.txt")
+# #
+# # chain1$par <- NA
+# # chain2$par <- NA
+# # for(i in 1:nrow(CODAindex)){
+# #   chain1$par[CODAindex$V2[i]:CODAindex$V3[i]] <- CODAindex$V1[i]
+# # }
+# #
+# # for(i in 1:nrow(CODAindex)){
+# #   chain2$par[CODAindex$V2[i]:CODAindex$V3[i]] <- CODAindex$V1[i]
+# # }
+# #
+# # names(chain1) <- c("niter", "value", "par")
+# # names(chain2) <- c("niter", "value", "par")
+# #
+# # m.chain1 <- pivot_wider(data = chain1,
+# #             names_from = "par",
+# #             values_from = "value")
+# # m.chain2 <- pivot_wider(data = chain2,
+# #                         names_from = "par",
+# #                         values_from = "value")
+# #
+# # results.cjs.Ajalapensis <- as.mcmc.list(list(as.mcmc(m.chain1[,-1]), as.mcmc(m.chain2[,-1])))
+# 
+# library(MCMCvis)
+# 
+# results.cjs.Ajalapensis <- results.jags(cjs.Ajalapensis) # runjagsfiles
+# 
+# results.cjs.Ajalapensis.extend1 <- extend.jags(results.cjs.Ajalapensis,
+#   adapt = 10000, burnin = 40000, sample = 50000,
+#   combine = F, keep.jags.files = TRUE,
+#   method = "bgparallel"
+# )
+# 
+# results.cjs.Ajalapensis <- results.jags(results.cjs.Ajalapensis.extend1)
+# # results.cjs.Ajalapensis<- add.summary(results.cjs.Ajalapensis)
+# 
+# results.cjs.Ajalapensis.extend2 <- extend.jags(results.cjs.Ajalapensis,
+#   adapt = 10000, sample = 100000,
+#   combine = F, keep.jags.files = TRUE,
+#   method = "bgparallel"
+# )
+# 
+# results.cjs.Ajalapensis <- results.jags(results.cjs.Ajalapensis.extend2)
+# 
+# results.cjs.Ajalapensis.extend3 <- extend.jags(results.cjs.Ajalapensis,
+#   adapt = 10000, sample = 100000,
+#   combine = T, keep.jags.files = TRUE,
+#   method = "bgparallel"
+# )
+# 
+# results.cjs.Ajalapensis <- results.jags(results.cjs.Ajalapensis.extend3)
+# 
+# results.cjs.Ajalapensis.extend4 <- extend.jags(results.cjs.Ajalapensis,
+#   adapt = 10000, burnin = 140000, sample = 300000,
+#   combine = F, keep.jags.files = TRUE,
+#   method = "bgparallel"
+# )
+# 
+# results.cjs.Ajalapensis <- results.jags(results.cjs.Ajalapensis.extend4)
+# 
+# results.cjs.Ajalapensis.extend5 <- extend.jags(results.cjs.Ajalapensis,
+#   adapt = 10000, sample = 200000,
+#   combine = T, keep.jags.files = TRUE,
+#   method = "bgparallel"
+# )
+# 
+# results.cjs.Ajalapensis <- results.jags(results.cjs.Ajalapensis.extend5)
+# 
+# 
+# 
+# results.cjs.Ajalapensis.df <- summary(results.cjs.Ajalapensis)
+# View(results.cjs.Ajalapensis.df)
+# 
+# write.csv(results.cjs.Ajalapensis.df, "results_cjs_Ajalapensis_df.csv")
+# 
+# saveRDS(results.cjs.Ajalapensis, "results_cjs_Ajalapensis.rds")
+# 
+# library(ggmcmc)
+# 
+# S <- ggs(results.cjs.Ajalapensis$mcmc)
+# 
+# ggs_density(S, family = "alpha.p")
+# ggs_density(S, family = "beta.p")
+# ggs_density(S, family = "beta2.p")
+# 
+# ggs_traceplot(S, family = "alpha.p")
+# ggs_traceplot(S, family = "beta.p")
+# ggs_traceplot(S, family = "beta2.p")
+# 
+# # Plots
+# 
+# # Function to estimate size from age
+# age_to_size <- function(x, mu.L0, mu.LI, K) mu.L0 + (mu.LI - mu.L0) * (1 - plogis(K)^x)
+# 
+# # Function to estimate age from size
+# size_to_age <- function(x, mu.L0, mu.LI, K) log(1 - ((x - mu.L0) / (mu.LI - mu.L0))) / log(inv_logit(K))
+# 
+# # Function to estimate size in t1 from size in t0
+# sizet0_t1 <- function(x, mu.L0, mu.LI, K) age_to_size(size_to_age(x, mu.L0, mu.LI, K) + 1, mu.L0, mu.LI, K)
+# 
+# results.cjs.Ajalapensis.df <- read.csv("results_cjs_Ajalapensis_df.csv")
+# 
+# (xx <- 0:12)
+# 
+# (mu.L0 <- min(data$SVL, na.rm = T))
+# (mu.LI <- results.cjs.Ajalapensis.df$Mean[grep(
+#   pattern = "mu.LI",
+#   x = results.cjs.Ajalapensis.df$X
+# )])
+# 
+# (K <- results.cjs.Ajalapensis.df$Mean[grep(
+#   pattern = "mu.K",
+#   x = results.cjs.Ajalapensis.df$X
+# )])
+# 
+# (K.lw <- results.cjs.Ajalapensis.df$Lower95[grep(
+#   pattern = "mu.K",
+#   x = results.cjs.Ajalapensis.df$X
+# )])
+# 
+# (K.up <- results.cjs.Ajalapensis.df$Upper95[grep(
+#   pattern = "mu.K",
+#   x = results.cjs.Ajalapensis.df$X
+# )])
+# 
+# 
+# 
+# curve(mu.L0 + (mu.LI - mu.L0) * (1 - plogis(K[1])^x),
+#   xlim = c(0, 12),
+#   ylab = "Snout-vent length (mm)", xlab = "Time (weeks)", bty = "n", col = turbo(4)[1], lwd = 1.2
+# )
+# curve(mu.L0 + (mu.LI - mu.L0) * (1 - plogis(K[2])^x), xlim = c(0, 48), col = turbo(4)[2], lwd = 1.2, add = T)
+# curve(mu.L0 + (mu.LI - mu.L0) * (1 - plogis(K[3])^x), xlim = c(0, 48), col = turbo(4)[3], lwd = 1.2, add = T)
+# curve(mu.L0 + (mu.LI - mu.L0) * (1 - plogis(K[4])^x), xlim = c(0, 48), col = turbo(4)[4], lwd = 1.2, add = T)
+# 
+# growth.df <- data.frame(
+#   plot = as.factor(rep(1:4, each = length(xx))),
+#   mean = c(
+#     age_to_size(xx, mu.L0, mu.LI, K[1]),
+#     age_to_size(xx, mu.L0, mu.LI, K[2]),
+#     age_to_size(xx, mu.L0, mu.LI, K[3]),
+#     age_to_size(xx, mu.L0, mu.LI, K[4])
+#   ),
+#   lower = c(
+#     age_to_size(xx, mu.L0, mu.LI, K.lw[1]),
+#     age_to_size(xx, mu.L0, mu.LI, K.lw[2]),
+#     age_to_size(xx, mu.L0, mu.LI, K.lw[3]),
+#     age_to_size(xx, mu.L0, mu.LI, K.lw[4])
+#   ),
+#   upper = c(
+#     age_to_size(xx, mu.L0, mu.LI, K.up[1]),
+#     age_to_size(xx, mu.L0, mu.LI, K.up[2]),
+#     age_to_size(xx, mu.L0, mu.LI, K.up[3]),
+#     age_to_size(xx, mu.L0, mu.LI, K.up[4])
+#   ),
+#   time = rep(xx, 4)
+# )
+# 
+# quartz(width = 10, height = 8)
+# ggplot(data = growth.df, aes(x = time, y = mean, colour = plot)) +
+#   geom_line() +
+#   geom_ribbon(aes(ymin = lower, ymax = upper, fill = plot), alpha = 0.2, colour = NA) +
+#   labs(x = "Time (weeks)", y = "Snout-vent length (mm)") +
+#   scale_colour_manual(values = turbo(4), name = "Fire severity") +
+#   scale_fill_manual(values = turbo(4), name = "Fire severity") +
+#   facet_wrap("plot")
+# 
+# ggplot(data = growth.df, aes(x = time, y = mean, colour = plot)) +
+#   geom_line() +
+#   geom_ribbon(aes(ymin = lower, ymax = upper, fill = plot), alpha = 0.2, colour = NA) +
+#   labs(x = "Time (weeks)", y = "Snout-vent length (mm)") +
+#   scale_colour_manual(values = turbo(4), name = "Fire severity") +
+#   scale_fill_manual(values = turbo(4), name = "Fire severity")
+# 
+# 
+# # Pradel model ------------------------------------------------------------
+# # Filter the variables of interest
+# table1 <- demo.Ameivula[, c("IDENT", "TimeMonth", "Sex", "Plot")]
+# str(table1)
+# summary(table1)
+# 
+# # Identifies captures without ID and SVL
+# table2 <- complete.cases(table1[, c("IDENT")])
+# 
+# # Removes captures without ID and SVL
+# table3 <- table1[table2, ]
+# 
+# # Order the data by ID and TimeMonth
+# table4 <- table3[order(table3$IDENT, table3$TimeMonth), ]
+# str(table4)
+# summary(table4)
+# 
+# # Drop unused levels
+# table5 <- droplevels(table4)
+# str(table5)
+# 
+# 
+# # Calculates recapture frequencies
+# recap.table <- data.frame(table(table5$IDENT))
+# names(recap.table) <- c("ID", "captures")
+# recap.table
+# table(recap.table$captures)
+# table(recap.table$captures) * as.numeric(names(table(recap.table$captures)))
+# sum(table(recap.table$captures) * as.numeric(names(table(recap.table$captures))))
+# 
+# # Sanity check
+# sum(table(recap.table$captures) * as.numeric(names(table(recap.table$captures)))) == nrow(table5)
+# 
+# ## Filters dataset to use in the analyses##
+# ###########################################
+# head(table5)
+# 
+# datA <- data.frame(table5$TimeMonth, table5$Sex, table5$IDENT, table5$Plot)
+# names(datA) <- c("TimeMonth", "Sex", "TrueID", "Site")
+# 
+# head(datA)
+# tail(datA)
+# str(datA)
+# 
+# eh <- cast(datA, TrueID ~ TimeMonth, fun.aggregate = function(x) as.numeric(length(x) > 0), value = "Site")
+# eh <- eh[, 2:ncol(eh)]
+# eh.all <- seq(min(datA$TimeMonth), max(datA$TimeMonth)) # fill ignore time periods
+# missing <- eh.all[!(eh.all %in% names(eh))]
+# col <- matrix(0, nrow = nrow(eh), ncol = length(missing))
+# colnames(col) <- missing
+# eh <- cbind(eh, col)
+# eh <- eh[, order(as.integer(colnames(eh)))]
+# 
+# # Sanity check
+# which(colSums(eh) == 0) == missing
+# 
+# head(eh)
+# 
+# plot <- cast(datA, TrueID ~ ., value = "Site", fun.aggregate = function(x) tail(x, 1)) ### determine the site from each individual - filters the last value
+# plot <- as.character(plot[, 2])
+# plot
+# # Ordering by fire severity
+# plot[plot == "A1"] <- 1
+# plot[plot == "A2"] <- 2
+# plot[plot == "A3"] <- 3
+# plot[plot == "A4"] <- 4
+# 
+# plot <- as.numeric(plot)
+# plot
+# (f <- apply(eh, 1, function(x) which(x == 1)[1])) # Time of first capture (individual)
+# (nind <- nrow(eh))
+# (n.occasions <- ncol(eh))
+# ind <- as.numeric(factor(datA$TrueID))
+# 
+# (n <- max(ind)) ### number of individuals
+# (m <- nrow(datA)) ### number of observations (captures)
+# 
+# # Sanity checks
+# 
+# missing.cjs <- function(ch, plot) {
+#   state <- ch
+#   state[state == 0] <- NA
+#   for (s in 1:4) {
+#     state[plot == s, which(colSums(eh[plot == s, ]) < 1)] <- 0
+#   }
+#   state[is.na(state)] <- 1
+#   return(state)
+# }
+# 
+# missing.samp <- missing.cjs(eh, plot) # 1 for months samples, 0 for months not sampled
+# View(missing.samp)
+# 
+# # Derivar data para o modelo:
+# # e = indice da observacao mais antiga
+# get.first <- function(x) min(which(x != 0))
+# e <- apply(eh, 1, get.first)
+# e <- data.frame(plot = plot, e = e)
+# 
+# 
+# # l = indice da ultima observacao
+# get.last <- function(x) max(which(x != 0))
+# l <- apply(eh, 1, get.last)
+# l <- data.frame(plot = plot, l = l)
+# 
+# 
+# # u = numero de animais observados pela primeira vez em i
+# u1 <- data.frame(table(e$e[e$plot == 1]))
+# u2 <- data.frame(table(e$e[e$plot == 2]))
+# u3 <- data.frame(table(e$e[e$plot == 3]))
+# u4 <- data.frame(table(e$e[e$plot == 4]))
+# 
+# u.all <- seq(1, n.occasions) # Preencher todos os anos ignorados
+# missing <- u.all[!(u.all %in% u1$Var1)]
+# df <- data.frame(e = as.factor(missing), Freq = rep(0, length(missing)))
+# names(u1) <- names(df)
+# u1 <- rbind(u1, df)
+# u1$e <- as.numeric(levels(u1$e))[u1$e]
+# u1 <- u1[order(u1$e), ]
+# u1 <- u1$Freq
+# u1
+# 
+# missing <- u.all[!(u.all %in% u2$Var1)]
+# df <- data.frame(e = as.factor(missing), Freq = rep(0, length(missing)))
+# names(u2) <- names(df)
+# u2 <- rbind(u2, df)
+# u2$e <- as.numeric(levels(u2$e))[u2$e]
+# u2 <- u2[order(u2$e), ]
+# u2 <- u2$Freq
+# u2
+# 
+# missing <- u.all[!(u.all %in% u3$Var1)]
+# df <- data.frame(e = as.factor(missing), Freq = rep(0, length(missing)))
+# names(u3) <- names(df)
+# u3 <- rbind(u3, df)
+# u3$e <- as.numeric(levels(u3$e))[u3$e]
+# u3 <- u3[order(u3$e), ]
+# u3 <- u3$Freq
+# u3
+# 
+# missing <- u.all[!(u.all %in% u4$Var1)]
+# df <- data.frame(e = as.factor(missing), Freq = rep(0, length(missing)))
+# names(u4) <- names(df)
+# u4 <- rbind(u4, df)
+# u4$e <- as.numeric(levels(u4$e))[u4$e]
+# u4 <- u4[order(u4$e), ]
+# u4 <- u4$Freq
+# u4
+# 
+# (u <- rbind(u1, u2, u3, u4))
+# 
+# # n = numero de animais observados em i
+# n1 <- colSums(eh[plot == 1, ])
+# n2 <- colSums(eh[plot == 2, ])
+# n3 <- colSums(eh[plot == 3, ])
+# n4 <- colSums(eh[plot == 4, ])
+# 
+# n <- rbind(n1, n2, n3, n4)
+# 
+# colSums(n) == colSums(eh)
+# 
+# # v = numero de animais observados pela ultima vez em i
+# v1 <- data.frame(table(l$l[l$plot == 1]))
+# v2 <- data.frame(table(l$l[l$plot == 2]))
+# v3 <- data.frame(table(l$l[l$plot == 3]))
+# v4 <- data.frame(table(l$l[l$plot == 4]))
+# 
+# v.all <- seq(1, n.occasions) # Preencher todos os anos ignorados
+# missing <- v.all[!(v.all %in% v1$Var1)]
+# df <- data.frame(l = as.factor(missing), Freq = rep(0, length(missing)))
+# names(v1) <- names(df)
+# v1 <- rbind(v1, df)
+# v1$l <- as.numeric(levels(v1$l))[v1$l]
+# v1 <- v1[order(v1$l), ]
+# v1 <- v1$Freq
+# v1
+# 
+# missing <- v.all[!(v.all %in% v2$Var1)]
+# df <- data.frame(l = as.factor(missing), Freq = rep(0, length(missing)))
+# names(v2) <- names(df)
+# v2 <- rbind(v2, df)
+# v2$l <- as.numeric(levels(v2$l))[v2$l]
+# v2 <- v2[order(v2$l), ]
+# v2 <- v2$Freq
+# v2
+# 
+# missing <- v.all[!(v.all %in% v3$Var1)]
+# df <- data.frame(l = as.factor(missing), Freq = rep(0, length(missing)))
+# names(v3) <- names(df)
+# v3 <- rbind(v3, df)
+# v3$l <- as.numeric(levels(v3$l))[v3$l]
+# v3 <- v3[order(v3$l), ]
+# v3 <- v3$Freq
+# v3
+# 
+# missing <- v.all[!(v.all %in% v4$Var1)]
+# df <- data.frame(l = as.factor(missing), Freq = rep(0, length(missing)))
+# names(v4) <- names(df)
+# v4 <- rbind(v4, df)
+# v4$l <- as.numeric(levels(v4$l))[v4$l]
+# v4 <- v4[order(v4$l), ]
+# v4 <- v4$Freq
+# v4
+# 
+# v <- rbind(v1, v2, v3, v4)
+# v
+# 
+# # d = numero de animais removidos da populacao no momento i
+# d <- rep(0, dim(eh)[2])
+# d <- rbind(d, d, d, d, d)
+# d
+# 
+# # Environmental variables
+# env.data <- readRDS("env_data_SGT.rds")
+# str(env.data)
+# unique(datA$TimeMonth)
+# 
+# env.data$TimeMonth[env.data$fieldtrip == 1] <- 1
+# env.data$TimeMonth[env.data$fieldtrip == 2] <- 5
+# env.data$TimeMonth[env.data$fieldtrip == 3] <- 13
+# env.data$TimeMonth[env.data$fieldtrip == 4] <- 16
+# env.data$TimeMonth
+# 
+# env.data <- env.data %>%
+#   group_by(plot, TimeMonth) %>%
+#   summarise(
+#     t.med = mean(t.med),
+#     t.max = mean(t.max),
+#     t.max.abs = mean(t.max.abs),
+#     rh.min.abs = mean(rh.min.abs),
+#     rh.max.abs = mean(rh.max.abs),
+#     VARI.all = mean(VARI.all),
+#     zentropy = mean(zentropy),
+#     tree.density = mean(tree.density),
+#     Ajalapensis_perf = mean(Ajalapensis_perf),
+#     Ajalapensis_ha90 = mean(Ajalapensis_ha90),
+#     TSLF = mean(TSLF)
+#   )
+# 
+# TimeMonth.plot <- expand.grid(
+#   TimeMonth = 1:16,
+#   plot = factor(c("A1", "A2", "A3", "A4"),
+#     levels = c("A1", "A2", "A3", "A4")
+#   )
+# )
+# 
+# env.data <- full_join(env.data, TimeMonth.plot, by = c("plot", "TimeMonth"))
+# 
+# env.data <- env.data[order(env.data$TimeMonth), ]
+# View(env.data)
+# 
+# amb <- array(
+#   c(
+#     rbind(
+#       (env.data$t.med[env.data$plot == "A1"] - mean(env.data$t.med, na.rm = T)) / sd(env.data$t.med, na.rm = T),
+#       (env.data$t.med[env.data$plot == "A2"] - mean(env.data$t.med, na.rm = T)) / sd(env.data$t.med, na.rm = T),
+#       (env.data$t.med[env.data$plot == "A3"] - mean(env.data$t.med, na.rm = T)) / sd(env.data$t.med, na.rm = T),
+#       (env.data$t.med[env.data$plot == "A4"] - mean(env.data$t.med, na.rm = T)) / sd(env.data$t.med, na.rm = T)
+#     ),
+#     rbind(
+#       (env.data$t.max[env.data$plot == "A1"] - mean(env.data$t.max, na.rm = T)) / sd(env.data$t.max, na.rm = T),
+#       (env.data$t.max[env.data$plot == "A2"] - mean(env.data$t.max, na.rm = T)) / sd(env.data$t.max, na.rm = T),
+#       (env.data$t.max[env.data$plot == "A3"] - mean(env.data$t.max, na.rm = T)) / sd(env.data$t.max, na.rm = T),
+#       (env.data$t.max[env.data$plot == "A4"] - mean(env.data$t.max, na.rm = T)) / sd(env.data$t.max, na.rm = T)
+#     ),
+#     rbind(
+#       (env.data$t.max.abs[env.data$plot == "A1"] - mean(env.data$t.max.abs, na.rm = T)) / sd(env.data$t.max.abs, na.rm = T),
+#       (env.data$t.max.abs[env.data$plot == "A2"] - mean(env.data$t.max.abs, na.rm = T)) / sd(env.data$t.max.abs, na.rm = T),
+#       (env.data$t.max.abs[env.data$plot == "A3"] - mean(env.data$t.max.abs, na.rm = T)) / sd(env.data$t.max.abs, na.rm = T),
+#       (env.data$t.max.abs[env.data$plot == "A4"] - mean(env.data$t.max.abs, na.rm = T)) / sd(env.data$t.max.abs, na.rm = T)
+#     ),
+#     rbind(
+#       (env.data$rh.min.abs[env.data$plot == "A1"] - mean(env.data$rh.min.abs, na.rm = T)) / sd(env.data$rh.min.abs, na.rm = T),
+#       (env.data$rh.min.abs[env.data$plot == "A2"] - mean(env.data$rh.min.abs, na.rm = T)) / sd(env.data$rh.min.abs, na.rm = T),
+#       (env.data$rh.min.abs[env.data$plot == "A3"] - mean(env.data$rh.min.abs, na.rm = T)) / sd(env.data$rh.min.abs, na.rm = T),
+#       (env.data$rh.min.abs[env.data$plot == "A4"] - mean(env.data$rh.min.abs, na.rm = T)) / sd(env.data$rh.min.abs, na.rm = T)
+#     ),
+#     rbind(
+#       (env.data$rh.max.abs[env.data$plot == "A1"] - mean(env.data$rh.max.abs, na.rm = T)) / sd(env.data$rh.max.abs, na.rm = T),
+#       (env.data$rh.max.abs[env.data$plot == "A2"] - mean(env.data$rh.max.abs, na.rm = T)) / sd(env.data$rh.max.abs, na.rm = T),
+#       (env.data$rh.max.abs[env.data$plot == "A3"] - mean(env.data$rh.max.abs, na.rm = T)) / sd(env.data$rh.max.abs, na.rm = T),
+#       (env.data$rh.max.abs[env.data$plot == "A4"] - mean(env.data$rh.max.abs, na.rm = T)) / sd(env.data$rh.max.abs, na.rm = T)
+#     ),
+#     rbind(
+#       (env.data$VARI.all[env.data$plot == "A1"] - mean(env.data$VARI.all, na.rm = T)) / sd(env.data$VARI.all, na.rm = T),
+#       (env.data$VARI.all[env.data$plot == "A2"] - mean(env.data$VARI.all, na.rm = T)) / sd(env.data$VARI.all, na.rm = T),
+#       (env.data$VARI.all[env.data$plot == "A3"] - mean(env.data$VARI.all, na.rm = T)) / sd(env.data$VARI.all, na.rm = T),
+#       (env.data$VARI.all[env.data$plot == "A4"] - mean(env.data$VARI.all, na.rm = T)) / sd(env.data$VARI.all, na.rm = T)
+#     ),
+#     rbind(
+#       (env.data$zentropy[env.data$plot == "A1"] - mean(env.data$zentropy, na.rm = T)) / sd(env.data$zentropy, na.rm = T),
+#       (env.data$zentropy[env.data$plot == "A2"] - mean(env.data$zentropy, na.rm = T)) / sd(env.data$zentropy, na.rm = T),
+#       (env.data$zentropy[env.data$plot == "A3"] - mean(env.data$zentropy, na.rm = T)) / sd(env.data$zentropy, na.rm = T),
+#       (env.data$zentropy[env.data$plot == "A4"] - mean(env.data$zentropy, na.rm = T)) / sd(env.data$zentropy, na.rm = T)
+#     ),
+#     rbind(
+#       (env.data$tree.density[env.data$plot == "A1"] - mean(env.data$tree.density, na.rm = T)) / sd(env.data$tree.density, na.rm = T),
+#       (env.data$tree.density[env.data$plot == "A2"] - mean(env.data$tree.density, na.rm = T)) / sd(env.data$tree.density, na.rm = T),
+#       (env.data$tree.density[env.data$plot == "A3"] - mean(env.data$tree.density, na.rm = T)) / sd(env.data$tree.density, na.rm = T),
+#       (env.data$tree.density[env.data$plot == "A4"] - mean(env.data$tree.density, na.rm = T)) / sd(env.data$tree.density, na.rm = T)
+#     ),
+#     rbind(
+#       (env.data$Ajalapensis_perf[env.data$plot == "A1"] - mean(env.data$Ajalapensis_perf, na.rm = T)) / sd(env.data$Ajalapensis_perf, na.rm = T),
+#       (env.data$Ajalapensis_perf[env.data$plot == "A2"] - mean(env.data$Ajalapensis_perf, na.rm = T)) / sd(env.data$Ajalapensis_perf, na.rm = T),
+#       (env.data$Ajalapensis_perf[env.data$plot == "A3"] - mean(env.data$Ajalapensis_perf, na.rm = T)) / sd(env.data$Ajalapensis_perf, na.rm = T),
+#       (env.data$Ajalapensis_perf[env.data$plot == "A4"] - mean(env.data$Ajalapensis_perf, na.rm = T)) / sd(env.data$Ajalapensis_perf, na.rm = T)
+#     ),
+#     rbind(
+#       (env.data$Ajalapensis_ha90[env.data$plot == "A1"] - mean(env.data$Ajalapensis_ha90, na.rm = T)) / sd(env.data$Ajalapensis_ha90, na.rm = T),
+#       (env.data$Ajalapensis_ha90[env.data$plot == "A2"] - mean(env.data$Ajalapensis_ha90, na.rm = T)) / sd(env.data$Ajalapensis_ha90, na.rm = T),
+#       (env.data$Ajalapensis_ha90[env.data$plot == "A3"] - mean(env.data$Ajalapensis_ha90, na.rm = T)) / sd(env.data$Ajalapensis_ha90, na.rm = T),
+#       (env.data$Ajalapensis_ha90[env.data$plot == "A4"] - mean(env.data$Ajalapensis_ha90, na.rm = T)) / sd(env.data$Ajalapensis_ha90, na.rm = T)
+#     ),
+#     rbind(
+#       (env.data$TSLF[env.data$plot == "A1"] - mean(env.data$TSLF, na.rm = T)) / sd(env.data$TSLF, na.rm = T),
+#       (env.data$TSLF[env.data$plot == "A2"] - mean(env.data$TSLF, na.rm = T)) / sd(env.data$TSLF, na.rm = T),
+#       (env.data$TSLF[env.data$plot == "A3"] - mean(env.data$TSLF, na.rm = T)) / sd(env.data$TSLF, na.rm = T),
+#       (env.data$TSLF[env.data$plot == "A4"] - mean(env.data$TSLF, na.rm = T)) / sd(env.data$TSLF, na.rm = T)
+#     )
+#   ),
+#   dim = c(4, 16, 11)
+# )
+# dim(amb)
+# str(amb)
+# 
+# # Valores iniciais
+# inits <- function() {
+#   list(
+#     tauphib = 1, betaTphi = rep(0, 11), varphi = rep(0, 11),
+#     sigma.phiJS = runif(1, 1, 2),
+#     sigma.f = runif(1, 0.5, 1),
+#     taufb = 1, betaTf = rep(0, 11), varf = rep(0, 11),
+#     # alpha.pJS = runif(1, -0.5, 0.5),
+#     taupb = 1, betaTp = rep(0, 11), varp = rep(0, 11),
+#     sigma.pJS = runif(1, 0.1, 0.5)
+#   )
+# }
+# 
+# # Defina os parametros a serem monitorados
+# parameters <- c(
+#   "phiJS", "alpha.phiJS", "sigma.phiJS",
+#   "betaphiJS", "varphi",
+#   "f", "alpha.f", "sigma.f",
+#   "betaf", "varf",
+#   "pJS", "alpha.pJS", "sigma.pJS",
+#   "betap", "varp",
+#   "rho"
+# )
+# 
+# 
+# 
+# 
+# sink("pradel-Ajalapensis-noenv.jags")
+# cat("
+# 
+# data{
+# for(j in 1:4){
+# C[j]<-10000
+# zeros[j]<-0
+# }}
+# 
+# model {
+# 
+# 
+#    #################
+#    #Pradel JS model#
+#    #################
+# 
+# ###########PRIORS#######################
+# for(j in 1:4){
+# gamma[j, 1]<-0
+# phiJS[j, n.occasions]<-0
+# }
+# 
+# for(t in 1:n.occasions){
+# for(j in 1:4){
+# muJS[j,t]~dunif(0,1)
+# }}
+# 
+# #logit constraint for survival probability(phiJS)
+# for(j in 1:4){
+# alpha.phiJS[j] ~ dnorm(0.5,0.01)
+# mean.phiJS[j] <- 1/(1+exp(-alpha.phiJS[j]))#alpha.phiJS on prob scale
+# for(t in 1:(n.occasions-1)){
+# phiJS[j, t] <- 1/(1+exp(-logit.phiJS[j, t]))
+# logit.phiJS[j, t] <- alpha.phiJS[j] + eps.phiJS[j,t]
+# eps.phiJS[j,t] ~ dnorm(0,tau.phiJS)
+# }
+# }
+# 
+# #log constraint for recruitment rate(f)
+# 
+# for(j in 1:4){
+# alpha.f[j] ~ dnorm(-0.5,0.01)
+# mean.f[j] <- exp(alpha.f[j])#alpha.f on prob scale
+# for(t in 1:(n.occasions-1)){
+# f[j,t] <- exp(log.f[j,t])
+# log.f[j,t]<- alpha.f[j] + eps.f[j,t]
+# eps.f[j,t] ~ dnorm(0,tau.f)
+# }
+# }
+# 
+# for(j in 1:4){
+# alpha.pJS[j] ~ dnorm(-0.5,0.01)
+# mean.pJS[j] <- 1/(1+exp(-alpha.pJS[j])) #alpha.pJS on prob scale
+# for(t in 1:n.occasions){
+# #logit constraint for detectability (p)
+# pJS[j,t] <- (1/(1+exp(-logit.pJS[j,t]))) * missing[j,t]
+# logit.pJS[j,t] <- (alpha.pJS[j] + eps.pJS[j,t])
+# eps.pJS[j,t] ~ dnorm(0,tau.pJS)
+# }}
+# 
+# 
+# #temporal random variation
+# tau.f<-1/(sigma.f*sigma.f)
+# sigma.f~dunif(0,2)
+# 
+# tau.phiJS<-1/(sigma.phiJS*sigma.phiJS)
+# sigma.phiJS~dunif(0,2)
+# 
+# tau.pJS<-1/(sigma.pJS*sigma.pJS)
+# sigma.pJS~dunif(0,2)
+# 
+# ###########LIKELIHOOD(ZERO-TRICK)######
+# for(j in 1:4){
+# zeros[j]~dpois(zero.mean[j])
+# zero.mean[j]<--LJS[j]+C[j]
+# LJS[j]<-sum(l.num[j, 1:n.occasions])-l.denom[j]
+# 
+# #####log-likelihood for the first occasion
+# l.num[j,1]<-(u[j,1]*log(xi[j,1]))+(n[j,1]*log(pJS[j,1]))+(secondexpo[j,1]*log(1-pJS[j,1]))+
+# (thirdexpo[j,1]*log(phiJS[j,1]))+(fourthexpo[j,1]*log(muJS[j,1]))+
+# (d[j,1]*log(1-muJS[j,1]))+(fifthexpo[j,1]*log(1-(pJS[j,1]*(1-muJS[j,1]))))+
+# (sixthexpo[j,1]*log(chi[j,1]))
+# xi[j,1]<-1
+# secondexpo_a[j,1]<-sum(u[j, 1:1])
+# secondexpo_b[j,1]<-0
+# secondexpo[j,1]<-secondexpo_a[j,1]-secondexpo_b[j,1]-n[j,1]
+# thirdexpo[j,1]<-sum(v[j,2:n.occasions])
+# fourthexpo[j,1]<-n[j,1]-d[j,1]
+# fifthexpo[j,1]<-sum(u[j,2:n.occasions])
+# sixthexpo[j,1]<-v[j,1]-d[j,1]
+# 
+# #####log-likelihood for the last occasion
+# l.num[j,n.occasions]<-(u[j,n.occasions]*log(xi[j,n.occasions]))+(firstexpo[j,n.occasions]*(log(phiJS[j,n.occasions-1])-log(phiJS[j,n.occasions-1]+f[j,n.occasions-1])))+
+# (n[j,n.occasions]*log(pJS[j,n.occasions]))+(secondexpo[j,n.occasions]*log(1-pJS[j,n.occasions]))+
+# (fourthexpo[j,n.occasions]*log(muJS[j,n.occasions]))+(d[j,n.occasions]*log(1-muJS[j,n.occasions]))+
+# (fifthexpo[j,n.occasions]*log(1-(pJS[j,n.occasions]*(1-muJS[j,n.occasions]))))+
+# (sixthexpo[j,n.occasions]*log(chi[j,n.occasions]))
+# chi[j,n.occasions]<-1
+# 
+# firstexpo[j,n.occasions]<-sum(u[j,1:(n.occasions-1)])
+# secondexpo_a[j,n.occasions]<-sum(u[j,1:n.occasions])
+# secondexpo_b[j,n.occasions]<-sum(v[j,1:(n.occasions-1)])
+# secondexpo[j,n.occasions]<-secondexpo_a[j,n.occasions]-secondexpo_b[j,n.occasions]-n[j,n.occasions]
+# fourthexpo[j,n.occasions]<-n[j,n.occasions]-d[j,n.occasions]
+# fifthexpo[j,n.occasions]<-0
+# sixthexpo[j,n.occasions]<-v[j,n.occasions]-d[j,n.occasions]
+# }
+# 
+# #####likelihood from occasion 2 to n.occasions-1
+# for(j in 1:4){
+# for(i in 2:(n.occasions-1)){
+# l.num[j,i]<-(u[j,i]*log(xi[j,i]))+(firstexpo[j,i]*(log(phiJS[j,i-1])-log(phiJS[j,i-1]+f[j,i-1])))+
+# (n[j,i]*log(pJS[j,i]))+(secondexpo[j,i]*log(1-pJS[j,i]))+
+# (thirdexpo[j,i]*log(phiJS[j,i]))+(fourthexpo[j,i]*log(muJS[j,i]))+
+# (d[j,i]*log(1-muJS[j,i]))+(fifthexpo[j,i]*log(1-(pJS[j,i]*(1-muJS[j,i]))))+
+# (sixthexpo[j,i]*log(chi[j,i]))
+# 
+# #first exponent
+# firstexpo[j,i]<-sum(u[j,1:(i-1)])
+# 
+# #second exponent
+# secondexpo_a[j,i]<-sum(u[j,1:i])
+# secondexpo_b[j,i]<-sum(v[j,1:(i-1)])
+# secondexpo[j,i]<-secondexpo_a[j,i]-secondexpo_b[j,i]-n[j,i]
+# 
+# #third exponent
+# thirdexpo[j,i]<-sum(v[j,(i+1):n.occasions])
+# 
+# #fourth exponent
+# fourthexpo[j,i]<-n[j,i]-d[j,i]
+# 
+# #fifth exponent
+# fifthexpo[j,i]<-sum(u[j,(i+1):n.occasions])
+# 
+# #sixth exponent
+# sixthexpo[j,i]<-v[j,i]-d[j,i]
+# }
+# }
+# 
+# #####likelihood denominator
+# #1st product
+# PROD1.1[1]<-1
+# PROD1.2[1]<-1
+# PROD1.3[1]<-1
+# PROD1.4[1]<-1
+# 
+# for(j in 1:(n.occasions-1)){
+# PROD1_tmp1[1,j]<-0
+# PROD1_tmp2[1,j]<-0
+# PROD1_tmp3[1,j]<-0
+# PROD1_tmp4[1,j]<-0
+# }
+# 
+# #fill part of PROD1_tmp
+# for(i in 2:(n.occasions-1)){
+# for(j in i:(n.occasions-1)){
+# PROD1_tmp1[i,j]<-0
+# PROD1_tmp2[i,j]<-0
+# PROD1_tmp3[i,j]<-0
+# PROD1_tmp4[i,j]<-0
+# }
+# }
+# 
+# for(i in 2:n.occasions){
+# for(j in 1:(i-1)){
+# PROD1_tmp1[i,j]<-phiJS[1,j]*(1-(pJS[1,j]*(1-muJS[1,j])))
+# PROD1_tmp2[i,j]<-phiJS[2,j]*(1-(pJS[2,j]*(1-muJS[2,j])))
+# PROD1_tmp3[i,j]<-phiJS[3,j]*(1-(pJS[3,j]*(1-muJS[3,j])))
+# PROD1_tmp4[i,j]<-phiJS[4,j]*(1-(pJS[4,j]*(1-muJS[4,j])))
+# }
+# }
+# 
+# 
+# PROD1.1[2]<-PROD1_tmp1[2,1]
+# PROD1.2[2]<-PROD1_tmp2[2,1]
+# PROD1.3[2]<-PROD1_tmp3[2,1]
+# PROD1.4[2]<-PROD1_tmp4[2,1]
+# 
+# for(i in 3:n.occasions){
+# PROD1.1[i]<-prod(PROD1_tmp1[i,1:(i-1)])
+# PROD1.2[i]<-prod(PROD1_tmp2[i,1:(i-1)])
+# PROD1.3[i]<-prod(PROD1_tmp3[i,1:(i-1)])
+# PROD1.4[i]<-prod(PROD1_tmp4[i,1:(i-1)])
+# }
+# 
+# #2nd product
+# PROD2.1[n.occasions]<-1
+# PROD2.2[n.occasions]<-1
+# PROD2.3[n.occasions]<-1
+# PROD2.4[n.occasions]<-1
+# 
+# for(i in 1:(n.occasions-1)){
+# for(j in (i+1):n.occasions){
+# PROD2_tmp1[i,j]<-gamma[1,j]
+# PROD2_tmp2[i,j]<-gamma[2,j]
+# PROD2_tmp3[i,j]<-gamma[3,j]
+# PROD2_tmp4[i,j]<-gamma[4,j]
+# }
+# }
+# 
+# #fill part of PROD2_tmp
+# for(i in 1:(n.occasions-1)){
+# for(j in 1:i){
+# PROD2_tmp1[i,j]<-0
+# PROD2_tmp2[i,j]<-0
+# PROD2_tmp3[i,j]<-0
+# PROD2_tmp4[i,j]<-0
+# }
+# }
+# 
+# PROD2.1[n.occasions-1]<-PROD2_tmp1[(n.occasions-1),n.occasions]
+# PROD2.2[n.occasions-1]<-PROD2_tmp2[(n.occasions-1),n.occasions]
+# PROD2.3[n.occasions-1]<-PROD2_tmp3[(n.occasions-1),n.occasions]
+# PROD2.4[n.occasions-1]<-PROD2_tmp4[(n.occasions-1),n.occasions]
+# 
+# for(i in 1:(n.occasions-2)){
+# PROD2.1[i]<-prod(PROD2_tmp1[i,(i+1):n.occasions])
+# PROD2.2[i]<-prod(PROD2_tmp2[i,(i+1):n.occasions])
+# PROD2.3[i]<-prod(PROD2_tmp3[i,(i+1):n.occasions])
+# PROD2.4[i]<-prod(PROD2_tmp4[i,(i+1):n.occasions])
+# 
+# }
+# for(i in 1:n.occasions){
+# denom_base_tmp1[i]<-xi[1,i]*PROD1.1[i]*PROD2.1[i]*pJS[1,i]
+# denom_base_tmp2[i]<-xi[2,i]*PROD1.2[i]*PROD2.2[i]*pJS[2,i]
+# denom_base_tmp3[i]<-xi[3,i]*PROD1.3[i]*PROD2.3[i]*pJS[3,i]
+# denom_base_tmp4[i]<-xi[4,i]*PROD1.4[i]*PROD2.4[i]*pJS[4,i]
+# 
+# }
+# 
+# denom_base1 <- sum(denom_base_tmp1[])
+# denom_base2 <- sum(denom_base_tmp2[])
+# denom_base3 <- sum(denom_base_tmp3[])
+# denom_base4 <- sum(denom_base_tmp4[])
+# 
+# denom_expo1 <- sum(u[1,1:n.occasions])
+# denom_expo2 <- sum(u[2,1:n.occasions])
+# denom_expo3 <- sum(u[3,1:n.occasions])
+# denom_expo4 <- sum(u[4,1:n.occasions])
+# 
+# l.denom[1] <- denom_expo1 * log(denom_base1)
+# l.denom[2] <- denom_expo2 * log(denom_base2)
+# l.denom[3] <- denom_expo3 * log(denom_base3)
+# l.denom[4] <- denom_expo4 * log(denom_base4)
+# 
+# 
+# #################Define xi and chi
+# for(i in 2:n.occasions){
+# for(j in 1:4){
+# xi.tmp[j,i]<-(1-gamma[j,i])+
+# (gamma[j,i]*((1-pJS[j,i-1])/(1-(pJS[j,i-1]*(1-muJS[j,i-1]))))*xi[j,i-1])
+# xi[j,i]<-max(xi.tmp[j,i],0.00001)
+# }
+# }
+# 
+# for(i in 1:(n.occasions-1)){
+# for(j in 1:4){
+# chi[j,i]<-(1-phiJS[j,i])+(phiJS[j,i]*(1-pJS[j,i+1])*chi[j,i+1])
+# }
+# }
+# 
+# #################Gamma and rho as derived parameter
+# for(i in 2:n.occasions){
+# for(j in 1:4){
+# rho[j,i]<-phiJS[j,i-1]+f[j,i-1]
+# }
+# }
+# 
+# for(i in 2:n.occasions){
+# for(j in 1:4){
+# gamma[j,i]<-phiJS[j,i-1]/(phiJS[j,i-1]+f[j,i-1])
+# }
+# }
+# 
+# }
+# ", fill = TRUE)
+# sink()
+# 
+# # MCMC settings
+# ni <- 100000
+# nt <- 1
+# nb <- 200000
+# nc <- 4
+# na <- 50000
+# 
+# # Call JAGS from R (BRT 3 min)
+# bugs.data <- list(
+#   u = u, n = n, v = v, d = d, n.occasions = dim(eh)[2],
+#   amb = amb, missing = missing.samp[1:4, ]
+# )
+# 
+# bugs.data$missing <- as.matrix(bugs.data$missing)
+# runjags.options(jagspath = "/usr/local/bin/jags")
+# 
+# pradel.Ajalapensis <- run.jags(
+#   data = bugs.data, inits = inits, monitor = parameters, model = "pradel-Ajalapensis-noenv.jags",
+#   n.chains = nc, adapt = na, thin = nt, sample = ni, burnin = nb,
+#   method = "bgparallel", jags.refresh = 30, keep.jags.files = TRUE,
+#   summarise = FALSE,
+#   modules = c("glm")
+# )
+# 
+# results.pradel.Ajalapensis <- results.jags(pradel.Ajalapensis)
+# 
+# results.pradel.Ajalapensis.df <- summary(results.pradel.Ajalapensis)
+# View(results.pradel.Ajalapensis.df)
+# 
+# write.csv(results.pradel.Ajalapensis.df, "results_pradel_Ajalapensis_df.csv")
+# saveRDS(results.pradel.Ajalapensis, "results_pradel_Ajalapensis.rds")
+# 
+# # Specify model in BUGS language
+# sink("pradel-Ajalapensis-env.jags")
+# cat("
+# 
+# data{
+# for(j in 1:4){
+# C[j]<-10000
+# zeros[j]<-0
+# }}
+# 
+# model {
+# 
+# 
+#    #################
+#    #Pradel JS model#
+#    #################
+# 
+# ###########PRIORS#######################
+# for(j in 1:4){
+# gamma[j, 1]<-0
+# phiJS[j, n.occasions]<-0
+# }
+# 
+# for(t in 1:n.occasions){
+# for(j in 1:4){
+# muJS[j,t]~dunif(0,1)
+# }}
+# 
+# #logit constraint for survival probability(phiJS)
+# for(j in 1:4){
+# alpha.phiJS[j] ~ dnorm(0.5,0.01)
+# mean.phiJS[j] <- 1/(1+exp(-alpha.phiJS[j]))#alpha.phiJS on prob scale
+# for(t in 1:(n.occasions-1)){
+# phiJS[j, t] <- 1/(1+exp(-logit.phiJS[j, t]))
+# logit.phiJS[j, t] <- alpha.phiJS[j] + eps.phiJS[j,t] + inprod(amb[j,t,],betaphiJS)
+# eps.phiJS[j,t] ~ dnorm(0,tau.phiJS)
+# }
+# }
+# 
+# for(j in 1:11){
+# varphi[j]~dbern(0.5)
+# betaTphi[j]~dnorm(0,tauphib)
+# betaphiJS[j]<-varphi[j]*betaTphi[j]
+# }
+# 
+# #environmental parameters
+# tauphib~dgamma(1,0.001)
+# 
+# #log constraint for recruitment rate(f)
+# 
+# for(j in 1:4){
+# alpha.f[j] ~ dnorm(-0.5,0.01)
+# mean.f[j] <- exp(alpha.f[j])#alpha.f on prob scale
+# for(t in 1:(n.occasions-1)){
+# f[j,t] <- exp(log.f[j,t])
+# log.f[j,t]<- alpha.f[j] + eps.f[j,t]+ inprod(amb[j,t,],betaf)
+# eps.f[j,t] ~ dnorm(0,tau.f)
+# }
+# }
+# 
+# for(j in 1:11){
+# varf[j]~dbern(0.5)
+# betaTf[j]~dnorm(0,taufb)
+# betaf[j]<-varf[j]*betaTf[j]
+# }
+# 
+# #environmental parameters
+# taufb~dgamma(1,0.001)
+# 
+# for(j in 1:4){
+# alpha.pJS[j] ~ dnorm(-0.5,0.01)
+# mean.pJS[j] <- 1/(1+exp(-alpha.pJS[j])) #alpha.pJS on prob scale
+# for(t in 1:n.occasions){
+# #logit constraint for detectability (p)
+# pJS[j,t] <- (1/(1+exp(-logit.pJS[j,t])))
+# logit.pJS[j,t] <- alpha.pJS[j] + eps.pJS[j,t] + inprod(amb[j,t,],betap)
+# eps.pJS[j,t] ~ dnorm(0,tau.pJS)
+# }}
+# 
+# for(j in 1:11){
+# varp[j]~dbern(0.5)
+# betaTp[j]~dnorm(0,taupb)
+# betap[j]<-varp[j]*betaTp[j]
+# }
+# 
+# #environmental parameters
+# taupb~dgamma(1,0.001)
+# 
+# #temporal random variation
+# tau.f<-1/(sigma.f*sigma.f)
+# sigma.f~dunif(0,2)
+# 
+# tau.phiJS<-1/(sigma.phiJS*sigma.phiJS)
+# sigma.phiJS~dunif(0,2)
+# 
+# tau.pJS<-1/(sigma.pJS*sigma.pJS)
+# sigma.pJS~dunif(0,2)
+# 
+# ###########LIKELIHOOD(ZERO-TRICK)######
+# for(j in 1:4){
+# zeros[j]~dpois(zero.mean[j])
+# zero.mean[j]<--LJS[j]+C[j]
+# LJS[j]<-sum(l.num[j, 1:n.occasions])-l.denom[j]
+# 
+# #####log-likelihood for the first occasion
+# l.num[j,1]<-(u[j,1]*log(xi[j,1]))+(n[j,1]*log(pJS[j,1]))+(secondexpo[j,1]*log(1-pJS[j,1]))+
+# (thirdexpo[j,1]*log(phiJS[j,1]))+(fourthexpo[j,1]*log(muJS[j,1]))+
+# (d[j,1]*log(1-muJS[j,1]))+(fifthexpo[j,1]*log(1-(pJS[j,1]*(1-muJS[j,1]))))+
+# (sixthexpo[j,1]*log(chi[j,1]))
+# xi[j,1]<-1
+# secondexpo_a[j,1]<-sum(u[j, 1:1])
+# secondexpo_b[j,1]<-0
+# secondexpo[j,1]<-secondexpo_a[j,1]-secondexpo_b[j,1]-n[j,1]
+# thirdexpo[j,1]<-sum(v[j,2:n.occasions])
+# fourthexpo[j,1]<-n[j,1]-d[j,1]
+# fifthexpo[j,1]<-sum(u[j,2:n.occasions])
+# sixthexpo[j,1]<-v[j,1]-d[j,1]
+# 
+# #####log-likelihood for the last occasion
+# l.num[j,n.occasions]<-(u[j,n.occasions]*log(xi[j,n.occasions]))+(firstexpo[j,n.occasions]*(log(phiJS[j,n.occasions-1])-log(phiJS[j,n.occasions-1]+f[j,n.occasions-1])))+
+# (n[j,n.occasions]*log(pJS[j,n.occasions]))+(secondexpo[j,n.occasions]*log(1-pJS[j,n.occasions]))+
+# (fourthexpo[j,n.occasions]*log(muJS[j,n.occasions]))+(d[j,n.occasions]*log(1-muJS[j,n.occasions]))+
+# (fifthexpo[j,n.occasions]*log(1-(pJS[j,n.occasions]*(1-muJS[j,n.occasions]))))+
+# (sixthexpo[j,n.occasions]*log(chi[j,n.occasions]))
+# chi[j,n.occasions]<-1
+# 
+# firstexpo[j,n.occasions]<-sum(u[j,1:(n.occasions-1)])
+# secondexpo_a[j,n.occasions]<-sum(u[j,1:n.occasions])
+# secondexpo_b[j,n.occasions]<-sum(v[j,1:(n.occasions-1)])
+# secondexpo[j,n.occasions]<-secondexpo_a[j,n.occasions]-secondexpo_b[j,n.occasions]-n[j,n.occasions]
+# fourthexpo[j,n.occasions]<-n[j,n.occasions]-d[j,n.occasions]
+# fifthexpo[j,n.occasions]<-0
+# sixthexpo[j,n.occasions]<-v[j,n.occasions]-d[j,n.occasions]
+# }
+# 
+# #####likelihood from occasion 2 to n.occasions-1
+# for(j in 1:4){
+# for(i in 2:(n.occasions-1)){
+# l.num[j,i]<-(u[j,i]*log(xi[j,i]))+(firstexpo[j,i]*(log(phiJS[j,i-1])-log(phiJS[j,i-1]+f[j,i-1])))+
+# (n[j,i]*log(pJS[j,i]))+(secondexpo[j,i]*log(1-pJS[j,i]))+
+# (thirdexpo[j,i]*log(phiJS[j,i]))+(fourthexpo[j,i]*log(muJS[j,i]))+
+# (d[j,i]*log(1-muJS[j,i]))+(fifthexpo[j,i]*log(1-(pJS[j,i]*(1-muJS[j,i]))))+
+# (sixthexpo[j,i]*log(chi[j,i]))
+# 
+# #first exponent
+# firstexpo[j,i]<-sum(u[j,1:(i-1)])
+# 
+# #second exponent
+# secondexpo_a[j,i]<-sum(u[j,1:i])
+# secondexpo_b[j,i]<-sum(v[j,1:(i-1)])
+# secondexpo[j,i]<-secondexpo_a[j,i]-secondexpo_b[j,i]-n[j,i]
+# 
+# #third exponent
+# thirdexpo[j,i]<-sum(v[j,(i+1):n.occasions])
+# 
+# #fourth exponent
+# fourthexpo[j,i]<-n[j,i]-d[j,i]
+# 
+# #fifth exponent
+# fifthexpo[j,i]<-sum(u[j,(i+1):n.occasions])
+# 
+# #sixth exponent
+# sixthexpo[j,i]<-v[j,i]-d[j,i]
+# }
+# }
+# 
+# #####likelihood denominator
+# #1st product
+# PROD1.1[1]<-1
+# PROD1.2[1]<-1
+# PROD1.3[1]<-1
+# PROD1.4[1]<-1
+# 
+# for(j in 1:(n.occasions-1)){
+# PROD1_tmp1[1,j]<-0
+# PROD1_tmp2[1,j]<-0
+# PROD1_tmp3[1,j]<-0
+# PROD1_tmp4[1,j]<-0
+# }
+# 
+# #fill part of PROD1_tmp
+# for(i in 2:(n.occasions-1)){
+# for(j in i:(n.occasions-1)){
+# PROD1_tmp1[i,j]<-0
+# PROD1_tmp2[i,j]<-0
+# PROD1_tmp3[i,j]<-0
+# PROD1_tmp4[i,j]<-0
+# }
+# }
+# 
+# for(i in 2:n.occasions){
+# for(j in 1:(i-1)){
+# PROD1_tmp1[i,j]<-phiJS[1,j]*(1-(pJS[1,j]*(1-muJS[1,j])))
+# PROD1_tmp2[i,j]<-phiJS[2,j]*(1-(pJS[2,j]*(1-muJS[2,j])))
+# PROD1_tmp3[i,j]<-phiJS[3,j]*(1-(pJS[3,j]*(1-muJS[3,j])))
+# PROD1_tmp4[i,j]<-phiJS[4,j]*(1-(pJS[4,j]*(1-muJS[4,j])))
+# }
+# }
+# 
+# 
+# PROD1.1[2]<-PROD1_tmp1[2,1]
+# PROD1.2[2]<-PROD1_tmp2[2,1]
+# PROD1.3[2]<-PROD1_tmp3[2,1]
+# PROD1.4[2]<-PROD1_tmp4[2,1]
+# 
+# for(i in 3:n.occasions){
+# PROD1.1[i]<-prod(PROD1_tmp1[i,1:(i-1)])
+# PROD1.2[i]<-prod(PROD1_tmp2[i,1:(i-1)])
+# PROD1.3[i]<-prod(PROD1_tmp3[i,1:(i-1)])
+# PROD1.4[i]<-prod(PROD1_tmp4[i,1:(i-1)])
+# }
+# 
+# #2nd product
+# PROD2.1[n.occasions]<-1
+# PROD2.2[n.occasions]<-1
+# PROD2.3[n.occasions]<-1
+# PROD2.4[n.occasions]<-1
+# 
+# for(i in 1:(n.occasions-1)){
+# for(j in (i+1):n.occasions){
+# PROD2_tmp1[i,j]<-gamma[1,j]
+# PROD2_tmp2[i,j]<-gamma[2,j]
+# PROD2_tmp3[i,j]<-gamma[3,j]
+# PROD2_tmp4[i,j]<-gamma[4,j]
+# }
+# }
+# 
+# #fill part of PROD2_tmp
+# for(i in 1:(n.occasions-1)){
+# for(j in 1:i){
+# PROD2_tmp1[i,j]<-0
+# PROD2_tmp2[i,j]<-0
+# PROD2_tmp3[i,j]<-0
+# PROD2_tmp4[i,j]<-0
+# }
+# }
+# 
+# PROD2.1[n.occasions-1]<-PROD2_tmp1[(n.occasions-1),n.occasions]
+# PROD2.2[n.occasions-1]<-PROD2_tmp2[(n.occasions-1),n.occasions]
+# PROD2.3[n.occasions-1]<-PROD2_tmp3[(n.occasions-1),n.occasions]
+# PROD2.4[n.occasions-1]<-PROD2_tmp4[(n.occasions-1),n.occasions]
+# 
+# for(i in 1:(n.occasions-2)){
+# PROD2.1[i]<-prod(PROD2_tmp1[i,(i+1):n.occasions])
+# PROD2.2[i]<-prod(PROD2_tmp2[i,(i+1):n.occasions])
+# PROD2.3[i]<-prod(PROD2_tmp3[i,(i+1):n.occasions])
+# PROD2.4[i]<-prod(PROD2_tmp4[i,(i+1):n.occasions])
+# 
+# }
+# for(i in 1:n.occasions){
+# denom_base_tmp1[i]<-xi[1,i]*PROD1.1[i]*PROD2.1[i]*pJS[1,i]
+# denom_base_tmp2[i]<-xi[2,i]*PROD1.2[i]*PROD2.2[i]*pJS[2,i]
+# denom_base_tmp3[i]<-xi[3,i]*PROD1.3[i]*PROD2.3[i]*pJS[3,i]
+# denom_base_tmp4[i]<-xi[4,i]*PROD1.4[i]*PROD2.4[i]*pJS[4,i]
+# 
+# }
+# 
+# denom_base1 <- sum(denom_base_tmp1[])
+# denom_base2 <- sum(denom_base_tmp2[])
+# denom_base3 <- sum(denom_base_tmp3[])
+# denom_base4 <- sum(denom_base_tmp4[])
+# 
+# denom_expo1 <- sum(u[1,1:n.occasions])
+# denom_expo2 <- sum(u[2,1:n.occasions])
+# denom_expo3 <- sum(u[3,1:n.occasions])
+# denom_expo4 <- sum(u[4,1:n.occasions])
+# 
+# l.denom[1] <- denom_expo1 * log(denom_base1)
+# l.denom[2] <- denom_expo2 * log(denom_base2)
+# l.denom[3] <- denom_expo3 * log(denom_base3)
+# l.denom[4] <- denom_expo4 * log(denom_base4)
+# 
+# 
+# #################Define xi and chi
+# for(i in 2:n.occasions){
+# for(j in 1:4){
+# xi.tmp[j,i]<-(1-gamma[j,i])+
+# (gamma[j,i]*((1-pJS[j,i-1])/(1-(pJS[j,i-1]*(1-muJS[j,i-1]))))*xi[j,i-1])
+# xi[j,i]<-max(xi.tmp[j,i],0.00001)
+# }
+# }
+# 
+# for(i in 1:(n.occasions-1)){
+# for(j in 1:4){
+# chi[j,i]<-(1-phiJS[j,i])+(phiJS[j,i]*(1-pJS[j,i+1])*chi[j,i+1])
+# }
+# }
+# 
+# #################Gamma and rho as derived parameter
+# for(i in 2:n.occasions){
+# for(j in 1:4){
+# rho[j,i]<-phiJS[j,i-1]+f[j,i-1]
+# }
+# }
+# 
+# for(i in 2:n.occasions){
+# for(j in 1:4){
+# gamma[j,i]<-phiJS[j,i-1]/(phiJS[j,i-1]+f[j,i-1])
+# }
+# }
+# 
+# }
+# ", fill = TRUE)
+# sink()
+# 
+# bugs.data <- list(
+#   u = u[, c(1, 5, 13, 16)], n = n[, c(1, 5, 13, 16)], v = v[, c(1, 5, 13, 16)], d = d[, c(1, 5, 13, 16)], n.occasions = dim(eh[, c(1, 5, 13, 16)])[2],
+#   amb = amb[, c(1, 5, 13, 16), ]
+# )
+# 
+# pradel.Ajalapensis <- run.jags(
+#   data = bugs.data, inits = inits, monitor = parameters, model = "pradel-Ajalapensis-env.jags",
+#   n.chains = nc, adapt = na, thin = nt, sample = ni, burnin = nb,
+#   method = "bgparallel", jags.refresh = 30, keep.jags.files = TRUE,
+#   summarise = FALSE,
+#   modules = c("glm")
+# )
+# 
+# results.pradel.Ajalapensis <- results.jags(pradel.Ajalapensis)
+# 
+# results.pradel.Ajalapensis.df <- summary(results.pradel.Ajalapensis)
+# View(results.pradel.Ajalapensis.df)
+# 
+# write.csv(results.pradel.Ajalapensis.df, "results_pradel_env_Ajalapensis_df.csv")
+# saveRDS(results.pradel.Ajalapensis, "results_pradel_env_Ajalapensis.rds")
+# 
+# # Plots
+# pradel.Ajalapensis.df <- read.csv("results_pradel_Ajalapensis_df.csv")
+# 
+# f.pradel <- pradel.Ajalapensis.df[grep(pattern = "f", x = pradel.Ajalapensis.df$X)[1:60], ]
+# 
+# phi.pradel <- pradel.Ajalapensis.df[grep(pattern = "phi", x = pradel.Ajalapensis.df$X)[1:60], ]
+# 
+# p.pradel <- pradel.Ajalapensis.df[grep(pattern = "pJS", x = pradel.Ajalapensis.df$X)[1:64], ]
+# 
+# 
+# f.pradel$plot <- rep(1:4, 15)
+# f.pradel$time <- rep(1:15, each = 4)
+# 
+# phi.pradel$plot <- rep(1:4, 15)
+# phi.pradel$time <- rep(1:15, each = 4)
+# 
+# p.pradel$plot <- rep(1:4, 16)
+# p.pradel$time <- rep(1:16, each = 4)
+# 
+# 
+# phi.pradel$plot <- as.factor(phi.pradel$plot)
+# f.pradel$plot <- as.factor(f.pradel$plot)
+# p.pradel$plot <- as.factor(p.pradel$plot)
+# 
+# 
+# ggplot(phi.pradel, aes(x = time, y = Mean, fill = plot, colour = plot)) +
+#   geom_line(aes(x = time, y = Mean, colour = plot), alpha = 0.5, linewidth = 2) +
+#   geom_ribbon(aes(x = time, ymin = Lower95, ymax = Upper95, fill = plot), colour = NA, alpha = 0.2) +
+#   # ylim(c(0.75,1))+
+#   scale_color_manual(values = turbo(4)) +
+#   scale_fill_manual(values = turbo(4)) +
+#   labs(x = "Months", y = "Survival")
+# 
+# ggplot(p.pradel, aes(x = time, y = Mean, fill = plot, colour = plot)) +
+#   geom_line(aes(x = time, y = Mean, colour = plot), alpha = 0.5, linewidth = 2) +
+#   geom_ribbon(aes(x = time, ymin = Lower95, ymax = Upper95, fill = plot), colour = NA, alpha = 0.2) +
+#   # ylim(c(0.75,1))+
+#   scale_color_manual(values = turbo(4)) +
+#   scale_fill_manual(values = turbo(4)) +
+#   labs(x = "Months", y = "Capture probability")
+# 
+# ggplot(f.pradel, aes(x = time, y = Mean, fill = plot, colour = plot)) +
+#   geom_line(aes(x = time, y = Mean, colour = plot), alpha = 0.5, linewidth = 2) +
+#   geom_ribbon(aes(x = time, ymin = Lower95, ymax = Upper95, fill = plot), colour = NA, alpha = 0.2) +
+#   # ylim(c(0.75,1))+
+#   scale_color_manual(values = turbo(4)) +
+#   scale_fill_manual(values = turbo(4)) +
+#   labs(x = "Months", y = "Recruitment")
+# 
+# f.pradel.mean <- pradel.Ajalapensis.df[grep(pattern = "f", x = pradel.Ajalapensis.df$X)[61:64], ]
+# 
+# phi.pradel.mean <- pradel.Ajalapensis.df[grep(pattern = "phi", x = pradel.Ajalapensis.df$X)[65:68], ]
+# 
+# p.pradel.mean <- pradel.Ajalapensis.df[grep(pattern = "pJS", x = pradel.Ajalapensis.df$X)[65:68], ]
+# 
+# f.pradel.mean$plot <- as.factor(1:4)
+# phi.pradel.mean$plot <- as.factor(1:4)
+# p.pradel.mean$plot <- as.factor(1:4)
+# 
+# # Rescale
+# f.pradel.mean$Mean <- exp(f.pradel.mean$Mean)
+# f.pradel.mean$Lower95 <- exp(f.pradel.mean$Lower95)
+# f.pradel.mean$Upper95 <- exp(f.pradel.mean$Upper95)
+# 
+# phi.pradel.mean$Mean <- plogis(phi.pradel.mean$Mean)
+# phi.pradel.mean$Lower95 <- plogis(phi.pradel.mean$Lower95)
+# phi.pradel.mean$Upper95 <- plogis(phi.pradel.mean$Upper95)
+# 
+# p.pradel.mean$Mean <- plogis(p.pradel.mean$Mean)
+# p.pradel.mean$Lower95 <- plogis(p.pradel.mean$Lower95)
+# p.pradel.mean$Upper95 <- plogis(p.pradel.mean$Upper95)
+# 
+# quartz(height = 8, width = 8)
+# ggplot(phi.pradel.mean, aes(x = plot, colour = plot)) +
+#   geom_pointrange(aes(x = plot, y = Mean, ymin = Lower95, ymax = Upper95, colour = plot), size = 1.5, linewidth = 1.2) +
+#   scale_color_manual(values = turbo(4), name = "Fire severity") +
+#   labs(x = "", y = "Survival")
+# 
+# quartz(height = 8, width = 8)
+# ggplot(f.pradel.mean, aes(x = plot, colour = plot)) +
+#   geom_pointrange(aes(x = plot, y = Mean, ymin = Lower95, ymax = Upper95, colour = plot), size = 1.5, linewidth = 1.2) +
+#   scale_color_manual(values = turbo(4), name = "Fire severity") +
+#   labs(x = "", y = "Recruitment")
+# 
+# quartz(height = 8, width = 8)
+# ggplot(p.pradel.mean, aes(x = plot, colour = plot)) +
+#   geom_pointrange(aes(x = plot, y = Mean, ymin = Lower95, ymax = Upper95, colour = plot), size = 1.5, linewidth = 1.2) +
+#   scale_color_manual(values = turbo(4), name = "Fire severity") +
+#   labs(x = "", y = "Capture probability")
 
 
 # SVL with environment ----------------------------------------------------
@@ -4218,7 +3730,7 @@ plot(svl_mm ~ TUF, data = brunadata)
 boxplot(svl_mm ~ treatment, data = brunadata)
 
 svlbruna <- brunadata[, c(
-  "fieldtrip", "date", "plot", "aiq_code", "TUF", "treatment", "treat_code",
+  "fieldtrip", "date", "plot", "trap_code", "TUF", "treatment", "treat_code",
   "recapture", "svl_mm", "weight_animal", "cicatriz_umbilical", "sex", "ovada",
   "trap", "freq", "MeanTSLF", "MFRI", "severity", "TSLF"
 )]
@@ -4266,7 +3778,7 @@ ggplot(svlbruna, aes(x = log(svl_mm), y = log(weight_animal))) +
   geom_smooth(method = "lm")
 
 names(svlbruna) <- c(
-  "fieldtrip", "date", "plot", "aiq_code", "TUF", "treatment", "treat_code",
+  "fieldtrip", "date", "plot", "trap_code", "TUF", "treatment", "treat_code",
   "recapture", "svl", "mass", "umb_scar", "sex", "eggs",
   "trap", "freq", "MeanTSLF", "MFRI", "severity", "TSLF"
 )

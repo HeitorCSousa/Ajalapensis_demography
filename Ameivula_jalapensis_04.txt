@@ -1,261 +1,261 @@
-Locality	Fieldtrip	Date	Month	Year	Group	Species	VoucherNumber	Plot	Trap	Toes	ID	Recapture	Mass	SVL	TL	TB	Broken	Sex	Eggs	Ecophys	Tissue	Dead	Researchers	ID_duplicated	OBS	Lat	Long
-EESGT	1	22/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	SGT00007	A4	9	0	0	N	0.9	34	68	68	N	I	N	NA	Toes	N	Heitor_Mafe_Emannoel	NA	NA	NA	NA
-EESGT	1	22/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	NA	A2	9	NA	NA	N	NA	55	130	130	N	M	N	NA	Toes	N	Mafe_Isabella_Heitor	NA	NA	-11.11282	-46.78783
-EESGT	1	22/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	SGT00015	A3	11	1	1	N	4	55	116	71	Y	M	N	NA	Toes	N	Mafe_Isabella_Heitor_Emannoel	NA	NA	NA	NA
-EESGT	1	24/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	SGT00026	A1	6	2	2	N	0.7	30	61	61	N	I	N	NA	Toes	N	Mikaella_Heitor_Emannoel	NA	NA	NA	NA
-EESGT	1	24/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	SGT00029	A3	5	NA	NA	N	3.8	55	96	61	Y	F	N	NA	Toes	Y	Mikaella_Heitor_Emannoel	NA	Morto_por_formigas	NA	NA
-EESGT	1	25/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	SGT00037	A1	1	3	3	N	0.9	32	65	65	N	I	N	NA	Toes	N	Mikaella_Heitor_Isabella	NA	NA	-11.108882	-46.776822
-EESGT	1	25/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	SGT00039	A1	12	70	70	N	4.6	55	145	145	N	M	N	NA	Toes	N	Mikaella_Heitor_Isabella	NA	NA	NA	NA
-EESGT	1	25/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	SGT00042	A2	12	NA	NA	N	NA	58	141	141	N	F	N	NA	NA	Y	Mikaella_Heitor_Isabella	NA	NA	-11.111893	-46.787984
-EESGT	1	25/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	SGT00043	A3	1	4	4	N	3.6	55	116	107	Y	M	N	NA	Toes	N	Mikaella_Heitor_Isabella	NA	NA	NA	NA
-EESGT	1	25/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	SGT00044	A3	5	5	5	N	3.4	55	127	127	N	M	N	NA	Toes	N	Mikaella_Heitor_Isabella	NA	NA	NA	NA
-EESGT	1	25/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	NA	A3	5	NA	NA	N	NA	53	105	46	Y	NA	NA	NA	NA	Y	Mikaella_Heitor_Isabella	NA	NA	NA	NA
-EESGT	1	25/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	NA	A3	5	NA	NA	N	NA	54	135	135	N	M	N	NA	NA	Y	Mikaella_Heitor_Isabella	NA	NA	NA	NA
-EESGT	1	26/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	SGT00051	A4	6	6	6	N	3.6	51	125	125	N	M	N	NA	Toes	N	Mafe_Heitor_Mikaella_Isabella	NA	NA	NA	NA
-EESGT	1	26/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	SGT00052	A4	6	7	7	N	2.2	46	82	33	Y	F	N	NA	Toes	N	Mafe_Heitor_Mikaella_Isabella	NA	NA	NA	NA
-EESGT	1	26/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	SGT00055	A3	6	8	8	N	0.7	31	65	65	N	I	N	NA	Toes	N	Mafe_Heitor_Mikaella_Isabella	NA	NA	NA	NA
-EESGT	1	27/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	SGT00061	A1	7	9	9	N	NA	55	95	35	Y	F	N	NA	Toes	N	Isabella_Mikaella_Emannoel	NA	NA	NA	NA
-EESGT	1	27/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	SGT00065	A3	12	10	10	N	3.1	56	115	115	N	NA	N	NA	Toes	N	Isabella_Mikaella_Emannoel	NA	NA	NA	NA
-EESGT	1	03/03/2021	mar	2021	Lagartos	Ameivula_jalapensis	SGT00096	A2	6	20_0	200	N	2.8	50	81	21	Y	F	N	NA	Toes	N	Heitor_Geisa_Mariana_Adriana	NA	NA	-11.113484	-46.787324
-EESGT	1	03/03/2021	mar	2021	Lagartos	Ameivula_jalapensis	SGT00105	A3	5	10_1	11	N	3.2	50	132	132	N	M	N	NA	Toes	N	Heitor_Geisa_Mariana_Adriana	NA	NA	NA	NA
-EESGT	1	04/03/2021	mar	2021	Lagartos	Ameivula_jalapensis	SGT00114	A1	4	10_2	12	N	3.5	52	149	149	N	M	N	NA	Toes	N	Heitor_Geisa_Mariana_Adriana	NA	NA	NA	NA
-EESGT	1	04/03/2021	mar	2021	Lagartos	Ameivula_jalapensis	SGT00123	A3	4	10_3	13	N	3.7	55	134	134	N	F	N	NA	Toes	N	Heitor_Geisa_Mariana_Adriana	NA	NA	NA	NA
-EESGT	1	04/03/2021	mar	2021	Lagartos	Ameivula_jalapensis	SGT00125	A3	9	10_4	14	N	3	54	123	123	N	F	N	NA	Toes	N	Heitor_Geisa_Mariana_Adriana	NA	NA	NA	NA
-EESGT	1	05/03/2021	mar	2021	Lagartos	Ameivula_jalapensis	SGT00132	A4	3	10_5	15	N	4.5	58	160	160	N	M	N	NA	Toes	N	Heitor_Geisa_Mariana_Adriana	NA	NA	NA	NA
-EESGT	1	05/03/2021	mar	2021	Lagartos	Ameivula_jalapensis	SGT00153	A3	11	10_6	16	N	3.1	52	135	135	N	M	N	NA	Toes	N	Heitor_Geisa_Mariana_Adriana	NA	NA	NA	NA
-EESGT	1	06/03/2021	mar	2021	Lagartos	Ameivula_jalapensis	SGT00155	A4	5	10_7	17	N	3.7	55	137	137	N	M	N	NA	Toes	N	Heitor_Geisa_Mariana_Adriana	NA	NA	NA	NA
-EESGT	1	06/03/2021	mar	2021	Lagartos	Ameivula_jalapensis	SGT00162	A2	5	10_8	18	N	0.7	31	61	61	N	I	N	NA	Toes	N	Heitor_Geisa_Mariana_Adriana	NA	NA	-11.113908	-46.787518
-EESGT	1	06/03/2021	mar	2021	Lagartos	Ameivula_jalapensis	SGT00170	A3	9	10_9	19	N	3.3	54	144	144	N	M	N	NA	Toes	N	Heitor_Geisa_Mariana_Adriana	NA	NA	NA	NA
-EESGT	2	26/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00176	A4	2	20	20	N	5.1	59	122	66	Y	M	N	N	NA	N	Heitor_Leticia	NA	meio_debilitado	NA	NA
-EESGT	2	26/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00183	A1	7	20_1	21	N	3.4	55	95	38	Y	F	N	N	NA	N	Heitor_Leticia	NA	NA	NA	NA
-EESGT	2	27/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00184	A4	2	20_9	29	N	4.3	59	112	48	Y	M	N	S	NA	Y	Heitor_Geisa	NA	dedo_9_meio_cortado_morreu_no_lab	NA	NA
-EESGT	2	27/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00185	A4	3	20_2	22	N	3.7	53	94	20	Y	F	N	S	NA	N	Heitor_Geisa	NA	NA	NA	NA
-EESGT	2	27/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00186	A4	4	20_3	23	N	2.7	45	115	115	N	M	N	S	NA	N	Heitor_Geisa	NA	NA	NA	NA
-EESGT	2	27/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00187	A4	4	20_4	24	N	4.1	58	140	83	Y	M	N	S	NA	N	Heitor_Geisa	NA	NA	NA	NA
-EESGT	2	27/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00198	A1	6	20_5	25	N	2.2	44	69	69	Y	M	N	N	NA	N	Heitor_Geisa	NA	NA	NA	NA
-EESGT	2	27/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00037	A1	10	3	3	Y	2.4	44	90	39	Y	M	N	S	NA	N	Heitor_Geisa	NA	NA	NA	NA
-EESGT	2	27/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00208	A2	11	20_6	26	N	2.9	52	130	130	N	F	N	N	NA	N	Heitor_Geisa	NA	NA	NA	NA
-EESGT	2	28/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00211	A4	6	20_7	27	N	3.2	50	139	139	N	M	N	S	NA	N	ThiagoPortelinha_Geisa	NA	NA	NA	NA
-EESGT	2	28/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00212	A4	6	30	30	N	4.7	52	139	139	N	M	N	S	NA	N	ThiagoPortelinha_Geisa	NA	NA	NA	NA
-EESGT	2	28/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00213	A4	6	30_2	32	N	5.2	58	151	151	N	M	N	S	NA	Y	ThiagoPortelinha_Geisa	NA	Fugiu_no_lab	NA	NA
-EESGT	2	28/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00214	A4	6	70_2	72	N	2.7	49	75	17	Y	M	N	N	NA	N	ThiagoPortelinha_Geisa	NA	NA	NA	NA
-EESGT	2	28/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00215	A4	6	30_3	33	N	2.9	52	129	129	N	M	N	N	NA	N	ThiagoPortelinha_Geisa	NA	NA	NA	NA
-EESGT	2	28/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00217	A4	1	30_4	34	N	3.3	49	94	21	Y	F	N	S	NA	Y	ThiagoPortelinha_Geisa	NA	morreu_no_lab	NA	NA
-EESGT	2	28/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00221	A1	6	30_5	35	N	3.3	57	148	148	N	F	N	N	NA	N	ThiagoPortelinha_Geisa	NA	NA	NA	NA
-EESGT	2	28/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00224	A2	9	30_6	36	N	2.6	49	127	127	N	M	N	N	NA	N	ThiagoPortelinha_Geisa	NA	NA	NA	NA
-EESGT	2	29/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00234	A4	12	50	50	N	4.6	57	160	160	N	M	N	N	NA	N	Heitor_Geisa	NA	NA	NA	NA
-EESGT	2	29/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00235	A4	11	30_1	31	N	2.5	54	135	135	N	M	N	N	NA	N	Heitor_Geisa	NA	NA	NA	NA
-EESGT	2	29/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00007	A4	6	0	0	Y	2.2	45	104	104	N	M	N	N	NA	N	Heitor_Geisa	NA	NA	NA	NA
-EESGT	2	29/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00238	A1	10	30_7	37	N	1.9	42	98	98	N	M	N	N	NA	N	Heitor_Geisa	NA	NA	NA	NA
-EESGT	2	29/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00241	A1	8	30_8	38	N	3	53	78	25.5	Y	F	N	S	NA	N	Heitor_Geisa	NA	NA	NA	NA
-EESGT	2	30/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00246	A4	12	30_9	39	N	4.5	55	140	140	N	F	N	S	NA	N	MariaFernanda_ThiagoPortelinha	NA	NA	NA	NA
-EESGT	2	30/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00247	A4	12	40	40	N	2.7	45	120	120	N	F	N	N	NA	N	MariaFernanda_ThiagoPortelinha	NA	NA	NA	NA
-EESGT	2	30/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00317	A4	7	NA	NA	N	3.2	53	137	137	N	M	N	N	NA	Y	MariaFernanda_ThiagoPortelinha	NA	NA	NA	NA
-EESGT	2	30/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00251	A4	1	40_2	42	N	4.7	58	150	150	N	F	N	S	NA	N	MariaFernanda_ThiagoPortelinha	NA	NA	NA	NA
-EESGT	2	01/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00248	A4	10	40_3	43	N	3.9	55	144	144	N	M	N	S	NA	N	Heitor_Geisa	NA	NA	NA	NA
-EESGT	2	01/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00262	A1	9	40_4	44	N	3.3	56	127	127	N	F	N	S	NA	N	Heitor_Geisa	NA	NA	NA	NA
-EESGT	2	01/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00263	A1	9	40_5	45	N	3.2	52	146	146	N	M	N	N	NA	N	Heitor_Geisa	NA	NA	NA	NA
-EESGT	2	01/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00264	A1	9	40_6	46	N	3.7	53	103	82	Y	M	N	N	NA	N	Heitor_Geisa	NA	NA	NA	NA
-EESGT	2	01/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00268	A1	3	40_7	47	N	2.5	47	119	119	N	M	N	N	NA	N	Heitor_Geisa	NA	NA	NA	NA
-EESGT	2	03/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00288	A4	4	40_8	48	N	4.2	55	95	32	Y	M	N	N	NA	N	Leticia_Geisa	NA	NA	NA	NA
-EESGT	2	03/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00298	A3	9	50_1	51	N	3.5	51	128	128	N	F	Y	N	NA	N	Heitor_Geisa	NA	NA	NA	NA
-EESGT	2	04/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00298	A3	9	50_1	51	Y	NA	NA	NA	NA	N	F	Y	N	NA	N	Heitor_Mariana	NA	mesma_campanha	NA	NA
-EESGT	2	05/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00320	A4	10	50_2	52	N	3.8	54	135	135	N	F	Y	N	NA	N	Emmanuel_Geisa	NA	NA	NA	NA
-EESGT	2	05/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00321	A4	1	50_3	53	N	4.9	53	122	122	N	F	Y	N	NA	N	Emmanuel_Geisa	NA	NA	NA	NA
-EESGT	2	06/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00329	A4	7	50_4	54	N	4.8	56	150	150	N	M	N	N	NA	N	Raquel_Heitor_Adriana_Emmanuel	NA	NA	NA	NA
-EESGT	2	06/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00186	A4	4	20_3	23	Y	NA	NA	NA	NA	N	M	N	N	NA	N	Raquel_Heitor_Adriana_Emmanuel	NA	mesma_campanha	NA	NA
-EESGT	2	06/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00338	A3	6	50_5	55	N	3	49	126	126	N	M	N	N	NA	N	Raquel_Heitor_Adriana_Emmanuel	NA	NA	NA	NA
-EESGT	2	06/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00339	A3	2	50_6	56	N	4.4	55	157	157	N	M	N	N	NA	N	Raquel_Heitor_Adriana_Emmanuel	NA	NA	NA	NA
-EESGT	2	07/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00342	A4	9	50_7	57	N	4.1	55	142	142	N	M	N	N	NA	N	Emannuel_Raquel_Geisa_Mikaella	NA	NA	NA	NA
-EESGT	2	07/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00212	A4	1	30	30	Y	2.5	49	115	115	N	F	N	N	NA	N	Emannuel_Raquel_Geisa_Mikaella	NA	NA	NA	NA
-EESGT	2	08/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00353	A4	3	50_8	58	N	4.9	59	130	76	Y	M	N	N	NA	N	Heitor_Adriana_Mikaella_Raquel	NA	NA	NA	NA
-EESGT	3	12/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00481	A4	11	50_9	59	N	3.5	54	120	96	Y	F	N	N	NA	N	Heitor	NA	NA	NA	NA
-EESGT	3	12/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00484	A4	6	60	60	N	1.6	40	89	89	N	I	N	N	N	N	Heitor_Geisa	NA	NA	NA	NA
-EESGT	3	13/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00485	A4	5	60_1	61	N	3.4	49	120	120	N	F	N	N	N	N	ThiagoPortelinha_Denize	NA	NA	NA	NA
-EESGT	3	13/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00487	A1	4	60_2	62	N	3.9	54	140	140	N	M	N	N	N	N	ThiagoPortelinha_Denize	NA	NA	NA	NA
-EESGT	3	13/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00490	A1	12	60_3	63	N	4.1	55	152	152	N	M	N	N	N	N	ThiagoPortelinha_Denize	NA	NA	NA	NA
-EESGT	3	13/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00501	A3	12	60_4	64	N	3.4	55	140	140	NA	M	N	N	N	N	ThiagoPortelinha_Denize	NA	NA	NA	NA
-EESGT	3	13/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00502	A3	5	60_5	65	N	1.4	36.5	80	80	N	I	N	N	N	N	ThiagoPortelinha_Denize	NA	NA	NA	NA
-EESGT	3	13/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00503	A3	4	60_6	66	N	3.3	51	60	34	Y	F	N	N	N	N	ThiagoPortelinha_Denize	NA	NA	NA	NA
-EESGT	3	14/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00508	A4	7	60_7	67	N	1	34	70	70	N	I	N	N	N	N	Geisa_Denize	NA	NA	NA	NA
-EESGT	3	14/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00509	A4	7	60_8	68	N	2.4	45	61	6	Y	M	N	N	N	N	Geisa_Denize	NA	NA	NA	NA
-EESGT	3	14/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00511	A4	11	60_9	69	N	4.5	53	135	135	N	M	N	N	N	N	Geisa_Denize	NA	NA	NA	NA
-EESGT	3	14/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00247	A4	12	40	40	Y	4.6	53	144	144	N	F	N	N	N	N	Geisa_Denize	NA	NA	NA	NA
-EESGT	3	14/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00523	A2	3	70_1	71	N	3.2	49	124	124	N	M	N	N	N	N	Geisa_Denize	NA	NA	NA	NA
-EESGT	3	14/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00526	A3	1	70_3	73	N	1.8	41	95	95	N	I	N	N	N	N	Geisa_Denize	NA	NA	NA	NA
-EESGT	3	15/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00531	A4	1	70_4	74	N	4.4	54	140	140	N	F	N	N	N	N	ThiagoPortelinha_Geisa	NA	NA	NA	NA
-EESGT	3	15/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00537	A2	6	70_5	75	N	3.6	54	108	92	Y	F	N	N	N	N	ThiagoPortelinha_Geisa	NA	NA	NA	NA
-EESGT	3	15/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00538	A2	7	70_6	76	N	3.8	55	88	35	Y	F	N	N	N	N	ThiagoPortelinha_Geisa	NA	Dedo_5_parcialmente_cortado	NA	NA
-EESGT	3	15/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00539	A2	8	70_7	77	N	4	59	135	135	N	F	N	N	N	N	ThiagoPortelinha_Geisa	NA	NA	NA	NA
-EESGT	3	15/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00552	A2	10	70_8	78	N	2.6	52	125	125	N	F	N	N	N	N	ThiagoPortelinha_Isaias	NA	NA	NA	NA
-EESGT	3	16/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00557	A3	10	70_9	79	N	3.9	53	124	124	N	F	Y	N	N	N	ThiagoPortelinha_MaFe	NA	NA	NA	NA
-EESGT	3	17/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00558	A4	3	80	80	N	4.7	55	139	139	N	F	N	N	N	N	Isaias_Heitor	NA	NA	NA	NA
-EESGT	3	17/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00567	A1	9	80_1	81	N	0.9	36	82	82	N	I	N	N	N	N	Geisa_Heitor	NA	NA	NA	NA
-EESGT	3	17/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00574	A2	4	80_2	82	N	3.2	53	82	29	Y	F	N	N	N	N	Denize_Geisa	NA	NA	NA	NA
-EESGT	3	17/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00581	A3	11	80_3	83	N	4	55	141	141	N	M	N	N	N	N	Denize_Geisa	NA	NA	NA	NA
-EESGT	3	18/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00558	A4	4	80	80	Y	NA	NA	NA	NA	N	F	N	N	N	N	Denize_Geisa	NA	mesma_campanha	NA	NA
-EESGT	3	18/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00585	A4	6	80_4	84	N	3.1	50	126	126	N	F	N	N	N	N	Denize_Geisa	NA	NA	NA	NA
-EESGT	3	18/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	NA	A4	11	NA	NA	N	NA	53	121	121	NA	NA	NA	NA	NA	Y	Denize_Geisa	NA	NA	NA	NA
-EESGT	3	18/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00574	A2	4	80_2	82	Y	NA	NA	NA	NA	Y	F	N	N	N	N	Denize_Geisa	NA	NA	NA	NA
-EESGT	3	18/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00593	A3	1	80_5	85	N	3.6	53	92	25	Y	F	N	N	N	N	Denize_Geisa	NA	NA	NA	NA
-EESGT	3	19/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00595	A4	10	80_6	86	N	3.4	52	107	107	N	F	N	N	N	N	MaFe_Heitor	NA	NA	NA	NA
-EESGT	3	19/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00598	A1	10	80_7	87	N	3.5	52	135	135	N	M	N	N	N	N	MaFe_Heitor	NA	NA	NA	NA
-EESGT	3	19/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00607	A3	3	NA	NA	N	2	43	78	52	Y	M	N	N	N	Y	MaFe_Heitor	NA	NA	NA	NA
-EESGT	3	19/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00608	A3	4	80_8	88	N	2	44	107	107	N	F	N	N	N	Y	MaFe_Heitor	NA	morto_por_sauvas	NA	NA
-EESGT	3	19/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00610	A3	9	80_9	89	N	1.7	41	96	96	N	F	N	N	N	N	MaFe_Heitor	NA	NA	NA	NA
-EESGT	3	19/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00611	A3	11	90	90	N	4.1	54	130	130	N	M	N	N	N	N	MaFe_Heitor	NA	NA	NA	NA
-EESGT	3	19/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00612	A3	12	90_1	91	N	3.1	51	36	20	Y	F	N	N	N	N	MaFe_Heitor	NA	NA	NA	NA
-EESGT	3	20/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00614	A4	3	90_2	92	N	4	56	147	147	N	F	N	N	N	N	Geisa_Heitor	NA	NA	NA	NA
-EESGT	3	20/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00615	A4	4	90_3	93	N	2.9	53	132	132	N	F	N	N	N	N	Geisa_Heitor	NA	NA	NA	NA
-EESGT	3	20/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00618	A1	1	90_4	94	N	4.4	57	142	142	N	M	N	N	N	N	Geisa_Heitor	NA	NA	NA	NA
-EESGT	3	20/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	NA	A1	6	NA	NA	N	NA	42	94	94	N	NA	NA	NA	NA	Y	Geisa_Heitor	NA	NA	NA	NA
-EESGT	3	20/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00626	A1	11	90_5	95	N	3.7	54	149	149	N	M	N	N	N	N	Geisa_Heitor	NA	NA	NA	NA
-EESGT	3	20/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00629	A2	8	90_6	96	N	3.6	52	83	18	Y	M	N	N	N	N	Geisa_Heitor	NA	NA	NA	NA
-EESGT	3	20/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00634	A3	8	90_7	97	N	1.9	46	106	106	N	F	N	N	N	N	Geisa_Heitor	NA	NA	NA	NA
-EESGT	3	20/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00637	A3	12	90_8	98	N	2.2	48	114	114	N	F	N	N	N	N	Geisa_Heitor	NA	NA	NA	NA
-EESGT	3	21/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00639	A4	1	90_9	99	N	4.6	60	125	125	N	M	N	N	NA	N	Geisa_Andersom	NA	cauda_quebrada_na_captura	NA	NA
-EESGT	3	21/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00217	A4	1	30_4	34	Y	3.3	52	90	17	Y	F	N	N	NA	N	Geisa_Andersom	NA	NA	NA	NA
-EESGT	3	21/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00640	A4	6	100	100	N	3.3	51	134	134	N	M	N	N	NA	N	Geisa_Andersom	NA	NA	NA	NA
-EESGT	3	21/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00643	A4	8	100_1	101	N	3.6	52	137	137	N	F	N	N	NA	N	Geisa_Andersom	NA	NA	NA	NA
-EESGT	3	21/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00644	A4	8	100_2	102	N	4.2	52	113	113	N	M	N	N	NA	N	Geisa_Andersom	NA	NA	NA	NA
-EESGT	3	21/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00646	A1	1	100_3	103	N	3.3	51	131	131	N	M	N	N	NA	N	Geisa_Andersom	NA	NA	NA	NA
-EESGT	3	21/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00652	A1	7	100_4	104	N	1	31	79	79	N	I	N	N	NA	N	Geisa_Andersom	NA	NA	NA	NA
-EESGT	3	21/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00663	A2	8	100_5	105	N	3.4	52	130	130	Y	NA	N	N	NA	N	Geisa_Andersom	NA	NA	NA	NA
-EESGT	3	21/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00664	A2	8	100_6	106	N	3.2	54	139	139	N	M	N	N	NA	N	Geisa_Andersom	NA	NA	NA	NA
-EESGT	3	21/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00665	A3	7	100_7	107	N	4	54	99	99	N	M	N	N	NA	N	Geisa_Andersom	NA	NA	NA	NA
-EESGT	3	21/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	NA	A3	5	NA	NA	N	NA	55	134	134	N	NA	NA	N	NA	Y	Geisa_Andersom	NA	NA	NA	NA
-EESGT	3	22/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00672	A1	8	100_8	108	N	1.8	43	97	97	N	F	N	NA	NA	N	Heitor_Andersom	NA	NA	NA	NA
-EESGT	3	22/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00679	A3	3	100_9	109	N	4	54	109	73	Y	F	Y	N	NA	N	Heitor_Andersom	NA	NA	NA	NA
-EESGT	3	23/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00678	A4	12	100_10	110	N	3.1	53	135	135	N	M	N	N	NA	N	Heitor_Julia	NA	NA	NA	NA
-EESGT	3	23/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00680	A4	6	100_10_1	111	N	3.4	56	71	20	Y	F	N	N	NA	N	Heitor_Julia	NA	NA	NA	NA
-EESGT	3	23/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00692	A2	2	100_10_2	112	N	1.1	33	67	67	N	I	N	N	NA	N	Heitor_Julia	NA	NA	NA	NA
-EESGT	3	24/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00694	A4	9	100_10_3	113	N	3.2	50	116	116	N	F	N	N	NA	N	Geisa_Andersom	NA	NA	NA	NA
-EESGT	3	24/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00695	A4	9	100_10_4	114	N	2.5	42	117	117	N	M	N	N	NA	N	Geisa_Andersom	NA	NA	NA	NA
-EESGT	3	26/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00718	A4	1	100_10_5	115	N	3.6	52	129	129	N	F	N	N	NA	N	Geisa_Julia	NA	NA	NA	NA
-EESGT	3	26/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00719	A4	3	100_10_6	116	N	3.6	53	127	127	N	F	N	N	NA	N	Geisa_Julia	NA	NA	NA	NA
-EESGT	3	26/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00720	A4	6	100_10_7	117	N	2.8	50	103	103	N	F	N	N	NA	N	Geisa_Julia	NA	NA	NA	NA
-EESGT	3	26/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00721	A4	8	100_10_8	118	N	3.7	51	151	151	N	M	N	N	NA	N	Geisa_Julia	NA	NA	NA	NA
-EESGT	3	26/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00725	A1	7	100_10_9	119	N	0.9	34	75	75	N	I	N	N	NA	N	Geisa_Julia	NA	NA	NA	NA
-EESGT	3	26/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00726	A1	10	100_20	120	N	2.8	40	97	97	N	I	N	N	NA	N	Geisa_Julia	NA	Regiao_cloacal_lesionada	NA	NA
-EESGT	3	26/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	NA	A3	12	NA	NA	N	NA	55	102	102	N	NA	N	N	NA	Y	Geisa_Julia	NA	NA	NA	NA
-EESGT	4	18/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00595	A4	10	80_6	86	Y	3.5	50	111	58	Y	F	N	N	NA	N	Geisa_MaJu	NA	NA	NA	NA
-EESGT	4	18/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00974	A3	7	100_20_1	121	N	4.2	58	102	102	N	NA	NA	N	NA	N	Geisa_MaJu	NA	NA	NA	NA
-EESGT	4	19/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00749	A4	10	100_20_2	122	N	3.8	53	143	143	N	M	N	N	NA	N	Geisa_MaJu	NA	NA	NA	NA
-EESGT	4	19/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00753	A4	8	100_20_3	123	N	4.2	58	98	30	Y	M	N	N	NA	N	Geisa_MaJu	NA	NA	NA	NA
-EESGT	4	19/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00754	A4	8	100_20_4	124	N	4.5	55	150	150	N	M	N	N	NA	N	Geisa_MaJu	NA	NA	NA	NA
-EESGT	4	19/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00509	A4	7	60_8	68	Y	3.1	49	82	27	Y	M	N	N	NA	N	Geisa_MaJu	NA	NA	NA	NA
-EESGT	4	19/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00755	A4	7	100_20_5	125	N	3.9	56	134	134	N	F	N	N	NA	N	Geisa_MaJu	NA	NA	NA	NA
-EESGT	4	19/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00756	A4	2	100_20_6	126	N	4.3	55	150	150	N	M	N	N	NA	N	Geisa_Heitor	NA	NA	NA	NA
-EESGT	4	19/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	NA	A1	6	NA	NA	N	NA	50	117	117	N	M	N	N	NA	Y	Geisa_Heitor	NA	NA	NA	NA
-EESGT	4	19/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00771	A1	5	100_20_7	127	N	3.2	51	122	122	N	F	Y	N	NA	N	Geisa_Heitor	NA	NA	NA	NA
-EESGT	4	19/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00773	A1	1	100_20_8	128	N	2.9	51	122	122	N	F	Y	N	NA	N	Geisa_Heitor	NA	Acaros_no_ventre	NA	NA
-EESGT	4	19/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00777	A2	10	100_20_9	129	N	3.4	55	139	139	N	F	Y	N	NA	N	Geisa_Heitor	NA	Acaros_no_ventre	NA	NA
-EESGT	4	19/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00778	A2	8	100_30	130	N	2.8	50	118	118	N	F	Y	N	NA	N	Geisa_Heitor	NA	NA	NA	NA
-EESGT	4	19/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00782	A2	7	100_30_1	131	N	3.3	56	131	131	N	M	N	N	NA	N	ThiagoPortelinha_Heitor	NA	NA	NA	NA
-EESGT	4	19/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00783	A2	4	100_30_2	132	N	4.2	58	160	160	N	M	N	N	NA	N	Geisa_Heitor	NA	NA	NA	NA
-EESGT	4	19/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00787	A3	11	100_30_3	133	N	2	56	117	117	N	F	N	N	NA	N	Geisa_Heitor	NA	NA	NA	NA
-EESGT	4	19/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00793	A3	3	100_30_4	134	N	3.3	52	141	141	N	M	N	N	NA	N	Geisa_Heitor	NA	NA	NA	NA
-EESGT	4	20/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00797	A4	3	100_30_5	135	N	5.4	58	157	157	N	M	N	N	NA	N	Geisa_ThiagoPortelinha	NA	NA	NA	NA
-EESGT	4	20/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00799	A4	8	100_30_6	136	N	4.5	56	144	144	N	F	N	N	NA	N	Geisa_ThiagoPortelinha	NA	Acaros_no_ventre	NA	NA
-EESGT	4	20/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00802	A4	10	100_30_7	137	N	4.3	58	152	152	N	M	N	N	NA	N	Geisa_ThiagoPortelinha	NA	Dedo_10_meio_cortado	NA	NA
-EESGT	4	20/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00595	A4	10	80_6	86	Y	3.5	54	109	109	N	F	N	N	NA	N	Geisa_ThiagoPortelinha	NA	NA	NA	NA
-EESGT	4	20/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00803	A4	12	100_30_8	138	N	4.1	58	146	146	N	F	Y	N	NA	N	Geisa_ThiagoPortelinha	NA	NA	NA	NA
-EESGT	4	20/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00804	A1	1	100_40	140	N	2.6	49	120	120	N	M	N	N	NA	N	Geisa_ThiagoPortelinha	NA	NA	NA	NA
-EESGT	4	20/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00808	A1	3	100_50	150	N	3.3	53	117	117	N	F	N	N	NA	N	Geisa_ThiagoPortelinha	NA	Dedo_50_ja_cortado	NA	NA
-EESGT	4	20/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00809	A1	3	100_40_1	141	N	4.1	54	153	153	N	M	N	N	NA	N	Geisa_ThiagoPortelinha	NA	NA	NA	NA
-EESGT	4	20/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00810	A1	5	100_40_2	142	N	3.7	55	31	31	Y	M	N	N	NA	N	Geisa_ThiagoPortelinha	NA	NA	NA	NA
-EESGT	4	20/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00816	A2	2	100_40_3	143	N	1.2	41	102	102	N	I	N	N	NA	N	Geisa_ThiagoPortelinha	NA	NA	NA	NA
-EESGT	4	20/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00574	A2	4	80_2	82	Y	3.5	54	102	31	Y	F	N	N	NA	N	Geisa_ThiagoPortelinha	NA	NA	NA	NA
-EESGT	4	20/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00824	A3	4	100_40_4	144	N	0.4	33	72	72	N	I	N	N	NA	N	Geisa_ThiagoPortelinha	NA	NA	NA	NA
-EESGT	4	20/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00826	A3	6	100_40_5	145	N	3.1	55	71	19	Y	F	Y	N	NA	N	Geisa_ThiagoPortelinha	NA	NA	NA	NA
-EESGT	4	20/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00828	A3	9	100_40_6	146	N	3.8	57	140	140	N	F	N	N	NA	N	Geisa_ThiagoPortelinha	NA	NA	NA	NA
-EESGT	4	20/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00829	A3	9	100_40_7	147	N	2.6	47	57	52	Y	M	N	N	NA	N	Geisa_ThiagoPortelinha	NA	NA	NA	NA
-EESGT	4	21/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00830	A4	2	100_60	160	N	4.4	57	158	158	N	F	N	N	NA	N	Mariana_Geisa_MaJu_Heitor	NA	dedo_60_meio_cortado_possivelmente_recaptura	NA	NA
-EESGT	4	21/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00831	A4	2	100_40_8	148	N	4	55	144	144	N	F	N	N	NA	N	Mariana_Geisa_MaJu_Heitor	NA	pata_esquerda_bem_machucada	NA	NA
-EESGT	4	21/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00719	A4	2	100_10_6	116	Y	3.5	55	132	132	N	F	Y	N	NA	N	Mariana_Geisa_MaJu_Heitor	NA	Mudou_CRC_de_75_para_55	NA	NA
-EESGT	4	21/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00832	A4	3	100_40_9	149	N	4	56	149	149	N	M	N	N	NA	N	Mariana_Geisa_MaJu_Heitor	NA	NA	NA	NA
-EESGT	4	21/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00833	A4	9	100_50_1	151	N	4.7	58	152	152	N	M	N	N	NA	N	Mariana_Geisa_MaJu_Heitor	NA	NA	NA	NA
-EESGT	4	21/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00834	A4	10	100_50_2	152	N	4.4	55	143	143	N	F	Y	N	NA	N	Mariana_Geisa_MaJu_Heitor	NA	NA	NA	NA
-EESGT	4	21/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00838	A1	5	100_50_3	153	N	3.6	53	150	150	N	M	N	N	NA	N	Mariana_Geisa_MaJu_Heitor	NA	Base_da_cauda_lesionada	NA	NA
-EESGT	4	21/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00849	A2	8	100_50_4	154	N	2.7	50	113	113	N	M	N	N	NA	N	Mariana_Geisa_MaJu_Heitor	NA	NA	NA	NA
-EESGT	4	21/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00851	A2	10	100_50_5	155	N	2.8	54	129	129	N	F	Y	N	NA	N	Mariana_Geisa_MaJu_Heitor	NA	NA	NA	NA
-EESGT	4	21/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00857	A3	2	100_50_6	156	N	3.5	46	131	131	N	F	Y	N	NA	N	Mariana_Geisa_MaJu_Heitor	NA	NA	NA	NA
-EESGT	4	21/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00503	A3	4	60_6	66	Y	2.6	52	69	34	Y	F	N	N	NA	N	Mariana_Geisa_MaJu_Heitor	NA	NA	NA	NA
-EESGT	4	21/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00859	A3	8	100_50_7	157	N	2.3	46	120	120	N	F	N	N	NA	N	Mariana_Geisa_MaJu_Heitor	NA	NA	NA	NA
-EESGT	4	21/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00861	A3	9	100_50_8	158	N	3.1	52	131	131	N	F	Y	N	NA	N	Mariana_Geisa_MaJu_Heitor	NA	NA	NA	NA
-EESGT	4	21/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00862	A3	10	100_50_9	159	N	3.4	54	136	136	N	M	N	N	NA	N	Mariana_Geisa_MaJu_Heitor	NA	NA	NA	NA
-EESGT	4	22/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00863	A3	2	100_60_1	161	N	3.4	55	102	102	Y	F	N	N	NA	N	Amanda_ThiagoPortelinha	NA	NA	NA	NA
-EESGT	4	22/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00873	A1	3	100_60_2	162	N	0.7	35	50	39	Y	I	N	N	NA	N	Amanda_ThiagoPortelinha	NA	NA	NA	NA
-EESGT	4	22/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00877	A4	5	100_60_3	163	N	4.1	54	141	141	N	M	N	N	NA	N	Amanda_ThiagoPortelinha	NA	NA	NA	NA
-EESGT	4	22/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00878	A4	7	100_60_4	164	N	3.9	54	154	154	N	M	N	N	NA	N	Amanda_ThiagoPortelinha	NA	NA	NA	NA
-EESGT	4	22/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00754	A4	8	100_20_4	124	Y	NA	NA	NA	NA	NA	NA	NA	NA	NA	N	Amanda_ThiagoPortelinha	NA	mesma_campanha	NA	NA
-EESGT	4	22/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00879	A4	9	100_60_5	165	N	4.4	56	162	162	N	M	N	N	NA	N	Amanda_ThiagoPortelinha	NA	NA	NA	NA
-EESGT	4	23/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00883	A3	6	100_60_6	166	N	3.1	50	132	132	N	M	N	N	NA	N	MaJu_Heitor	NA	NA	NA	NA
-EESGT	4	23/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00884	A3	9	100_60_7	167	N	3.8	55	125	125	N	F	N	N	NA	N	MaJu_Heitor	NA	NA	NA	NA
-EESGT	4	23/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00886	A2	3	100_60_8	168	N	4.2	55	143	143	N	M	N	N	NA	N	MaJu_Heitor	NA	NA	NA	NA
-EESGT	4	23/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00889	A1	3	100_60_9	169	N	4.1	55	105	52	Y	M	N	N	NA	N	MaJu_Heitor	NA	NA	NA	NA
-EESGT	4	23/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00558	A4	3	80	80	Y	4.3	56	140	140	N	F	Y	N	NA	N	MaJu_Heitor	NA	NA	NA	NA
-EESGT	4	23/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00640	A4	6	100	100	Y	4	54	76	67	Y	M	N	N	NA	N	MaJu_Heitor	NA	NA	NA	NA
-EESGT	4	23/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00892	A4	6	20_10	210	N	3.8	55	147	147	N	M	N	N	NA	N	MaJu_Heitor	NA	dedo_10_ja_cortado	NA	NA
-EESGT	4	24/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00897	A3	3	100_70	170	N	1.4	41	99	99	N	M	N	N	NA	N	ThiagoPortelinha_Amanda	NA	NA	NA	NA
-EESGT	4	24/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00898	A3	4	100_70_1	171	N	1.9	43	101	101	N	M	N	N	NA	N	ThiagoPortelinha_Amanda	NA	NA	NA	NA
-EESGT	4	24/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00974	A3	7	100_20_1	121	Y	NA	NA	NA	NA	NA	NA	NA	NA	NA	N	ThiagoPortelinha_Amanda	NA	ID_Provavelmente_errado_121_e_da_QT	NA	NA
-EESGT	4	24/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00900	A3	9	100_70_2	172	N	4.3	56	146	146	N	M	N	N	NA	N	ThiagoPortelinha_Amanda	NA	NA	NA	NA
-EESGT	4	24/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00902	A3	10	100_70_3	173	N	0.4	30	60	60	N	I	N	N	NA	N	ThiagoPortelinha_Amanda	NA	NA	NA	NA
-EESGT	4	24/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00581	A3	11	80_3	83	Y	2.4	55	145	145	N	M	N	N	NA	N	Amanda_ThiagoPortelinha_Heitor	NA	NA	NA	NA
-EESGT	4	24/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00787	A3	11	100_3	103	Y	NA	NA	NA	NA	N	F	N	N	NA	N	Amanda_ThiagoPortelinha_Heitor	NA	NA	NA	NA
-EESGT	4	24/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00557	A3	11	70_9	79	Y	3.7	55	129	129	N	F	Y	N	NA	N	Amanda_ThiagoPortelinha_Heitor	NA	NA	NA	NA
-EESGT	4	24/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00905	A2	2	100_70_4	174	N	2.8	53	86	59	Y	F	N	N	NA	N	Geisa_Amanda	NA	NA	NA	NA
-EESGT	4	24/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00920	A2	9	100_80	180	N	3.8	53	131	131	N	F	Y	N	NA	N	Heitor_Amanda	NA	NA	NA	NA
-EESGT	4	24/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00929	A1	2	100_70_5	175	N	3.3	51	132	132	N	M	N	N	NA	N	Heitor_Amanda	NA	NA	NA	NA
-EESGT	4	24/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00531	A4	2	70_4	74	Y	4.8	56	146	146	N	F	Y	N	NA	N	Heitor_Amanda	NA	NA	NA	NA
-EESGT	4	24/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00951	A4	5	100_70_6	176	N	3.7	53	104	30	Y	F	N	N	NA	N	Heitor_Amanda	NA	NA	NA	NA
-EESGT	4	24/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00511	A4	11	60_9	69	Y	4.3	56	145	145	N	M	N	N	NA	N	Heitor_Amanda	NA	NA	NA	NA
-EESGT	4	25/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00958	A3	9	100_70_7	177	N	0.7	32	69	69	N	I	N	N	NA	N	Geisa_Heitor	NA	corte_no_pescoco	NA	NA
-EESGT	4	25/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00503	A3	4	60_6	66	Y	NA	NA	NA	NA	Y	F	Y	N	NA	N	Geisa_Heitor	NA	mesma_campanha	NA	NA
-EESGT	4	25/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00539	A2	8	70_7	77	Y	3.7	57	136	136	N	F	N	N	NA	N	Geisa_Heitor	NA	NA	NA	NA
-EESGT	4	25/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00967	A1	8	100_70_8	178	N	2.1	45	116	116	N	M	N	N	NA	N	Geisa_Heitor	NA	NA	NA	NA
-EESGT	4	25/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00971	A4	11	100_70_9	179	N	4.2	54	125	85	Y	M	N	N	NA	N	Geisa_Heitor	NA	NA	NA	NA
-EESGT	4	25/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00643	A4	8	100_1	101	Y	4.7	55	142	142	N	F	Y	N	NA	N	Geisa_Heitor	NA	NA	NA	NA
-EESGT	4	25/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00972	A4	6	100_80_1	181	N	4.2	54	136	136	N	F	Y	N	NA	N	Geisa_Heitor	NA	NA	NA	NA
-EESGT	4	25/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00215	A4	6	30_3	33	Y	3.9	55	139	139	N	M	N	N	NA	N	Geisa_Heitor	NA	NA	NA	NA
-EESGT	4	26/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00975	A3	1	100_80_2	182	N	4.3	55	149	149	N	M	N	N	NA	N	Diogo_Heitor	NA	NA	NA	NA
-EESGT	4	26/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00980	A3	9	100_50_3	153	N	3.1	53	140	140	N	M	N	N	NA	N	Diogo_Heitor	NA	NA	NA	NA
-EESGT	4	27/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00721	A4	8	100_10_8	118	Y	4.1	54	101	39	Y	M	N	N	NA	N	Diogo_Geisa	NA	NA	NA	NA
-EESGT	4	27/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00804	A1	1	100_40	140	Y	2.6	43	126	126	N	M	N	N	NA	N	Diogo_Geisa	NA	mesma_campanha	NA	NA
-EESGT	4	27/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01023	A2	12	100_80_4	184	N	3.1	53	137	137	N	M	N	N	NA	N	Diogo_Geisa	NA	NA	NA	NA
-EESGT	4	27/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01024	A3	2	100_80_5	185	N	NA	54	118	63	Y	F	Y	N	NA	N	Diogo_Geisa	NA	NÒo_pesou	NA	NA
-EESGT	4	27/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00884	A3	9	100_60_7	167	Y	NA	NA	NA	NA	Y	F	N	N	NA	N	Diogo_Geisa	NA	mesma_campanha	NA	NA
-EESGT	4	27/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01026	A3	11	100_80_6	186	N	2.8	51	129	129	N	M	N	N	NA	N	Diogo_Geisa	NA	NA	NA	NA
-EESGT	4	27/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01027	A3	12	100_80_7	187	N	3.9	54	142	142	N	M	N	N	NA	N	Diogo_Geisa	NA	NA	NA	NA
-EESGT	4	28/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00595	A4	10	80_6	86	Y	NA	NA	NA	NA	Y	F	N	N	NA	N	Geisa_Ladislau	NA	NA	NA	NA
-EESGT	4	28/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01031	A2	2	100_80_8	188	N	3.5	50	92	49	Y	M	N	N	NA	N	Geisa_Ladislau	NA	NA	NA	NA
-EESGT	4	28/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	NA	A3	10	NA	NA	N	NA	31	66	66	N	I	N	N	NA	Y	Geisa_Ladislau	NA	NA	NA	NA
-EESGT	4	28/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01027	A3	12	100_80_7	187	Y	NA	NA	NA	NA	Y	M	N	N	NA	N	Geisa_Ladislau	NA	mesma_campanha	NA	NA
-EESGT	4	28/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00612	A3	12	90_1	91	Y	3.9	51	69	15	Y	F	Y	N	NA	N	Geisa_Ladislau	NA	NA	NA	NA
-EESGT	4	29/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01040	A4	1	100_80_9	189	N	4.1	56	115	115	N	M	N	N	NA	N	Ladislau_Heitor	NA	NA	NA	NA
-EESGT	4	29/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01042	A4	5	100_90	190	N	2.4	45	118	118	N	M	N	N	NA	N	Ladislau_Heitor	NA	NA	NA	NA
-EESGT	4	29/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00782	A2	7	100_30_1	131	Y	3.7	55	130	130	N	M	N	N	NA	N	Ladislau_Heitor	NA	NA	NA	NA
-EESGT	4	29/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01058	A3	6	100_90_1	191	N	3.7	51	89	89	Y	M	N	N	NA	N	Ladislau_Heitor	NA	NA	NA	NA
-EESGT	4	29/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01059	A3	8	100_90_2	192	N	3.7	55	107	71	Y	F	N	N	NA	N	Ladislau_Heitor	NA	NA	NA	NA
-EESGT	4	29/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01060	A3	8	100_90_3	193	N	2.2	46	120	120	N	M	N	N	NA	N	Ladislau_Heitor	NA	NA	NA	NA
-EESGT	4	29/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00829	A3	9	100_40_7	147	Y	NA	NA	NA	NA	Y	M	N	N	NA	N	Ladislau_Heitor	NA	mesma_campanha	NA	NA
-EESGT	4	30/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01066	A4	1	20_10_1	211	N	4.9	58	152	152	N	M	N	N	NA	N	Geisa_Heitor	NA	NA	NA	NA
-EESGT	4	30/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01069	A4	7	100_90_4	194	N	3.7	53	145	145	N	M	N	N	NA	N	Geisa_Heitor	NA	NA	NA	NA
-EESGT	4	30/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01074	A4	11	100_90_5	195	N	3.3	53	125	125	N	F	Y	N	NA	N	Geisa_Heitor	NA	NA	NA	NA
-EESGT	4	30/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00809	A1	2	100_40_1	141	Y	NA	NA	NA	NA	N	M	N	N	NA	N	Geisa_Heitor	NA	NA	NA	NA
-EESGT	4	30/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01083	A2	6	100_90_6	196	N	3.2	53	138	138	N	M	N	N	NA	N	Geisa_Heitor	NA	NA	NA	NA
-EESGT	4	30/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01086	A2	10	100_90_7	197	N	3.6	52	101	67	Y	M	N	N	NA	N	Geisa_Heitor	NA	NA	NA	NA
-EESGT	4	30/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	NA	A3	3	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	Y	Geisa_Heitor	NA	NA	NA	NA
-EESGT	4	30/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00787	A3	11	100_30_3	133	Y	2.4	55	120	120	N	F	N	N	NA	N	Geisa_Heitor	NA	NA	NA	NA
-EESGT	4	30/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01089	A3	9	100_90_8	198	N	2.5	48	127	127	N	F	Y	N	NA	N	Geisa_Heitor	NA	NA	NA	NA
-EESGT	4	01/07/2022	jul	2022	Lagartos	Ameivula_jalapensis	SGT00639	A4	1	90_9	99	Y	4.1	59	86	16	Y	M	N	N	NA	N	Ladislau_Geisa_Heitor	NA	NA	NA	NA
-EESGT	4	01/07/2022	jul	2022	Lagartos	Ameivula_jalapensis	SGT01110	A1	8	100_90_9	199	N	2.7	47	127	127	N	M	N	N	NA	N	Ladislau_Geisa_Heitor	NA	NA	NA	NA
-EESGT	4	01/07/2022	jul	2022	Lagartos	Ameivula_jalapensis	SGT01111	A1	10	20_0_1	201	N	1.2	37	81	81	N	I	N	N	NA	N	Ladislau_Geisa_Heitor	NA	NA	NA	NA
-EESGT	4	01/07/2022	jul	2022	Lagartos	Ameivula_jalapensis	SGT01113	A1	12	20_0_2	202	N	4.2	56	135	135	N	M	N	N	NA	N	Ladislau_Geisa_Heitor	NA	NA	NA	NA
-EESGT	4	01/07/2022	jul	2022	Lagartos	Ameivula_jalapensis	SGT00503	A3	4	60_6	66	Y	NA	NA	NA	NA	Y	F	N	N	NA	N	Ladislau_Geisa_Heitor	NA	mesma_campanha	NA	NA
-EESGT	4	01/07/2022	jul	2022	Lagartos	Ameivula_jalapensis	SGT00557	A3	11	70_9	79	Y	NA	NA	NA	NA	N	F	N	N	NA	N	Ladislau_Geisa_Heitor	NA	mesma_campanha	NA	NA
-EESGT	4	02/07/2022	jul	2022	Lagartos	Ameivula_jalapensis	SGT00721	A4	8	100_10_8	118	Y	NA	NA	NA	NA	NA	M	N	N	NA	N	Geisa_Denize	NA	NA	NA	NA
-EESGT	4	02/07/2022	jul	2022	Lagartos	Ameivula_jalapensis	SGT01133	A2	12	NA	NA	N	2.7	47	114	114	N	M	N	N	NA	N	Geisa_Denize	NA	nao_marcou	NA	NA
-EESGT	4	02/07/2022	jul	2022	Lagartos	Ameivula_jalapensis	SGT00974	A3	7	100_20_1	121	Y	NA	NA	NA	NA	N	F	N	N	NA	N	Geisa_Denize	NA	mesma_campanha	NA	NA
-EESGT	4	02/07/2022	jul	2022	Lagartos	Ameivula_jalapensis	SGT00862	A3	11	100_50_3	153	Y	3.7	52	135	135	N	M	N	N	NA	N	Geisa_Denize	NA	NA	NA	NA
+Locality	Fieldtrip	Date	Month	Year	Group	Species	VoucherNumber	Plot	Trap	Toes	ID	Recapture	Mass	SVL	TL	TB	Broken	Sex	Eggs	Ecophys	Tissue	Dead	Researchers	ID_duplicated	OBS
+EESGT	1	22/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	SGT00007	A4	9	0	0	N	0.9	34	68	68	N	I	N	NA	Toes	N	Heitor_Mafe_Emannoel	NA	NA
+EESGT	1	22/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	NA	A2	9	NA	NA	N	NA	55	130	130	N	M	N	NA	Toes	N	Mafe_Isabella_Heitor	NA	NA
+EESGT	1	22/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	SGT00015	A3	11	1	1	N	4	55	116	71	Y	M	N	NA	Toes	N	Mafe_Isabella_Heitor_Emannoel	NA	NA
+EESGT	1	24/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	SGT00026	A1	6	2	2	N	0.7	30	61	61	N	I	N	NA	Toes	N	Mikaella_Heitor_Emannoel	NA	NA
+EESGT	1	24/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	SGT00029	A3	5	NA	NA	N	3.8	55	96	61	Y	F	N	NA	Toes	Y	Mikaella_Heitor_Emannoel	NA	Morto_por_formigas
+EESGT	1	25/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	SGT00037	A1	1	3	3	N	0.9	32	65	65	N	I	N	NA	Toes	N	Mikaella_Heitor_Isabella	NA	NA
+EESGT	1	25/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	SGT00039	A1	12	70	70	N	4.6	55	145	145	N	M	N	NA	Toes	N	Mikaella_Heitor_Isabella	NA	NA
+EESGT	1	25/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	SGT00042	A2	12	NA	NA	N	NA	58	141	141	N	F	N	NA	NA	Y	Mikaella_Heitor_Isabella	NA	NA
+EESGT	1	25/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	SGT00043	A3	1	4	4	N	3.6	55	116	107	Y	M	N	NA	Toes	N	Mikaella_Heitor_Isabella	NA	NA
+EESGT	1	25/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	SGT00044	A3	5	5	5	N	3.4	55	127	127	N	M	N	NA	Toes	N	Mikaella_Heitor_Isabella	NA	NA
+EESGT	1	25/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	NA	A3	5	NA	NA	N	NA	53	105	46	Y	NA	NA	NA	NA	Y	Mikaella_Heitor_Isabella	NA	NA
+EESGT	1	25/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	NA	A3	5	NA	NA	N	NA	54	135	135	N	M	N	NA	NA	Y	Mikaella_Heitor_Isabella	NA	NA
+EESGT	1	26/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	SGT00051	A4	6	6	6	N	3.6	51	125	125	N	M	N	NA	Toes	N	Mafe_Heitor_Mikaella_Isabella	NA	NA
+EESGT	1	26/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	SGT00052	A4	6	7	7	N	2.2	46	82	33	Y	F	N	NA	Toes	N	Mafe_Heitor_Mikaella_Isabella	NA	NA
+EESGT	1	26/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	SGT00055	A3	6	8	8	N	0.7	31	65	65	N	I	N	NA	Toes	N	Mafe_Heitor_Mikaella_Isabella	NA	NA
+EESGT	1	27/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	SGT00061	A1	7	9	9	N	NA	55	95	35	Y	F	N	NA	Toes	N	Isabella_Mikaella_Emannoel	NA	NA
+EESGT	1	27/02/2021	feb	2021	Lagartos	Ameivula_jalapensis	SGT00065	A3	12	10	10	N	3.1	56	115	115	N	NA	N	NA	Toes	N	Isabella_Mikaella_Emannoel	NA	NA
+EESGT	1	03/03/2021	mar	2021	Lagartos	Ameivula_jalapensis	SGT00096	A2	6	20_0	200	N	2.8	50	81	21	Y	F	N	NA	Toes	N	Heitor_Geisa_Mariana_Adriana	NA	NA
+EESGT	1	03/03/2021	mar	2021	Lagartos	Ameivula_jalapensis	SGT00105	A3	5	10_1	11	N	3.2	50	132	132	N	M	N	NA	Toes	N	Heitor_Geisa_Mariana_Adriana	NA	NA
+EESGT	1	04/03/2021	mar	2021	Lagartos	Ameivula_jalapensis	SGT00114	A1	4	10_2	12	N	3.5	52	149	149	N	M	N	NA	Toes	N	Heitor_Geisa_Mariana_Adriana	NA	NA
+EESGT	1	04/03/2021	mar	2021	Lagartos	Ameivula_jalapensis	SGT00123	A3	4	10_3	13	N	3.7	55	134	134	N	F	N	NA	Toes	N	Heitor_Geisa_Mariana_Adriana	NA	NA
+EESGT	1	04/03/2021	mar	2021	Lagartos	Ameivula_jalapensis	SGT00125	A3	9	10_4	14	N	3	54	123	123	N	F	N	NA	Toes	N	Heitor_Geisa_Mariana_Adriana	NA	NA
+EESGT	1	05/03/2021	mar	2021	Lagartos	Ameivula_jalapensis	SGT00132	A4	3	10_5	15	N	4.5	58	160	160	N	M	N	NA	Toes	N	Heitor_Geisa_Mariana_Adriana	NA	NA
+EESGT	1	05/03/2021	mar	2021	Lagartos	Ameivula_jalapensis	SGT00153	A3	11	10_6	16	N	3.1	52	135	135	N	M	N	NA	Toes	N	Heitor_Geisa_Mariana_Adriana	NA	NA
+EESGT	1	06/03/2021	mar	2021	Lagartos	Ameivula_jalapensis	SGT00155	A4	5	10_7	17	N	3.7	55	137	137	N	M	N	NA	Toes	N	Heitor_Geisa_Mariana_Adriana	NA	NA
+EESGT	1	06/03/2021	mar	2021	Lagartos	Ameivula_jalapensis	SGT00162	A2	5	10_8	18	N	0.7	31	61	61	N	I	N	NA	Toes	N	Heitor_Geisa_Mariana_Adriana	NA	NA
+EESGT	1	06/03/2021	mar	2021	Lagartos	Ameivula_jalapensis	SGT00170	A3	9	10_9	19	N	3.3	54	144	144	N	M	N	NA	Toes	N	Heitor_Geisa_Mariana_Adriana	NA	NA
+EESGT	2	26/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00176	A4	2	20	20	N	5.1	59	122	66	Y	M	N	N	NA	N	Heitor_Leticia	NA	meio_debilitado
+EESGT	2	26/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00183	A1	7	20_1	21	N	3.4	55	95	38	Y	F	N	N	NA	N	Heitor_Leticia	NA	NA
+EESGT	2	27/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00184	A4	2	20_9	29	N	4.3	59	112	48	Y	M	N	S	NA	Y	Heitor_Geisa	NA	dedo_9_meio_cortado_morreu_no_lab
+EESGT	2	27/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00185	A4	3	20_2	22	N	3.7	53	94	20	Y	F	N	S	NA	N	Heitor_Geisa	NA	NA
+EESGT	2	27/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00186	A4	4	20_3	23	N	2.7	45	115	115	N	M	N	S	NA	N	Heitor_Geisa	NA	NA
+EESGT	2	27/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00187	A4	4	20_4	24	N	4.1	58	140	83	Y	M	N	S	NA	N	Heitor_Geisa	NA	NA
+EESGT	2	27/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00198	A1	6	20_5	25	N	2.2	44	69	69	Y	M	N	N	NA	N	Heitor_Geisa	NA	NA
+EESGT	2	27/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00037	A1	10	3	3	Y	2.4	44	90	39	Y	M	N	S	NA	N	Heitor_Geisa	NA	NA
+EESGT	2	27/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00208	A2	11	20_6	26	N	2.9	52	130	130	N	F	N	N	NA	N	Heitor_Geisa	NA	NA
+EESGT	2	28/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00211	A4	6	20_7	27	N	3.2	50	139	139	N	M	N	S	NA	N	ThiagoPortelinha_Geisa	NA	NA
+EESGT	2	28/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00212	A4	6	30	30	N	4.7	52	139	139	N	M	N	S	NA	N	ThiagoPortelinha_Geisa	NA	NA
+EESGT	2	28/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00213	A4	6	30_2	32	N	5.2	58	151	151	N	M	N	S	NA	Y	ThiagoPortelinha_Geisa	NA	Fugiu_no_lab
+EESGT	2	28/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00214	A4	6	70_2	72	N	2.7	49	75	17	Y	M	N	N	NA	N	ThiagoPortelinha_Geisa	NA	NA
+EESGT	2	28/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00215	A4	6	30_3	33	N	2.9	52	129	129	N	M	N	N	NA	N	ThiagoPortelinha_Geisa	NA	NA
+EESGT	2	28/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00217	A4	1	30_4	34	N	3.3	49	94	21	Y	F	N	S	NA	Y	ThiagoPortelinha_Geisa	NA	morreu_no_lab
+EESGT	2	28/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00221	A1	6	30_5	35	N	3.3	57	148	148	N	F	N	N	NA	N	ThiagoPortelinha_Geisa	NA	NA
+EESGT	2	28/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00224	A2	9	30_6	36	N	2.6	49	127	127	N	M	N	N	NA	N	ThiagoPortelinha_Geisa	NA	NA
+EESGT	2	29/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00234	A4	12	50	50	N	4.6	57	160	160	N	M	N	N	NA	N	Heitor_Geisa	NA	NA
+EESGT	2	29/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00235	A4	11	30_1	31	N	2.5	54	135	135	N	M	N	N	NA	N	Heitor_Geisa	NA	NA
+EESGT	2	29/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00007	A4	6	0	0	Y	2.2	45	104	104	N	M	N	N	NA	N	Heitor_Geisa	NA	NA
+EESGT	2	29/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00238	A1	10	30_7	37	N	1.9	42	98	98	N	M	N	N	NA	N	Heitor_Geisa	NA	NA
+EESGT	2	29/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00241	A1	8	30_8	38	N	3	53	78	25.5	Y	F	N	S	NA	N	Heitor_Geisa	NA	NA
+EESGT	2	30/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00246	A4	12	30_9	39	N	4.5	55	140	140	N	F	N	S	NA	N	MariaFernanda_ThiagoPortelinha	NA	NA
+EESGT	2	30/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00247	A4	12	40	40	N	2.7	45	120	120	N	F	N	N	NA	N	MariaFernanda_ThiagoPortelinha	NA	NA
+EESGT	2	30/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00317	A4	7	NA	NA	N	3.2	53	137	137	N	M	N	N	NA	Y	MariaFernanda_ThiagoPortelinha	NA	NA
+EESGT	2	30/06/2021	jun	2021	Lagartos	Ameivula_jalapensis	SGT00251	A4	1	40_2	42	N	4.7	58	150	150	N	F	N	S	NA	N	MariaFernanda_ThiagoPortelinha	NA	NA
+EESGT	2	01/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00248	A4	10	40_3	43	N	3.9	55	144	144	N	M	N	S	NA	N	Heitor_Geisa	NA	NA
+EESGT	2	01/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00262	A1	9	40_4	44	N	3.3	56	127	127	N	F	N	S	NA	N	Heitor_Geisa	NA	NA
+EESGT	2	01/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00263	A1	9	40_5	45	N	3.2	52	146	146	N	M	N	N	NA	N	Heitor_Geisa	NA	NA
+EESGT	2	01/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00264	A1	9	40_6	46	N	3.7	53	103	82	Y	M	N	N	NA	N	Heitor_Geisa	NA	NA
+EESGT	2	01/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00268	A1	3	40_7	47	N	2.5	47	119	119	N	M	N	N	NA	N	Heitor_Geisa	NA	NA
+EESGT	2	03/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00288	A4	4	40_8	48	N	4.2	55	95	32	Y	M	N	N	NA	N	Leticia_Geisa	NA	NA
+EESGT	2	03/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00298	A3	9	50_1	51	N	3.5	51	128	128	N	F	Y	N	NA	N	Heitor_Geisa	NA	NA
+EESGT	2	04/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00298	A3	9	50_1	51	Y	NA	NA	NA	NA	N	F	Y	N	NA	N	Heitor_Mariana	NA	mesma_campanha
+EESGT	2	05/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00320	A4	10	50_2	52	N	3.8	54	135	135	N	F	Y	N	NA	N	Emmanuel_Geisa	NA	NA
+EESGT	2	05/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00321	A4	1	50_3	53	N	4.9	53	122	122	N	F	Y	N	NA	N	Emmanuel_Geisa	NA	NA
+EESGT	2	06/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00329	A4	7	50_4	54	N	4.8	56	150	150	N	M	N	N	NA	N	Raquel_Heitor_Adriana_Emmanuel	NA	NA
+EESGT	2	06/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00186	A4	4	20_3	23	Y	NA	NA	NA	NA	N	M	N	N	NA	N	Raquel_Heitor_Adriana_Emmanuel	NA	mesma_campanha
+EESGT	2	06/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00338	A3	6	50_5	55	N	3	49	126	126	N	M	N	N	NA	N	Raquel_Heitor_Adriana_Emmanuel	NA	NA
+EESGT	2	06/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00339	A3	2	50_6	56	N	4.4	55	157	157	N	M	N	N	NA	N	Raquel_Heitor_Adriana_Emmanuel	NA	NA
+EESGT	2	07/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00342	A4	9	50_7	57	N	4.1	55	142	142	N	M	N	N	NA	N	Emannuel_Raquel_Geisa_Mikaella	NA	NA
+EESGT	2	07/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00212	A4	1	30	30	Y	2.5	49	115	115	N	F	N	N	NA	N	Emannuel_Raquel_Geisa_Mikaella	NA	NA
+EESGT	2	08/07/2021	jul	2021	Lagartos	Ameivula_jalapensis	SGT00353	A4	3	50_8	58	N	4.9	59	130	76	Y	M	N	N	NA	N	Heitor_Adriana_Mikaella_Raquel	NA	NA
+EESGT	3	12/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00481	A4	11	50_9	59	N	3.5	54	120	96	Y	F	N	N	NA	N	Heitor	NA	NA
+EESGT	3	12/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00484	A4	6	60	60	N	1.6	40	89	89	N	I	N	N	N	N	Heitor_Geisa	NA	NA
+EESGT	3	13/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00485	A4	5	60_1	61	N	3.4	49	120	120	N	F	N	N	N	N	ThiagoPortelinha_Denize	NA	NA
+EESGT	3	13/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00487	A1	4	60_2	62	N	3.9	54	140	140	N	M	N	N	N	N	ThiagoPortelinha_Denize	NA	NA
+EESGT	3	13/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00490	A1	12	60_3	63	N	4.1	55	152	152	N	M	N	N	N	N	ThiagoPortelinha_Denize	NA	NA
+EESGT	3	13/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00501	A3	12	60_4	64	N	3.4	55	140	140	NA	M	N	N	N	N	ThiagoPortelinha_Denize	NA	NA
+EESGT	3	13/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00502	A3	5	60_5	65	N	1.4	36.5	80	80	N	I	N	N	N	N	ThiagoPortelinha_Denize	NA	NA
+EESGT	3	13/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00503	A3	4	60_6	66	N	3.3	51	60	34	Y	F	N	N	N	N	ThiagoPortelinha_Denize	NA	NA
+EESGT	3	14/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00508	A4	7	60_7	67	N	1	34	70	70	N	I	N	N	N	N	Geisa_Denize	NA	NA
+EESGT	3	14/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00509	A4	7	60_8	68	N	2.4	45	61	6	Y	M	N	N	N	N	Geisa_Denize	NA	NA
+EESGT	3	14/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00511	A4	11	60_9	69	N	4.5	53	135	135	N	M	N	N	N	N	Geisa_Denize	NA	NA
+EESGT	3	14/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00247	A4	12	40	40	Y	4.6	53	144	144	N	F	N	N	N	N	Geisa_Denize	NA	NA
+EESGT	3	14/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00523	A2	3	70_1	71	N	3.2	49	124	124	N	M	N	N	N	N	Geisa_Denize	NA	NA
+EESGT	3	14/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00526	A3	1	70_3	73	N	1.8	41	95	95	N	I	N	N	N	N	Geisa_Denize	NA	NA
+EESGT	3	15/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00531	A4	1	70_4	74	N	4.4	54	140	140	N	F	N	N	N	N	ThiagoPortelinha_Geisa	NA	NA
+EESGT	3	15/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00537	A2	6	70_5	75	N	3.6	54	108	92	Y	F	N	N	N	N	ThiagoPortelinha_Geisa	NA	NA
+EESGT	3	15/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00538	A2	7	70_6	76	N	3.8	55	88	35	Y	F	N	N	N	N	ThiagoPortelinha_Geisa	NA	Dedo_5_parcialmente_cortado
+EESGT	3	15/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00539	A2	8	70_7	77	N	4	59	135	135	N	F	N	N	N	N	ThiagoPortelinha_Geisa	NA	NA
+EESGT	3	15/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00552	A2	10	70_8	78	N	2.6	52	125	125	N	F	N	N	N	N	ThiagoPortelinha_Isaias	NA	NA
+EESGT	3	16/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00557	A3	10	70_9	79	N	3.9	53	124	124	N	F	Y	N	N	N	ThiagoPortelinha_MaFe	NA	NA
+EESGT	3	17/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00558	A4	3	80	80	N	4.7	55	139	139	N	F	N	N	N	N	Isaias_Heitor	NA	NA
+EESGT	3	17/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00567	A1	9	80_1	81	N	0.9	36	82	82	N	I	N	N	N	N	Geisa_Heitor	NA	NA
+EESGT	3	17/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00574	A2	4	80_2	82	N	3.2	53	82	29	Y	F	N	N	N	N	Denize_Geisa	NA	NA
+EESGT	3	17/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00581	A3	11	80_3	83	N	4	55	141	141	N	M	N	N	N	N	Denize_Geisa	NA	NA
+EESGT	3	18/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00558	A4	4	80	80	Y	NA	NA	NA	NA	N	F	N	N	N	N	Denize_Geisa	NA	mesma_campanha
+EESGT	3	18/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00585	A4	6	80_4	84	N	3.1	50	126	126	N	F	N	N	N	N	Denize_Geisa	NA	NA
+EESGT	3	18/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	NA	A4	11	NA	NA	N	NA	53	121	121	NA	NA	NA	NA	NA	Y	Denize_Geisa	NA	NA
+EESGT	3	18/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00574	A2	4	80_2	82	Y	NA	NA	NA	NA	Y	F	N	N	N	N	Denize_Geisa	NA	NA
+EESGT	3	18/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00593	A3	1	80_5	85	N	3.6	53	92	25	Y	F	N	N	N	N	Denize_Geisa	NA	NA
+EESGT	3	19/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00595	A4	10	80_6	86	N	3.4	52	107	107	N	F	N	N	N	N	MaFe_Heitor	NA	NA
+EESGT	3	19/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00598	A1	10	80_7	87	N	3.5	52	135	135	N	M	N	N	N	N	MaFe_Heitor	NA	NA
+EESGT	3	19/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00607	A3	3	NA	NA	N	2	43	78	52	Y	M	N	N	N	Y	MaFe_Heitor	NA	NA
+EESGT	3	19/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00608	A3	4	80_8	88	N	2	44	107	107	N	F	N	N	N	Y	MaFe_Heitor	NA	morto_por_sauvas
+EESGT	3	19/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00610	A3	9	80_9	89	N	1.7	41	96	96	N	F	N	N	N	N	MaFe_Heitor	NA	NA
+EESGT	3	19/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00611	A3	11	90	90	N	4.1	54	130	130	N	M	N	N	N	N	MaFe_Heitor	NA	NA
+EESGT	3	19/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00612	A3	12	90_1	91	N	3.1	51	36	20	Y	F	N	N	N	N	MaFe_Heitor	NA	NA
+EESGT	3	20/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00614	A4	3	90_2	92	N	4	56	147	147	N	F	N	N	N	N	Geisa_Heitor	NA	NA
+EESGT	3	20/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00615	A4	4	90_3	93	N	2.9	53	132	132	N	F	N	N	N	N	Geisa_Heitor	NA	NA
+EESGT	3	20/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00618	A1	1	90_4	94	N	4.4	57	142	142	N	M	N	N	N	N	Geisa_Heitor	NA	NA
+EESGT	3	20/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	NA	A1	6	NA	NA	N	NA	42	94	94	N	NA	NA	NA	NA	Y	Geisa_Heitor	NA	NA
+EESGT	3	20/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00626	A1	11	90_5	95	N	3.7	54	149	149	N	M	N	N	N	N	Geisa_Heitor	NA	NA
+EESGT	3	20/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00629	A2	8	90_6	96	N	3.6	52	83	18	Y	M	N	N	N	N	Geisa_Heitor	NA	NA
+EESGT	3	20/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00634	A3	8	90_7	97	N	1.9	46	106	106	N	F	N	N	N	N	Geisa_Heitor	NA	NA
+EESGT	3	20/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00637	A3	12	90_8	98	N	2.2	48	114	114	N	F	N	N	N	N	Geisa_Heitor	NA	NA
+EESGT	3	21/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00639	A4	1	90_9	99	N	4.6	60	125	125	N	M	N	N	NA	N	Geisa_Andersom	NA	cauda_quebrada_na_captura
+EESGT	3	21/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00217	A4	1	30_4	34	Y	3.3	52	90	17	Y	F	N	N	NA	N	Geisa_Andersom	NA	NA
+EESGT	3	21/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00640	A4	6	100	100	N	3.3	51	134	134	N	M	N	N	NA	N	Geisa_Andersom	NA	NA
+EESGT	3	21/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00643	A4	8	100_1	101	N	3.6	52	137	137	N	F	N	N	NA	N	Geisa_Andersom	NA	NA
+EESGT	3	21/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00644	A4	8	100_2	102	N	4.2	52	113	113	N	M	N	N	NA	N	Geisa_Andersom	NA	NA
+EESGT	3	21/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00646	A1	1	100_3	103	N	3.3	51	131	131	N	M	N	N	NA	N	Geisa_Andersom	NA	NA
+EESGT	3	21/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00652	A1	7	100_4	104	N	1	31	79	79	N	I	N	N	NA	N	Geisa_Andersom	NA	NA
+EESGT	3	21/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00663	A2	8	100_5	105	N	3.4	52	130	130	Y	NA	N	N	NA	N	Geisa_Andersom	NA	NA
+EESGT	3	21/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00664	A2	8	100_6	106	N	3.2	54	139	139	N	M	N	N	NA	N	Geisa_Andersom	NA	NA
+EESGT	3	21/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00665	A3	7	100_7	107	N	4	54	99	99	N	M	N	N	NA	N	Geisa_Andersom	NA	NA
+EESGT	3	21/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	NA	A3	5	NA	NA	N	NA	55	134	134	N	NA	NA	N	NA	Y	Geisa_Andersom	NA	NA
+EESGT	3	22/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00672	A1	8	100_8	108	N	1.8	43	97	97	N	F	N	NA	NA	N	Heitor_Andersom	NA	NA
+EESGT	3	22/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00679	A3	3	100_9	109	N	4	54	109	73	Y	F	Y	N	NA	N	Heitor_Andersom	NA	NA
+EESGT	3	23/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00678	A4	12	100_10	110	N	3.1	53	135	135	N	M	N	N	NA	N	Heitor_Julia	NA	NA
+EESGT	3	23/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00680	A4	6	100_10_1	111	N	3.4	56	71	20	Y	F	N	N	NA	N	Heitor_Julia	NA	NA
+EESGT	3	23/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00692	A2	2	100_10_2	112	N	1.1	33	67	67	N	I	N	N	NA	N	Heitor_Julia	NA	NA
+EESGT	3	24/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00694	A4	9	100_10_3	113	N	3.2	50	116	116	N	F	N	N	NA	N	Geisa_Andersom	NA	NA
+EESGT	3	24/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00695	A4	9	100_10_4	114	N	2.5	42	117	117	N	M	N	N	NA	N	Geisa_Andersom	NA	NA
+EESGT	3	26/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00718	A4	1	100_10_5	115	N	3.6	52	129	129	N	F	N	N	NA	N	Geisa_Julia	NA	NA
+EESGT	3	26/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00719	A4	3	100_10_6	116	N	3.6	53	127	127	N	F	N	N	NA	N	Geisa_Julia	NA	NA
+EESGT	3	26/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00720	A4	6	100_10_7	117	N	2.8	50	103	103	N	F	N	N	NA	N	Geisa_Julia	NA	NA
+EESGT	3	26/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00721	A4	8	100_10_8	118	N	3.7	51	151	151	N	M	N	N	NA	N	Geisa_Julia	NA	NA
+EESGT	3	26/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00725	A1	7	100_10_9	119	N	0.9	34	75	75	N	I	N	N	NA	N	Geisa_Julia	NA	NA
+EESGT	3	26/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	SGT00726	A1	10	100_20	120	N	2.8	40	97	97	N	I	N	N	NA	N	Geisa_Julia	NA	Regiao_cloacal_lesionada
+EESGT	3	26/03/2022	mar	2022	Lagartos	Ameivula_jalapensis	NA	A3	12	NA	NA	N	NA	55	102	102	N	NA	N	N	NA	Y	Geisa_Julia	NA	NA
+EESGT	4	18/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00595	A4	10	80_6	86	Y	3.5	50	111	58	Y	F	N	N	NA	N	Geisa_MaJu	NA	NA
+EESGT	4	18/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00974	A3	7	100_20_1	121	N	4.2	58	102	102	N	NA	NA	N	NA	N	Geisa_MaJu	NA	NA
+EESGT	4	19/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00749	A4	10	100_20_2	122	N	3.8	53	143	143	N	M	N	N	NA	N	Geisa_MaJu	NA	NA
+EESGT	4	19/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00753	A4	8	100_20_3	123	N	4.2	58	98	30	Y	M	N	N	NA	N	Geisa_MaJu	NA	NA
+EESGT	4	19/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00754	A4	8	100_20_4	124	N	4.5	55	150	150	N	M	N	N	NA	N	Geisa_MaJu	NA	NA
+EESGT	4	19/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00509	A4	7	60_8	68	Y	3.1	49	82	27	Y	M	N	N	NA	N	Geisa_MaJu	NA	NA
+EESGT	4	19/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00755	A4	7	100_20_5	125	N	3.9	56	134	134	N	F	N	N	NA	N	Geisa_MaJu	NA	NA
+EESGT	4	19/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00756	A4	2	100_20_6	126	N	4.3	55	150	150	N	M	N	N	NA	N	Geisa_Heitor	NA	NA
+EESGT	4	19/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	NA	A1	6	NA	NA	N	NA	50	117	117	N	M	N	N	NA	Y	Geisa_Heitor	NA	NA
+EESGT	4	19/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00771	A1	5	100_20_7	127	N	3.2	51	122	122	N	F	Y	N	NA	N	Geisa_Heitor	NA	NA
+EESGT	4	19/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00773	A1	1	100_20_8	128	N	2.9	51	122	122	N	F	Y	N	NA	N	Geisa_Heitor	NA	Acaros_no_ventre
+EESGT	4	19/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00777	A2	10	100_20_9	129	N	3.4	55	139	139	N	F	Y	N	NA	N	Geisa_Heitor	NA	Acaros_no_ventre
+EESGT	4	19/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00778	A2	8	100_30	130	N	2.8	50	118	118	N	F	Y	N	NA	N	Geisa_Heitor	NA	NA
+EESGT	4	19/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00782	A2	7	100_30_1	131	N	3.3	56	131	131	N	M	N	N	NA	N	ThiagoPortelinha_Heitor	NA	NA
+EESGT	4	19/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00783	A2	4	100_30_2	132	N	4.2	58	160	160	N	M	N	N	NA	N	Geisa_Heitor	NA	NA
+EESGT	4	19/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00787	A3	11	100_30_3	133	N	2	56	117	117	N	F	N	N	NA	N	Geisa_Heitor	NA	NA
+EESGT	4	19/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00793	A3	3	100_30_4	134	N	3.3	52	141	141	N	M	N	N	NA	N	Geisa_Heitor	NA	NA
+EESGT	4	20/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00797	A4	3	100_30_5	135	N	5.4	58	157	157	N	M	N	N	NA	N	Geisa_ThiagoPortelinha	NA	NA
+EESGT	4	20/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00799	A4	8	100_30_6	136	N	4.5	56	144	144	N	F	N	N	NA	N	Geisa_ThiagoPortelinha	NA	Acaros_no_ventre
+EESGT	4	20/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00802	A4	10	100_30_7	137	N	4.3	58	152	152	N	M	N	N	NA	N	Geisa_ThiagoPortelinha	NA	Dedo_10_meio_cortado
+EESGT	4	20/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00595	A4	10	80_6	86	Y	3.5	54	109	109	N	F	N	N	NA	N	Geisa_ThiagoPortelinha	NA	NA
+EESGT	4	20/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00803	A4	12	100_30_8	138	N	4.1	58	146	146	N	F	Y	N	NA	N	Geisa_ThiagoPortelinha	NA	NA
+EESGT	4	20/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00804	A1	1	100_40	140	N	2.6	49	120	120	N	M	N	N	NA	N	Geisa_ThiagoPortelinha	NA	NA
+EESGT	4	20/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00808	A1	3	100_50	150	N	3.3	53	117	117	N	F	N	N	NA	N	Geisa_ThiagoPortelinha	NA	Dedo_50_ja_cortado
+EESGT	4	20/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00809	A1	3	100_40_1	141	N	4.1	54	153	153	N	M	N	N	NA	N	Geisa_ThiagoPortelinha	NA	NA
+EESGT	4	20/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00810	A1	5	100_40_2	142	N	3.7	55	31	31	Y	M	N	N	NA	N	Geisa_ThiagoPortelinha	NA	NA
+EESGT	4	20/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00816	A2	2	100_40_3	143	N	1.2	41	102	102	N	I	N	N	NA	N	Geisa_ThiagoPortelinha	NA	NA
+EESGT	4	20/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00574	A2	4	80_2	82	Y	3.5	54	102	31	Y	F	N	N	NA	N	Geisa_ThiagoPortelinha	NA	NA
+EESGT	4	20/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00824	A3	4	100_40_4	144	N	0.4	33	72	72	N	I	N	N	NA	N	Geisa_ThiagoPortelinha	NA	NA
+EESGT	4	20/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00826	A3	6	100_40_5	145	N	3.1	55	71	19	Y	F	Y	N	NA	N	Geisa_ThiagoPortelinha	NA	NA
+EESGT	4	20/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00828	A3	9	100_40_6	146	N	3.8	57	140	140	N	F	N	N	NA	N	Geisa_ThiagoPortelinha	NA	NA
+EESGT	4	20/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00829	A3	9	100_40_7	147	N	2.6	47	57	52	Y	M	N	N	NA	N	Geisa_ThiagoPortelinha	NA	NA
+EESGT	4	21/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00830	A4	2	100_60	160	N	4.4	57	158	158	N	F	N	N	NA	N	Mariana_Geisa_MaJu_Heitor	NA	dedo_60_meio_cortado_possivelmente_recaptura
+EESGT	4	21/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00831	A4	2	100_40_8	148	N	4	55	144	144	N	F	N	N	NA	N	Mariana_Geisa_MaJu_Heitor	NA	pata_esquerda_bem_machucada
+EESGT	4	21/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00719	A4	2	100_10_6	116	Y	3.5	55	132	132	N	F	Y	N	NA	N	Mariana_Geisa_MaJu_Heitor	NA	Mudou_CRC_de_75_para_55
+EESGT	4	21/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00832	A4	3	100_40_9	149	N	4	56	149	149	N	M	N	N	NA	N	Mariana_Geisa_MaJu_Heitor	NA	NA
+EESGT	4	21/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00833	A4	9	100_50_1	151	N	4.7	58	152	152	N	M	N	N	NA	N	Mariana_Geisa_MaJu_Heitor	NA	NA
+EESGT	4	21/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00834	A4	10	100_50_2	152	N	4.4	55	143	143	N	F	Y	N	NA	N	Mariana_Geisa_MaJu_Heitor	NA	NA
+EESGT	4	21/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00838	A1	5	100_50_3	153	N	3.6	53	150	150	N	M	N	N	NA	N	Mariana_Geisa_MaJu_Heitor	NA	Base_da_cauda_lesionada
+EESGT	4	21/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00849	A2	8	100_50_4	154	N	2.7	50	113	113	N	M	N	N	NA	N	Mariana_Geisa_MaJu_Heitor	NA	NA
+EESGT	4	21/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00851	A2	10	100_50_5	155	N	2.8	54	129	129	N	F	Y	N	NA	N	Mariana_Geisa_MaJu_Heitor	NA	NA
+EESGT	4	21/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00857	A3	2	100_50_6	156	N	3.5	46	131	131	N	F	Y	N	NA	N	Mariana_Geisa_MaJu_Heitor	NA	NA
+EESGT	4	21/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00503	A3	4	60_6	66	Y	2.6	52	69	34	Y	F	N	N	NA	N	Mariana_Geisa_MaJu_Heitor	NA	NA
+EESGT	4	21/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00859	A3	8	100_50_7	157	N	2.3	46	120	120	N	F	N	N	NA	N	Mariana_Geisa_MaJu_Heitor	NA	NA
+EESGT	4	21/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00861	A3	9	100_50_8	158	N	3.1	52	131	131	N	F	Y	N	NA	N	Mariana_Geisa_MaJu_Heitor	NA	NA
+EESGT	4	21/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00862	A3	10	100_50_9	159	N	3.4	54	136	136	N	M	N	N	NA	N	Mariana_Geisa_MaJu_Heitor	NA	NA
+EESGT	4	22/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00863	A3	2	100_60_1	161	N	3.4	55	102	102	Y	F	N	N	NA	N	Amanda_ThiagoPortelinha	NA	NA
+EESGT	4	22/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00873	A1	3	100_60_2	162	N	0.7	35	50	39	Y	I	N	N	NA	N	Amanda_ThiagoPortelinha	NA	NA
+EESGT	4	22/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00877	A4	5	100_60_3	163	N	4.1	54	141	141	N	M	N	N	NA	N	Amanda_ThiagoPortelinha	NA	NA
+EESGT	4	22/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00878	A4	7	100_60_4	164	N	3.9	54	154	154	N	M	N	N	NA	N	Amanda_ThiagoPortelinha	NA	NA
+EESGT	4	22/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00754	A4	8	100_20_4	124	Y	NA	NA	NA	NA	NA	NA	NA	NA	NA	N	Amanda_ThiagoPortelinha	NA	mesma_campanha
+EESGT	4	22/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00879	A4	9	100_60_5	165	N	4.4	56	162	162	N	M	N	N	NA	N	Amanda_ThiagoPortelinha	NA	NA
+EESGT	4	23/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00883	A3	6	100_60_6	166	N	3.1	50	132	132	N	M	N	N	NA	N	MaJu_Heitor	NA	NA
+EESGT	4	23/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00884	A3	9	100_60_7	167	N	3.8	55	125	125	N	F	N	N	NA	N	MaJu_Heitor	NA	NA
+EESGT	4	23/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00886	A2	3	100_60_8	168	N	4.2	55	143	143	N	M	N	N	NA	N	MaJu_Heitor	NA	NA
+EESGT	4	23/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00889	A1	3	100_60_9	169	N	4.1	55	105	52	Y	M	N	N	NA	N	MaJu_Heitor	NA	NA
+EESGT	4	23/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00558	A4	3	80	80	Y	4.3	56	140	140	N	F	Y	N	NA	N	MaJu_Heitor	NA	NA
+EESGT	4	23/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00640	A4	6	100	100	Y	4	54	76	67	Y	M	N	N	NA	N	MaJu_Heitor	NA	NA
+EESGT	4	23/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00892	A4	6	20_10	210	N	3.8	55	147	147	N	M	N	N	NA	N	MaJu_Heitor	NA	dedo_10_ja_cortado
+EESGT	4	24/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00897	A3	3	100_70	170	N	1.4	41	99	99	N	M	N	N	NA	N	ThiagoPortelinha_Amanda	NA	NA
+EESGT	4	24/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00898	A3	4	100_70_1	171	N	1.9	43	101	101	N	M	N	N	NA	N	ThiagoPortelinha_Amanda	NA	NA
+EESGT	4	24/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00974	A3	7	100_20_1	121	Y	NA	NA	NA	NA	NA	NA	NA	NA	NA	N	ThiagoPortelinha_Amanda	NA	ID_Provavelmente_errado_121_e_da_QT
+EESGT	4	24/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00900	A3	9	100_70_2	172	N	4.3	56	146	146	N	M	N	N	NA	N	ThiagoPortelinha_Amanda	NA	NA
+EESGT	4	24/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00902	A3	10	100_70_3	173	N	0.4	30	60	60	N	I	N	N	NA	N	ThiagoPortelinha_Amanda	NA	NA
+EESGT	4	24/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00581	A3	11	80_3	83	Y	2.4	55	145	145	N	M	N	N	NA	N	Amanda_ThiagoPortelinha_Heitor	NA	NA
+EESGT	4	24/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00787	A3	11	100_3	103	Y	NA	NA	NA	NA	N	F	N	N	NA	N	Amanda_ThiagoPortelinha_Heitor	NA	NA
+EESGT	4	24/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00557	A3	11	70_9	79	Y	3.7	55	129	129	N	F	Y	N	NA	N	Amanda_ThiagoPortelinha_Heitor	NA	NA
+EESGT	4	24/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00905	A2	2	100_70_4	174	N	2.8	53	86	59	Y	F	N	N	NA	N	Geisa_Amanda	NA	NA
+EESGT	4	24/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00920	A2	9	100_80	180	N	3.8	53	131	131	N	F	Y	N	NA	N	Heitor_Amanda	NA	NA
+EESGT	4	24/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00929	A1	2	100_70_5	175	N	3.3	51	132	132	N	M	N	N	NA	N	Heitor_Amanda	NA	NA
+EESGT	4	24/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00531	A4	2	70_4	74	Y	4.8	56	146	146	N	F	Y	N	NA	N	Heitor_Amanda	NA	NA
+EESGT	4	24/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00951	A4	5	100_70_6	176	N	3.7	53	104	30	Y	F	N	N	NA	N	Heitor_Amanda	NA	NA
+EESGT	4	24/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00511	A4	11	60_9	69	Y	4.3	56	145	145	N	M	N	N	NA	N	Heitor_Amanda	NA	NA
+EESGT	4	25/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00958	A3	9	100_70_7	177	N	0.7	32	69	69	N	I	N	N	NA	N	Geisa_Heitor	NA	corte_no_pescoco
+EESGT	4	25/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00503	A3	4	60_6	66	Y	NA	NA	NA	NA	Y	F	Y	N	NA	N	Geisa_Heitor	NA	mesma_campanha
+EESGT	4	25/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00539	A2	8	70_7	77	Y	3.7	57	136	136	N	F	N	N	NA	N	Geisa_Heitor	NA	NA
+EESGT	4	25/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00967	A1	8	100_70_8	178	N	2.1	45	116	116	N	M	N	N	NA	N	Geisa_Heitor	NA	NA
+EESGT	4	25/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00971	A4	11	100_70_9	179	N	4.2	54	125	85	Y	M	N	N	NA	N	Geisa_Heitor	NA	NA
+EESGT	4	25/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00643	A4	8	100_1	101	Y	4.7	55	142	142	N	F	Y	N	NA	N	Geisa_Heitor	NA	NA
+EESGT	4	25/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00972	A4	6	100_80_1	181	N	4.2	54	136	136	N	F	Y	N	NA	N	Geisa_Heitor	NA	NA
+EESGT	4	25/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00215	A4	6	30_3	33	Y	3.9	55	139	139	N	M	N	N	NA	N	Geisa_Heitor	NA	NA
+EESGT	4	26/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00975	A3	1	100_80_2	182	N	4.3	55	149	149	N	M	N	N	NA	N	Diogo_Heitor	NA	NA
+EESGT	4	26/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00980	A3	9	100_50_3	153	N	3.1	53	140	140	N	M	N	N	NA	N	Diogo_Heitor	NA	NA
+EESGT	4	27/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00721	A4	8	100_10_8	118	Y	4.1	54	101	39	Y	M	N	N	NA	N	Diogo_Geisa	NA	NA
+EESGT	4	27/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00804	A1	1	100_40	140	Y	2.6	43	126	126	N	M	N	N	NA	N	Diogo_Geisa	NA	mesma_campanha
+EESGT	4	27/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01023	A2	12	100_80_4	184	N	3.1	53	137	137	N	M	N	N	NA	N	Diogo_Geisa	NA	NA
+EESGT	4	27/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01024	A3	2	100_80_5	185	N	NA	54	118	63	Y	F	Y	N	NA	N	Diogo_Geisa	NA	NÒo_pesou
+EESGT	4	27/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00884	A3	9	100_60_7	167	Y	NA	NA	NA	NA	Y	F	N	N	NA	N	Diogo_Geisa	NA	mesma_campanha
+EESGT	4	27/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01026	A3	11	100_80_6	186	N	2.8	51	129	129	N	M	N	N	NA	N	Diogo_Geisa	NA	NA
+EESGT	4	27/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01027	A3	12	100_80_7	187	N	3.9	54	142	142	N	M	N	N	NA	N	Diogo_Geisa	NA	NA
+EESGT	4	28/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00595	A4	10	80_6	86	Y	NA	NA	NA	NA	Y	F	N	N	NA	N	Geisa_Ladislau	NA	NA
+EESGT	4	28/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01031	A2	2	100_80_8	188	N	3.5	50	92	49	Y	M	N	N	NA	N	Geisa_Ladislau	NA	NA
+EESGT	4	28/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	NA	A3	10	NA	NA	N	NA	31	66	66	N	I	N	N	NA	Y	Geisa_Ladislau	NA	NA
+EESGT	4	28/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01027	A3	12	100_80_7	187	Y	NA	NA	NA	NA	Y	M	N	N	NA	N	Geisa_Ladislau	NA	mesma_campanha
+EESGT	4	28/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00612	A3	12	90_1	91	Y	3.9	51	69	15	Y	F	Y	N	NA	N	Geisa_Ladislau	NA	NA
+EESGT	4	29/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01040	A4	1	100_80_9	189	N	4.1	56	115	115	N	M	N	N	NA	N	Ladislau_Heitor	NA	NA
+EESGT	4	29/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01042	A4	5	100_90	190	N	2.4	45	118	118	N	M	N	N	NA	N	Ladislau_Heitor	NA	NA
+EESGT	4	29/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00782	A2	7	100_30_1	131	Y	3.7	55	130	130	N	M	N	N	NA	N	Ladislau_Heitor	NA	NA
+EESGT	4	29/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01058	A3	6	100_90_1	191	N	3.7	51	89	89	Y	M	N	N	NA	N	Ladislau_Heitor	NA	NA
+EESGT	4	29/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01059	A3	8	100_90_2	192	N	3.7	55	107	71	Y	F	N	N	NA	N	Ladislau_Heitor	NA	NA
+EESGT	4	29/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01060	A3	8	100_90_3	193	N	2.2	46	120	120	N	M	N	N	NA	N	Ladislau_Heitor	NA	NA
+EESGT	4	29/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00829	A3	9	100_40_7	147	Y	NA	NA	NA	NA	Y	M	N	N	NA	N	Ladislau_Heitor	NA	mesma_campanha
+EESGT	4	30/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01066	A4	1	20_10_1	211	N	4.9	58	152	152	N	M	N	N	NA	N	Geisa_Heitor	NA	NA
+EESGT	4	30/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01069	A4	7	100_90_4	194	N	3.7	53	145	145	N	M	N	N	NA	N	Geisa_Heitor	NA	NA
+EESGT	4	30/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01074	A4	11	100_90_5	195	N	3.3	53	125	125	N	F	Y	N	NA	N	Geisa_Heitor	NA	NA
+EESGT	4	30/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00809	A1	2	100_40_1	141	Y	NA	NA	NA	NA	N	M	N	N	NA	N	Geisa_Heitor	NA	NA
+EESGT	4	30/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01083	A2	6	100_90_6	196	N	3.2	53	138	138	N	M	N	N	NA	N	Geisa_Heitor	NA	NA
+EESGT	4	30/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01086	A2	10	100_90_7	197	N	3.6	52	101	67	Y	M	N	N	NA	N	Geisa_Heitor	NA	NA
+EESGT	4	30/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	NA	A3	3	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	Y	Geisa_Heitor	NA	NA
+EESGT	4	30/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT00787	A3	11	100_30_3	133	Y	2.4	55	120	120	N	F	N	N	NA	N	Geisa_Heitor	NA	NA
+EESGT	4	30/06/2022	jun	2022	Lagartos	Ameivula_jalapensis	SGT01089	A3	9	100_90_8	198	N	2.5	48	127	127	N	F	Y	N	NA	N	Geisa_Heitor	NA	NA
+EESGT	4	01/07/2022	jul	2022	Lagartos	Ameivula_jalapensis	SGT00639	A4	1	90_9	99	Y	4.1	59	86	16	Y	M	N	N	NA	N	Ladislau_Geisa_Heitor	NA	NA
+EESGT	4	01/07/2022	jul	2022	Lagartos	Ameivula_jalapensis	SGT01110	A1	8	100_90_9	199	N	2.7	47	127	127	N	M	N	N	NA	N	Ladislau_Geisa_Heitor	NA	NA
+EESGT	4	01/07/2022	jul	2022	Lagartos	Ameivula_jalapensis	SGT01111	A1	10	20_0_1	201	N	1.2	37	81	81	N	I	N	N	NA	N	Ladislau_Geisa_Heitor	NA	NA
+EESGT	4	01/07/2022	jul	2022	Lagartos	Ameivula_jalapensis	SGT01113	A1	12	20_0_2	202	N	4.2	56	135	135	N	M	N	N	NA	N	Ladislau_Geisa_Heitor	NA	NA
+EESGT	4	01/07/2022	jul	2022	Lagartos	Ameivula_jalapensis	SGT00503	A3	4	60_6	66	Y	NA	NA	NA	NA	Y	F	N	N	NA	N	Ladislau_Geisa_Heitor	NA	mesma_campanha
+EESGT	4	01/07/2022	jul	2022	Lagartos	Ameivula_jalapensis	SGT00557	A3	11	70_9	79	Y	NA	NA	NA	NA	N	F	N	N	NA	N	Ladislau_Geisa_Heitor	NA	mesma_campanha
+EESGT	4	02/07/2022	jul	2022	Lagartos	Ameivula_jalapensis	SGT00721	A4	8	100_10_8	118	Y	NA	NA	NA	NA	NA	M	N	N	NA	N	Geisa_Denize	NA	NA
+EESGT	4	02/07/2022	jul	2022	Lagartos	Ameivula_jalapensis	SGT01133	A2	12	NA	NA	N	2.7	47	114	114	N	M	N	N	NA	N	Geisa_Denize	NA	nao_marcou
+EESGT	4	02/07/2022	jul	2022	Lagartos	Ameivula_jalapensis	SGT00974	A3	7	100_20_1	121	Y	NA	NA	NA	NA	N	F	N	N	NA	N	Geisa_Denize	NA	mesma_campanha
+EESGT	4	02/07/2022	jul	2022	Lagartos	Ameivula_jalapensis	SGT00862	A3	11	100_50_3	153	Y	3.7	52	135	135	N	M	N	N	NA	N	Geisa_Denize	NA	NA
