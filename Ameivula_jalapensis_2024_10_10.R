@@ -102,72 +102,13 @@ barplot(sex,
   cex.lab = 1.0, cex.names = 1.0, cex.sub = 1, beside = TRUE
 )
 
-(chi.sex.plot <- chisq.test(sex[-1, ], simulate.p.value = T, B = 10000))
-chi.sex.plot$residuals # A1 tem maiores residuos
-(chi.sex.plot <- chisq.test(sex[-1, -1]))
-prop.table(sex[-1, ], margin = 2)
 
-(sex.trip.plot <- table(Sex, Plot, Fieldtrip))
-(chi.sex.camp1.plot <- chisq.test(sex.trip.plot[-2, , 1]))
-(chi.sex.camp2.plot <- chisq.test(sex.trip.plot[-2, , 2]))
-(chi.sex.camp3.plot <- chisq.test(sex.trip.plot[-2, , 3]))
-(chi.sex.camp4.plot <- chisq.test(sex.trip.plot[-2, , 4]))
-
-prop.table(sex.trip.plot[-2, , ], margin = c(2, 3))
-
-chi.sex.camp3.plot$residuals
-
-# Diferencas no total de capturas e recaps entre tratamentos
-
-recap
-(chi.recap <- chisq.test(recap))
-chi.recap$residuals # A4 tem maior residuo
-(chi.recap <- chisq.test(recap[-4]))
-chi.recap$residual # A3 tem maior residuo
-(chi.recap <- chisq.test(recap[-c(3, 4)])) # A3 e A4 possuem mais caps e recaps do que A2 e A1
-(chi.recap <- chisq.test(recap[c(3, 4)])) # Nao ha diferenca nas caps e recaps entre A3 e A4
-
-
-# N de individuos = caps
-cap
-(chi.cap <- chisq.test(cap))
-chi.cap$residuals # A4 tem maior residuo
-(chi.cap <- chisq.test(cap[-4]))
-chi.cap$residuals # A3 tem maior residuo
-(chi.cap <- chisq.test(cap[-c(3, 4)]))
-(chi.cap <- chisq.test(cap[c(3, 4)]))
-
-
-
-# ## Graficos da variacao temporal do SVL em todas as campanhas
-# # *********************************************************
+## SVL temporal variation plots --------------------------------------------
 
 head(data)
 summary(SVL)
 sd(SVL, na.rm = T)
 
-windows(10, 10)
-plot(jitter(Fieldtrip), SVL,
-  ylab = "Comprimento rostro-cloacal (mm)",
-  axes = F, cex = 1.5, bty = "n", ylim = c(30, 70), xlab = "Fieldtrip", pch = 16,
-  col = rgb(0, 0, 0, .4)
-)
-axis(1, 1:4, labels = c("Chuva", "Seca", "Chuva", "Seca"))
-axis(2)
-abline(h = 40, lty = 3)
-
-
-
-windows(20, 10)
-boxplot(SVL ~ Fieldtrip,
-  axes = F, ylab = "Comprimento rostro-cloacal (mm)",
-  ylim = c(30, 70), range = 0
-)
-axis(1, 1:4, labels = c("Chuva", "Seca", "Chuva", "Seca"))
-axis(2)
-abline(h = 40, lty = 3)
-
-windows(10, 10)
 ggplot(
   data,
   aes(x = as.factor(Fieldtrip), y = SVL)
@@ -196,50 +137,7 @@ ggplot(
   coord_cartesian(clip = "off") +
   labs(x = "", y = "Snout-vent length (mm)")
 
-
-## Graficos de razao sexual
-head(data)
-
-table(Sex, Fieldtrip)
-sex <- table(Sex, Fieldtrip)
-colnames(sex)
-
-colnames(sex) <- c("Chuva", "Seca", "Chuva", "Seca")
-(sex <- sex[c(2, 1, 3), ])
-
-windows(10, 10)
-barplot(sex,
-  legend.text = T, args.legend = list(x = "topright"), beside = TRUE,
-  ylim = c(0, 90), ylab = "Frequ?ncia", cex.axis = 1.0,
-  cex.lab = 1.0, cex.names = 1.0, cex.sub = 1
-)
-
-table(Sex)
-
-(chi.sex <- chisq.test(table(Sex)[-2]))
-(chi.sex.trip <- chisq.test(sex[-1, ]))
-chi.sex.trip$residuals # Ha diferenca na razao sexual entre campanhas
-(chi.sex.trip <- chisq.test(sex[-1, -3]))
-prop.table(sex[-1, ], margin = 2)
-
-# Na terceira campanha ha razao sexual diferente do esperado ao acaso
-
-# SVL entre sexos
-head(data)
-windows(10, 10)
-boxplot(SVL ~ Sex,
-  data = data,
-  main = expression(italic("Ameivula jalapensis")),
-  ylab = "Comprimento rostro-cloacal (mm)"
-)
-
-# Testa diferença no SVL entre sexos
-shapiro.test(SVL[Sex != "I"])
-bartlett.test(SVL ~ Sex, data = data[Sex != "I", ])
-
-wilcox.test(SVL ~ Sex, data = data[Sex != "I", ]) # Nao Significativo
-
-# SVL entre parcelas
+# SVL among plots
 windows(10, 10)
 ggplot(
   data,
@@ -268,27 +166,6 @@ ggplot(
   geom_hline(yintercept = 40, linetype = "dashed") +
   coord_cartesian(clip = "off") +
   labs(x = "", y = "Comprimento rostro-cloacal (mm)")
-
-
-# Testa diferença no SVL entre parcelas
-
-bartlett.test(SVL ~ Plot, data = data)
-
-r.svl <- rank(SVL)
-anova.svl <- aov(r.svl ~ Plot, data = data)
-summary(anova.svl) # Significativo
-TukeyHSD(anova.svl)
-
-r.svl.sex <- rank(SVL[Sex != "I"])
-anova.svl.sex <- aov(r.svl.sex ~ Sex * Plot, data = data[Sex != "I", ])
-summary(anova.svl.sex)
-
-windows(10, 10)
-boxplot(SVL ~ Sex * Plot,
-  data = data[Sex != "I", ],
-  main = expression(italic("Ameivula jalapensis")),
-  ylab = "Comprimento rostro-cloacal (mm)"
-)
 
 detach(data)
 
