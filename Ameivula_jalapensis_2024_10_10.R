@@ -548,7 +548,6 @@ refm_obj <- get_refmodel(mfull.svl)
 # Refit the reference model K times:
 cv_fits <- run_cvfun(
   refm_obj,
-  ### Only for the sake of speed (not recommended in general):
   K = 10
   ###
 )
@@ -1667,7 +1666,7 @@ refm_obj <- get_refmodel(mfull.sex)
 # Refit the reference model K times:
 cv_fits_sex <- run_cvfun(
   refm_obj,
-  ### Only for the sake of speed (not recommended in general):
+  
   K = 10
   ###
 )
@@ -1822,7 +1821,7 @@ refm_obj <- get_refmodel(mfull.smi)
 # Refit the reference model K times:
 cv_fits_smi <- run_cvfun(
   refm_obj,
-  ### Only for the sake of speed (not recommended in general):
+  
   K = 10
   ###
 )
@@ -2232,11 +2231,11 @@ ggplot(p1$severity, aes(x = severity, y = estimate__)) +
 
 ## Body condition -----------------------------------------------
 
-# Remove casos onde mass = NA
+# Remove cases where mass = NA
 completos <- complete.cases(svl.merged[, c("mass")])
 condition.data <- droplevels(svl.merged[completos, ])
 
-# Visualiza data (svl, mass)
+# View data (svl, mass)
 plot(condition.data$svl, condition.data$mass, las = 1, bty = "n")
 plot(log(condition.data$svl), log(condition.data$mass), las = 1, bty = "n")
 
@@ -2403,7 +2402,6 @@ ggplot(p1$TSLF, aes(x = TSLF, y = estimate__)) +
   geom_ribbon(aes(ymin = lower__, ymax = upper__), alpha = 0.3) +
   geom_line(color = "blue", linewidth = 1) +
   geom_point(data = condition.data, aes(x = TSLF, y = smi), alpha = 0.5, size = 2) +
-  # scale_colour_manual(values = turbo(4), name = "Fire severity")+
   labs(x = "Time since last fire", y = "Scaled mass index") +
   theme_minimal()
 
@@ -2414,7 +2412,6 @@ ggplot(p1$severity, aes(x = severity, y = estimate__)) +
   geom_ribbon(aes(ymin = lower__, ymax = upper__), alpha = 0.3) +
   geom_line(color = "blue", linewidth = 1) +
   geom_point(data = condition.data, aes(x = severity, y = smi), alpha = 0.5, size = 2) +
-  # scale_colour_manual(values = turbo(4), name = "Fire severity")+
   labs(x = "Mean fire severity", y = "Scaled mass index") +
   theme_minimal()
 
@@ -2498,7 +2495,6 @@ ggplot(p1$TSLF, aes(x = TSLF, y = estimate__)) +
   geom_ribbon(aes(ymin = lower__, ymax = upper__), alpha = 0.3) +
   geom_line(color = "blue", linewidth = 1) +
   geom_point(data = svl.merged, aes(x = TSLF, y = as.integer(sex) - 1), alpha = 0.5, size = 2) +
-  # scale_colour_manual(values = turbo(4), name = "Fire severity")+
   labs(x = "Time since last fire", y = "Proportion of males") +
   theme_minimal()
 
@@ -2583,8 +2579,6 @@ Ajalapensis.captures.day.fire <- Ajalapensis.captures.day.fire[, -23]
 Ajalapensis.captures.day.fire <- dplyr::rename(Ajalapensis.captures.day.fire, "TSLF" = "TSLF.y")
 
 summary(Ajalapensis.captures.day.fire)
-
-# View(Ajalapensis.captures.day.fire)
 
 ## brms------------------------------------------------------------------------
 Ajalapensis.captures.fire <- Ajalapensis.captures.day.fire[, c(1:4, 20:23)]
@@ -2677,7 +2671,6 @@ ggplot(p1$severity, aes(x = severity, y = estimate__)) +
   geom_ribbon(aes(ymin = lower__, ymax = upper__), alpha = 0.3) +
   geom_line(color = "blue", linewidth = 1) +
   geom_point(data = Ajalapensis.captures.fire, aes(x = jitter(severity), y = capts), alpha = 0.4, size = 2) +
-  # scale_colour_manual(values = turbo(4), name = "Fire severity")+
   labs(x = "Mean fire severity", y = "Number of captures") +
   theme_minimal()
 
@@ -2687,7 +2680,6 @@ ggplot(p1$MeanTSLF, aes(x = MeanTSLF, y = estimate__)) +
   geom_ribbon(aes(ymin = lower__, ymax = upper__), alpha = 0.3) +
   geom_line(color = "blue", linewidth = 1) +
   geom_point(data = Ajalapensis.captures.fire, aes(x = MeanTSLF, y = capts), alpha = 0.5, size = 2) +
-  # scale_colour_manual(values = turbo(4), name = "Fire severity")+
   labs(x = "Mean fire interval", y = "Number of captures") +
   theme_minimal()
 
@@ -2697,7 +2689,6 @@ ggplot(p1$TSLF, aes(x = TSLF, y = estimate__)) +
   geom_ribbon(aes(ymin = lower__, ymax = upper__), alpha = 0.3) +
   geom_line(color = "blue", linewidth = 1) +
   geom_point(data = Ajalapensis.captures.fire, aes(x = TSLF, y = capts), alpha = 0.5, size = 2) +
-  # scale_colour_manual(values = turbo(4), name = "Fire severity")+
   labs(x = "Time since last fire", y = "Number of captures")
 
 ### INLA------------------------------------------------------------------------
