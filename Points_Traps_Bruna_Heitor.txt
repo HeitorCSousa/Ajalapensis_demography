@@ -1,4 +1,4 @@
-campanha	ponto	armadilha	aiq_code	tuf	tratamento	Latitude	Longitude	elevacao	observacao
+fieldtrip	point	trap	trap_code	tslf	treatment	Latitude	Longitude	elevation	obs
 C1	1	A	C1-1A	2	C	-11.09618	-46.89887	557	NA
 C1	1	B	C1-1B	2	C	-11.0965	-46.8995	554	NA
 C1	1	C	C1-1C	2	C	-11.09758	-46.90019	567	NA

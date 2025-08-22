@@ -169,7 +169,6 @@ ggplot(
 
 detach(data)
 
-
 ##########################################################################
 ## BaSTA
 ##########################################################################
@@ -198,7 +197,7 @@ table(demografia.planilha$VoucherNumber)
 
 demo.Ameivula <- demografia.planilha[demografia.planilha$Species == "Ameivula_jalapensis", ]
 
-## Prepare input file and run monthly data ("campanha")
+## Prepare input file and run monthly data ("fieldtrip")
 ## ****************************************************
 
 # Create capture histories
@@ -1820,10 +1819,10 @@ env.data <- readRDS("env_data_SGT.rds")
 str(env.data)
 unique(datA$TimeMonth)
 
-env.data$TimeMonth[env.data$campanha == 1] <- 1
-env.data$TimeMonth[env.data$campanha == 2] <- 5
-env.data$TimeMonth[env.data$campanha == 3] <- 13
-env.data$TimeMonth[env.data$campanha == 4] <- 16
+env.data$TimeMonth[env.data$fieldtrip == 1] <- 1
+env.data$TimeMonth[env.data$fieldtrip == 2] <- 5
+env.data$TimeMonth[env.data$fieldtrip == 3] <- 13
+env.data$TimeMonth[env.data$fieldtrip == 4] <- 16
 env.data$TimeMonth
 
 env.data <- env.data %>%
@@ -2692,14 +2691,14 @@ svl.data <- data[, c(
 )]
 
 names(svl.data) <- c(
-  "campanha", "date", "month", "year", "plot", "trap", "ID", "recapture",
+  "fieldtrip", "date", "month", "year", "plot", "trap", "ID", "recapture",
   "mass", "svl", "tl", "tb", "broken", "sex", "eggs", "dead"
 )
 
 svl.data$trap <- as.factor(paste(svl.data$plot, svl.data$trap, sep = "_"))
-svl.data$campanha <- as.factor(svl.data$campanha)
+svl.data$fieldtrip <- as.factor(svl.data$fieldtrip)
 
-svl.env <- left_join(svl.data, env.data, by = c("campanha", "plot", "trap"))
+svl.env <- left_join(svl.data, env.data, by = c("fieldtrip", "plot", "trap"))
 svl.env[, c(18:28)] <- scale(svl.env[, c(18:28)])
 
 head(svl.env)
@@ -2763,7 +2762,7 @@ quartz(height = 8, width = 8)
 plot(cvvs, deltas = T, stats = "mlpd") + theme_minimal()
 
 
-msel.svl.re <- brm(svl ~ Ajalapensis_perf + (1 | campanha / plot / trap),
+msel.svl.re <- brm(svl ~ Ajalapensis_perf + (1 | fieldtrip / plot / trap),
   data = svl.env, cores = 4, iter = 4000,
   control = list(adapt_delta = 0.99)
 )
@@ -2790,7 +2789,7 @@ ggplot(p1$Ajalapensis_perf, aes(x = Ajalapensis_perf, y = estimate__)) +
   theme_minimal()
 
 # Testing differences among plots
-msel.svl.plot.re <- brm(svl ~ plot + (1 | campanha / trap),
+msel.svl.plot.re <- brm(svl ~ plot + (1 | fieldtrip / trap),
   data = svl.env, cores = 4, iter = 4000,
   control = list(adapt_delta = 0.99)
 )
@@ -2851,7 +2850,7 @@ str(svl.env)
 
 
 svl.env <- svl.env %>%
-  group_by(campanha) %>%
+  group_by(fieldtrip) %>%
   mutate(sampling_day = dense_rank(date)) %>% # Rank the dates within each month
   ungroup()
 
@@ -2882,7 +2881,7 @@ all_sampling_events <- crossing(trap_locations, sampling_day = 1:15)
 
 # Count captures only for existing combinations in your data
 capture_counts <- svl.env %>%
-  count(campanha, plot, trap, sampling_day, name = "freq")
+  count(fieldtrip, plot, trap, sampling_day, name = "freq")
 
 names(capture_counts) <- c("fieldtrip", "plot", "trap", "sampling_day", "freq")
 str(capture_counts)
@@ -2917,7 +2916,7 @@ str(Ajalapensis.captures.day)
 
 env.data$plot <- as.character(env.data$plot)
 env.data$trap <- as.character(env.data$trap)
-env.data$fieldtrip <- as.character(env.data$campanha)
+env.data$fieldtrip <- as.character(env.data$fieldtrip)
 
 Ajalapensis.captures.day.env <- left_join(env.data,
   Ajalapensis.captures.day,
@@ -3897,7 +3896,7 @@ quartz(height = 8, width = 8)
 plot(cvvs_sex, deltas = T, stats = "mlpd") + theme_minimal()
 
 
-msel.sex.re <- brm(sex ~ Ajalapensis_perf + (1 | campanha / plot / trap),
+msel.sex.re <- brm(sex ~ Ajalapensis_perf + (1 | fieldtrip / plot / trap),
   data = svl.env, cores = 4, family = "bernoulli",
   iter = 4000, control = list(adapt_delta = 0.99)
 )
@@ -3905,7 +3904,7 @@ msel.sex.re <- brm(sex ~ Ajalapensis_perf + (1 | campanha / plot / trap),
 summary(msel.sex.re)
 bayes_R2(msel.sex.re)
 
-msel.null.re <- brm(sex ~ 1 + (1 | campanha / plot / trap),
+msel.null.re <- brm(sex ~ 1 + (1 | fieldtrip / plot / trap),
   data = svl.env, cores = 4, family = "bernoulli",
   iter = 4000, control = list(adapt_delta = 0.99)
 )
@@ -3913,7 +3912,7 @@ msel.null.re <- brm(sex ~ 1 + (1 | campanha / plot / trap),
 summary(msel.null.re)
 bayes_R2(msel.null.re)
 
-msel.sex.plot.re <- brm(sex ~ plot + (1 | campanha / trap),
+msel.sex.plot.re <- brm(sex ~ plot + (1 | fieldtrip / trap),
   data = svl.env, cores = 4, family = "bernoulli",
   iter = 4000, control = list(adapt_delta = 0.99)
 )
@@ -4079,7 +4078,7 @@ quartz(height = 8, width = 8)
 plot(cvvs_smi, deltas = T, stats = "mlpd") + theme_minimal()
 
 
-msel.smi.re <- brm(smi ~ Ajalapensis_perf + (1 | campanha / plot / trap),
+msel.smi.re <- brm(smi ~ Ajalapensis_perf + (1 | fieldtrip / plot / trap),
   data = condition.data, cores = 4, iter = 5000,
   control = list(adapt_delta = 0.999),
   silent = 0
@@ -4107,7 +4106,7 @@ ggplot(p1$Ajalapensis_perf, aes(x = Ajalapensis_perf, y = estimate__)) +
 
 
 
-msel.smi.plot.re <- brm(smi ~ plot + (1 | campanha / trap),
+msel.smi.plot.re <- brm(smi ~ plot + (1 | fieldtrip / trap),
   data = condition.data, cores = 4, iter = 5000,
   control = list(adapt_delta = 0.999)
 )
@@ -4298,7 +4297,7 @@ svl.data$trap <- as.factor(paste(svl.data$plot, svl.data$trap, sep = "_"))
 svl.data$fieldtrip <- as.factor(svl.data$fieldtrip)
 
 svl.fire <- left_join(svl.data, fire.regimes.arms[, -c(1:2, 10)], by = c("plot", "trap"))
-env.data$fieldtrip <- env.data$campanha
+env.data$fieldtrip <- env.data$fieldtrip
 svl.fire <- left_join(svl.fire, env.data[, c(1:3, 5, 18)], by = c("plot", "trap", "fieldtrip"))
 
 svl.fire$date <- as.POSIXct(svl.fire$date, format = "%d/%m/%Y", tz = "UTC")
