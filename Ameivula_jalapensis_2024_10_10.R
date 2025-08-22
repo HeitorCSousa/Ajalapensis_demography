@@ -1,5 +1,5 @@
 # Set working directory and load packages ---------------------------------
-
+load("Ajalapensis_demography.RData")
 rm(list = ls())
 
 library(ggplot2)
@@ -15,146 +15,141 @@ library(brms)
 library(projpred)
 library(GGally)
 
-install.packages("INLA", repos = c(getOption("repos"),
-  INLA = "https://inla.r-inla-download.org/R/testing"
-), dep = TRUE)
+# If needed, install INLA by uncommenting the following lines
+# install.packages("INLA", repos = c(getOption("repos"),
+#   INLA = "https://inla.r-inla-download.org/R/testing"
+# ), dep = TRUE)
 library(INLA)
 
 
-##############################################
-## Importa dados de capturas, recaps e CRC
-##############################################
 
-dados <- read.table("Ameivula_jalapensis_04.txt", h = T)
-dados$Parcela <- factor(dados$Parcela, levels = c("C2", "C1", "QP", "QT"))
-attach(dados)
-head(dados)
-tail(dados)
-str(dados)
-# detach(dados)
+# Fixed plots -------------------------------------------------------------
 
-## Calcula frequencias de capturas e recaps, faz graficos e testes
-# *******************************************************************
 
-# Total de capturas e recaps
-length(CRC)
-table(Sexo)
+## Load capture data  ------------------------------------------
 
-summary(as.factor(Parcela)) # two observations without "parcela"]
+data <- read.table("Ameivula_jalapensis_04.txt", h = T)
+data$Plot <- factor(data$Plot, levels = c("A1", "A2", "A3", "A4"))
+attach(data)
+head(data)
+tail(data)
+str(data)
+# detach(data)
 
-# Capturas e recaps totais por Parcela e especie
-(recap.especies <- table(Parcela, Especie))
 
-# Capturas e recaps totais por Parcela
-(cap <- table(Parcela))
-(cap <- table(Parcela[Recaptura == "N"]))
-(recap <- table(Parcela))
+## Calculate capture and recapture frequencies -----------------------------
 
-# Total de capturas (sem recaps)
+# Total of Captures and recaptures
+length(SVL)
+table(Sex)
+
+summary(as.factor(Plot)) 
+
+# Total Captures and recaps by Plot
+(recap.especies <- table(Plot, Species))
+
+# Total Captures and recaps by Plot
+(cap <- table(Plot))
+(cap <- table(Plot[Recapture == "N"]))
+(recap <- table(Plot))
+
+# Total captures (without recaps)
 sum(cap)
 sum(recap)
 
 
-# Media de recaps por individuo
-sum(table(Parcela[Recaptura != "N"])) / length(CRC)
-max(table(Numerodetombo[Recaptura == "S"]))
-table((table(dados$Numerodetombo[dados$Recaptura == "S"])))
+# Average recapture rate per individual
+sum(table(Plot[Recapture != "N"])) / length(SVL)
+max(table(VoucherNumber[Recapture == "Y"]))
+table((table(data$VoucherNumber[data$Recapture == "Y"])))
 
 
-table(Parcela, Recaptura)
-a <- table(Parcela, Recaptura)
+table(Plot, Recapture)
+a <- table(Plot, Recapture)
 colnames(a)
-colnames(a) <- c("Capturas", "Recapturas")
-row.names(a) <- c("A2", "A1", "A3", "A4") # renomeia parcelas
+colnames(a) <- c("Captures", "Recaptures")
 a <- (a[order(row.names(a)), ]) # Reordena as linhas pelas parcelas
 
-a
-windows(10, 10)
+print(a)
 barplot(t(a),
   beside = TRUE, legend.text = T, args.legend = list(x = "topleft"),
   main = expression(italic("Ameivula jalapensis")),
-  ylim = c(0, 120), ylab = expression(bold("Frequency"))
+  ylim = c(0, 120), ylab = "Frequency"
 )
 
-# Parcela e campanha
-table(Campanha, Parcela)
-b <- table(Campanha, Parcela)
-colnames(b) <- c("A2", "A1", "A3", "A4") # renomeia parcelas
+# Plot and fieldtrip
+table(Fieldtrip, Plot)
+b <- table(Fieldtrip, Plot)
 b <- (b[, order(colnames(b))]) # Reordena as linhas pelas parcelas
-b
+print(b)
 
-windows(10, 10)
 barplot(t(b),
   beside = TRUE, legend.text = T, args.legend = list(x = "topleft"),
   main = expression(italic("Ameivula jalapensis")),
-  ylim = c(0, 50), ylab = expression(bold("Abundância"))
+  ylim = c(0, 50), ylab = "Abundância"
 )
 
-table(Sexo, Parcela)
-sexo <- table(Sexo, Parcela)
-colnames(sexo)
+table(Sex, Plot)
+sex <- table(Sex, Plot)
+sex <- (sex[, order(colnames(sex))]) # Reordena as linhas pelas parcelas
+sex <- sex[c(2, 1, 3), ]
 
-colnames(sexo) <- c("A2", "A1", "A3", "A4")
-sexo <- (sexo[, order(colnames(sexo))]) # Reordena as linhas pelas parcelas
-sexo <- sexo[c(2, 1, 3), ]
+print(sex)
 
-sexo
-
-windows(20, 10)
-barplot(sexo,
+barplot(sex,
   legend.text = T, args.legend = list(x = "topleft"),
-  ylim = c(0, 60), ylab = "Frequ?ncia", cex.axis = 1.0,
+  ylim = c(0, 60), ylab = "Frequency", cex.axis = 1.0,
   cex.lab = 1.0, cex.names = 1.0, cex.sub = 1, beside = TRUE
 )
 
-(chi.sex.parcela <- chisq.test(sexo[-1, ]))
-chi.sex.parcela$residuals # A1 tem maiores residuos
-(chi.sex.parcela <- chisq.test(sexo[-1, -1]))
-prop.table(sexo[-1, ], margin = 2)
+(chi.sex.plot <- chisq.test(sex[-1, ], simulate.p.value = T, B = 10000))
+chi.sex.plot$residuals # A1 tem maiores residuos
+(chi.sex.plot <- chisq.test(sex[-1, -1]))
+prop.table(sex[-1, ], margin = 2)
 
-(sexo.camp.parcela <- table(Sexo, Parcela, Campanha))
-(chi.sex.camp1.parcela <- chisq.test(sexo.camp.parcela[-2, , 1]))
-(chi.sex.camp2.parcela <- chisq.test(sexo.camp.parcela[-2, , 2]))
-(chi.sex.camp3.parcela <- chisq.test(sexo.camp.parcela[-2, , 3]))
-(chi.sex.camp4.parcela <- chisq.test(sexo.camp.parcela[-2, , 4]))
+(sex.trip.plot <- table(Sex, Plot, Fieldtrip))
+(chi.sex.camp1.plot <- chisq.test(sex.trip.plot[-2, , 1]))
+(chi.sex.camp2.plot <- chisq.test(sex.trip.plot[-2, , 2]))
+(chi.sex.camp3.plot <- chisq.test(sex.trip.plot[-2, , 3]))
+(chi.sex.camp4.plot <- chisq.test(sex.trip.plot[-2, , 4]))
 
-prop.table(sexo.camp.parcela[-2, , ], margin = c(2, 3))
+prop.table(sex.trip.plot[-2, , ], margin = c(2, 3))
 
-chi.sex.camp3.parcela$residuals
+chi.sex.camp3.plot$residuals
 
 # Diferencas no total de capturas e recaps entre tratamentos
 
 recap
 (chi.recap <- chisq.test(recap))
-chi.recap$residuals # QT tem maior residuo
+chi.recap$residuals # A4 tem maior residuo
 (chi.recap <- chisq.test(recap[-4]))
-chi.recap$residual # QP tem maior residuo
-(chi.recap <- chisq.test(recap[-c(3, 4)])) # QP e QT possuem mais caps e recaps do que C1 e C2
-(chi.recap <- chisq.test(recap[c(3, 4)])) # Nao ha diferenca nas caps e recaps entre QP e QT
+chi.recap$residual # A3 tem maior residuo
+(chi.recap <- chisq.test(recap[-c(3, 4)])) # A3 e A4 possuem mais caps e recaps do que A2 e A1
+(chi.recap <- chisq.test(recap[c(3, 4)])) # Nao ha diferenca nas caps e recaps entre A3 e A4
 
 
 # N de individuos = caps
 cap
 (chi.cap <- chisq.test(cap))
-chi.cap$residuals # QT tem maior residuo
+chi.cap$residuals # A4 tem maior residuo
 (chi.cap <- chisq.test(cap[-4]))
-chi.cap$residuals # QP tem maior residuo
+chi.cap$residuals # A3 tem maior residuo
 (chi.cap <- chisq.test(cap[-c(3, 4)]))
 (chi.cap <- chisq.test(cap[c(3, 4)]))
 
 
 
-# ## Graficos da variacao temporal do CRC em todas as campanhas
+# ## Graficos da variacao temporal do SVL em todas as campanhas
 # # *********************************************************
 
-head(dados)
-summary(CRC)
-sd(CRC, na.rm = T)
+head(data)
+summary(SVL)
+sd(SVL, na.rm = T)
 
 windows(10, 10)
-plot(jitter(Campanha), CRC,
+plot(jitter(Fieldtrip), SVL,
   ylab = "Comprimento rostro-cloacal (mm)",
-  axes = F, cex = 1.5, bty = "n", ylim = c(30, 70), xlab = "Campanha", pch = 16,
+  axes = F, cex = 1.5, bty = "n", ylim = c(30, 70), xlab = "Fieldtrip", pch = 16,
   col = rgb(0, 0, 0, .4)
 )
 axis(1, 1:4, labels = c("Chuva", "Seca", "Chuva", "Seca"))
@@ -164,7 +159,7 @@ abline(h = 40, lty = 3)
 
 
 windows(20, 10)
-boxplot(CRC ~ Campanha,
+boxplot(SVL ~ Fieldtrip,
   axes = F, ylab = "Comprimento rostro-cloacal (mm)",
   ylim = c(30, 70), range = 0
 )
@@ -174,8 +169,8 @@ abline(h = 40, lty = 3)
 
 windows(10, 10)
 ggplot(
-  dados,
-  aes(x = as.factor(Campanha), y = CRC)
+  data,
+  aes(x = as.factor(Fieldtrip), y = SVL)
 ) +
   ggdist::stat_halfeye(
     adjust = 5,
@@ -203,52 +198,52 @@ ggplot(
 
 
 ## Graficos de razao sexual
-head(dados)
+head(data)
 
-table(Sexo, Campanha)
-sexo <- table(Sexo, Campanha)
-colnames(sexo)
+table(Sex, Fieldtrip)
+sex <- table(Sex, Fieldtrip)
+colnames(sex)
 
-colnames(sexo) <- c("Chuva", "Seca", "Chuva", "Seca")
-(sexo <- sexo[c(2, 1, 3), ])
+colnames(sex) <- c("Chuva", "Seca", "Chuva", "Seca")
+(sex <- sex[c(2, 1, 3), ])
 
 windows(10, 10)
-barplot(sexo,
+barplot(sex,
   legend.text = T, args.legend = list(x = "topright"), beside = TRUE,
   ylim = c(0, 90), ylab = "Frequ?ncia", cex.axis = 1.0,
   cex.lab = 1.0, cex.names = 1.0, cex.sub = 1
 )
 
-table(Sexo)
+table(Sex)
 
-(chi.sex <- chisq.test(table(Sexo)[-2]))
-(chi.sex.camp <- chisq.test(sexo[-1, ]))
-chi.sex.camp$residuals # Ha diferenca na razao sexual entre campanhas
-(chi.sex.camp <- chisq.test(sexo[-1, -3]))
-prop.table(sexo[-1, ], margin = 2)
+(chi.sex <- chisq.test(table(Sex)[-2]))
+(chi.sex.trip <- chisq.test(sex[-1, ]))
+chi.sex.trip$residuals # Ha diferenca na razao sexual entre campanhas
+(chi.sex.trip <- chisq.test(sex[-1, -3]))
+prop.table(sex[-1, ], margin = 2)
 
 # Na terceira campanha ha razao sexual diferente do esperado ao acaso
 
-# CRC entre sexos
-head(dados)
+# SVL entre sexos
+head(data)
 windows(10, 10)
-boxplot(CRC ~ Sexo,
-  data = dados,
+boxplot(SVL ~ Sex,
+  data = data,
   main = expression(italic("Ameivula jalapensis")),
   ylab = "Comprimento rostro-cloacal (mm)"
 )
 
-# Testa diferença no CRC entre sexos
-shapiro.test(CRC[Sexo != "I"])
-bartlett.test(CRC ~ Sexo, data = dados[Sexo != "I", ])
+# Testa diferença no SVL entre sexos
+shapiro.test(SVL[Sex != "I"])
+bartlett.test(SVL ~ Sex, data = data[Sex != "I", ])
 
-wilcox.test(CRC ~ Sexo, data = dados[Sexo != "I", ]) # Nao Significativo
+wilcox.test(SVL ~ Sex, data = data[Sex != "I", ]) # Nao Significativo
 
-# CRC entre parcelas
+# SVL entre parcelas
 windows(10, 10)
 ggplot(
-  dados,
-  aes(x = as.factor(Parcela), y = CRC)
+  data,
+  aes(x = as.factor(Plot), y = SVL)
 ) +
   ggdist::stat_halfeye(
     adjust = 5,
@@ -275,27 +270,27 @@ ggplot(
   labs(x = "", y = "Comprimento rostro-cloacal (mm)")
 
 
-# Testa diferença no CRC entre parcelas
+# Testa diferença no SVL entre parcelas
 
-bartlett.test(CRC ~ Parcela, data = dados)
+bartlett.test(SVL ~ Plot, data = data)
 
-r.crc <- rank(CRC)
-anova.crc <- aov(r.crc ~ Parcela, data = dados)
-summary(anova.crc) # Significativo
-TukeyHSD(anova.crc)
+r.svl <- rank(SVL)
+anova.svl <- aov(r.svl ~ Plot, data = data)
+summary(anova.svl) # Significativo
+TukeyHSD(anova.svl)
 
-r.crc.sexo <- rank(CRC[Sexo != "I"])
-anova.crc.sexo <- aov(r.crc.sexo ~ Sexo * Parcela, data = dados[Sexo != "I", ])
-summary(anova.crc.sexo)
+r.svl.sex <- rank(SVL[Sex != "I"])
+anova.svl.sex <- aov(r.svl.sex ~ Sex * Plot, data = data[Sex != "I", ])
+summary(anova.svl.sex)
 
 windows(10, 10)
-boxplot(CRC ~ Sexo * Parcela,
-  data = dados[Sexo != "I", ],
+boxplot(SVL ~ Sex * Plot,
+  data = data[Sex != "I", ],
   main = expression(italic("Ameivula jalapensis")),
   ylab = "Comprimento rostro-cloacal (mm)"
 )
 
-detach(dados)
+detach(data)
 
 
 ##########################################################################
@@ -308,30 +303,30 @@ detach(dados)
 
 ## Clean data
 ## **********
-head(dados)
-# detach(dados)
+head(data)
+# detach(data)
 
-demografia <- dados[dados$Morto != "S", ] # remove dead animals
-table(demografia$Campanha)
-table(demografia$Numerodetombo)
+demografia <- data[data$Dead != "Y", ] # remove dead animals
+table(demografia$Fieldtrip)
+table(demografia$VoucherNumber)
 
-completos <- complete.cases(demografia[, c("Numerodetombo", "Campanha")]) # remove NAs
+completos <- complete.cases(demografia[, c("VoucherNumber", "Fieldtrip")]) # remove NAs
 demografia.planilha <- droplevels(demografia[completos, ])
 head(demografia.planilha)
 tail(demografia.planilha)
-table(demografia.planilha$Recaptura, demografia.planilha$Especie)
+table(demografia.planilha$Recapture, demografia.planilha$Species)
 str(demografia.planilha)
-table(demografia.planilha$Campanha)
-table(demografia.planilha$Numerodetombo)
+table(demografia.planilha$Fieldtrip)
+table(demografia.planilha$VoucherNumber)
 
-demo.Ameivula <- demografia.planilha[demografia.planilha$Especie == "Ameivula_jalapensis", ]
+demo.Ameivula <- demografia.planilha[demografia.planilha$Species == "Ameivula_jalapensis", ]
 
 ## Prepare input file and run monthly data ("campanha")
 ## ****************************************************
 
 # Create capture histories
 
-Y.Ameivula <- CensusToCaptHist(ID = demo.Ameivula$Numerodetombo, d = demo.Ameivula$Campanha, timeInt = "M")
+Y.Ameivula <- CensusToCaptHist(ID = demo.Ameivula$VoucherNumber, d = demo.Ameivula$Fieldtrip, timeInt = "M")
 str(Y.Ameivula)
 head(Y.Ameivula)
 Y.Ameivula
@@ -360,25 +355,25 @@ pts.arms.SGT$X <- coordinates(pts.arms.SGT.utm)[, 1]
 pts.arms.SGT$Y <- coordinates(pts.arms.SGT.utm)[, 2]
 
 names(pts.arms.SGT) <- c(
-  "Parcela", "Gride", "Lat", "Long", "Local",
+  "Plot", "Trap", "Lat", "Long", "Locality",
   "X", "Y"
 )
 
-Ajalapensis.planilha.XY <- left_join(dados,
+Ajalapensis.planilha.XY <- left_join(data,
   pts.arms.SGT,
-  by = c("Parcela", "Gride")
+  by = c("Plot", "Trap")
 )
 head(Ajalapensis.planilha.XY)
 
 
 capts.1 <- data.frame(
-  Session = Ajalapensis.planilha.XY$Campanha[Ajalapensis.planilha.XY$Campanha == 1],
-  ID = Ajalapensis.planilha.XY$Numerodetombo[Ajalapensis.planilha.XY$Campanha == 1],
-  occasion = as.integer(as.factor(Ajalapensis.planilha.XY$Data[Ajalapensis.planilha.XY$Campanha == 1])),
-  X = Ajalapensis.planilha.XY$X[Ajalapensis.planilha.XY$Campanha == 1],
-  Y = Ajalapensis.planilha.XY$Y[Ajalapensis.planilha.XY$Campanha == 1],
-  data = Ajalapensis.planilha.XY$Data[Ajalapensis.planilha.XY$Campanha == 1],
-  Parcela = Ajalapensis.planilha.XY$Parcela[Ajalapensis.planilha.XY$Campanha == 1]
+  Session = Ajalapensis.planilha.XY$Fieldtrip[Ajalapensis.planilha.XY$Fieldtrip == 1],
+  ID = Ajalapensis.planilha.XY$VoucherNumber[Ajalapensis.planilha.XY$Fieldtrip == 1],
+  occasion = as.integer(as.factor(Ajalapensis.planilha.XY$Date[Ajalapensis.planilha.XY$Fieldtrip == 1])),
+  X = Ajalapensis.planilha.XY$X[Ajalapensis.planilha.XY$Fieldtrip == 1],
+  Y = Ajalapensis.planilha.XY$Y[Ajalapensis.planilha.XY$Fieldtrip == 1],
+  data = Ajalapensis.planilha.XY$Date[Ajalapensis.planilha.XY$Fieldtrip == 1],
+  Plot = Ajalapensis.planilha.XY$Plot[Ajalapensis.planilha.XY$Fieldtrip == 1]
 )
 
 capts.1$occasion[4:nrow(capts.1)] <- capts.1$occasion[4:nrow(capts.1)] + 1
@@ -386,39 +381,39 @@ capts.1$occasion[19:nrow(capts.1)] <- capts.1$occasion[19:nrow(capts.1)] + 3
 capts.1$occasion <- capts.1$occasion + 2
 
 capts.2 <- data.frame(
-  Session = Ajalapensis.planilha.XY$Campanha[Ajalapensis.planilha.XY$Campanha == 2],
-  ID = Ajalapensis.planilha.XY$Numerodetombo[Ajalapensis.planilha.XY$Campanha == 2],
-  occasion = as.integer(as.factor(Ajalapensis.planilha.XY$Data[Ajalapensis.planilha.XY$Campanha == 2])),
-  X = Ajalapensis.planilha.XY$X[Ajalapensis.planilha.XY$Campanha == 2],
-  Y = Ajalapensis.planilha.XY$Y[Ajalapensis.planilha.XY$Campanha == 2],
-  data = Ajalapensis.planilha.XY$Data[Ajalapensis.planilha.XY$Campanha == 2],
-  Parcela = Ajalapensis.planilha.XY$Parcela[Ajalapensis.planilha.XY$Campanha == 2]
+  Session = Ajalapensis.planilha.XY$Fieldtrip[Ajalapensis.planilha.XY$Fieldtrip == 2],
+  ID = Ajalapensis.planilha.XY$VoucherNumber[Ajalapensis.planilha.XY$Fieldtrip == 2],
+  occasion = as.integer(as.factor(Ajalapensis.planilha.XY$Date[Ajalapensis.planilha.XY$Fieldtrip == 2])),
+  X = Ajalapensis.planilha.XY$X[Ajalapensis.planilha.XY$Fieldtrip == 2],
+  Y = Ajalapensis.planilha.XY$Y[Ajalapensis.planilha.XY$Fieldtrip == 2],
+  data = Ajalapensis.planilha.XY$Date[Ajalapensis.planilha.XY$Fieldtrip == 2],
+  Plot = Ajalapensis.planilha.XY$Plot[Ajalapensis.planilha.XY$Fieldtrip == 2]
 )
 
 capts.2$occasion[32:nrow(capts.2)] <- capts.2$occasion[32:nrow(capts.2)] + 1
 
 
 capts.3 <- data.frame(
-  Session = Ajalapensis.planilha.XY$Campanha[Ajalapensis.planilha.XY$Campanha == 3],
-  ID = Ajalapensis.planilha.XY$Numerodetombo[Ajalapensis.planilha.XY$Campanha == 3],
-  occasion = as.integer(as.factor(Ajalapensis.planilha.XY$Data[Ajalapensis.planilha.XY$Campanha == 3])),
-  X = Ajalapensis.planilha.XY$X[Ajalapensis.planilha.XY$Campanha == 3],
-  Y = Ajalapensis.planilha.XY$Y[Ajalapensis.planilha.XY$Campanha == 3],
-  data = Ajalapensis.planilha.XY$Data[Ajalapensis.planilha.XY$Campanha == 3],
-  Parcela = Ajalapensis.planilha.XY$Parcela[Ajalapensis.planilha.XY$Campanha == 3]
+  Session = Ajalapensis.planilha.XY$Fieldtrip[Ajalapensis.planilha.XY$Fieldtrip == 3],
+  ID = Ajalapensis.planilha.XY$VoucherNumber[Ajalapensis.planilha.XY$Fieldtrip == 3],
+  occasion = as.integer(as.factor(Ajalapensis.planilha.XY$Date[Ajalapensis.planilha.XY$Fieldtrip == 3])),
+  X = Ajalapensis.planilha.XY$X[Ajalapensis.planilha.XY$Fieldtrip == 3],
+  Y = Ajalapensis.planilha.XY$Y[Ajalapensis.planilha.XY$Fieldtrip == 3],
+  data = Ajalapensis.planilha.XY$Date[Ajalapensis.planilha.XY$Fieldtrip == 3],
+  Plot = Ajalapensis.planilha.XY$Plot[Ajalapensis.planilha.XY$Fieldtrip == 3]
 )
 
 capts.3$occasion[65:nrow(capts.3)] <- capts.3$occasion[65:nrow(capts.3)] + 1
 
 
 capts.4 <- data.frame(
-  Session = Ajalapensis.planilha.XY$Campanha[Ajalapensis.planilha.XY$Campanha == 4],
-  ID = Ajalapensis.planilha.XY$Numerodetombo[Ajalapensis.planilha.XY$Campanha == 4],
-  occasion = as.integer(as.factor(Ajalapensis.planilha.XY$Data[Ajalapensis.planilha.XY$Campanha == 4])),
-  X = Ajalapensis.planilha.XY$X[Ajalapensis.planilha.XY$Campanha == 4],
-  Y = Ajalapensis.planilha.XY$Y[Ajalapensis.planilha.XY$Campanha == 4],
-  data = Ajalapensis.planilha.XY$Data[Ajalapensis.planilha.XY$Campanha == 4],
-  Parcela = Ajalapensis.planilha.XY$Parcela[Ajalapensis.planilha.XY$Campanha == 4]
+  Session = Ajalapensis.planilha.XY$Fieldtrip[Ajalapensis.planilha.XY$Fieldtrip == 4],
+  ID = Ajalapensis.planilha.XY$VoucherNumber[Ajalapensis.planilha.XY$Fieldtrip == 4],
+  occasion = as.integer(as.factor(Ajalapensis.planilha.XY$Date[Ajalapensis.planilha.XY$Fieldtrip == 4])),
+  X = Ajalapensis.planilha.XY$X[Ajalapensis.planilha.XY$Fieldtrip == 4],
+  Y = Ajalapensis.planilha.XY$Y[Ajalapensis.planilha.XY$Fieldtrip == 4],
+  data = Ajalapensis.planilha.XY$Date[Ajalapensis.planilha.XY$Fieldtrip == 4],
+  Plot = Ajalapensis.planilha.XY$Plot[Ajalapensis.planilha.XY$Fieldtrip == 4]
 )
 capts <- rbind(
   capts.1[, -6],
@@ -426,15 +421,15 @@ capts <- rbind(
   capts.3[, -6],
   capts.4[, -6]
 )
-# crc = oreadicus.planilha.XY$crc,
-# massa = oreadicus.planilha.XY$massa,
-# sexo = as.factor(oreadicus.planilha.XY$sexo))
+# svl = oreadicus.planilha.XY$svl,
+# mass = oreadicus.planilha.XY$mass,
+# sex = as.factor(oreadicus.planilha.XY$sex))
 
 completos <- complete.cases(capts[, c("ID", "X", "Y")]) # remove NAs
 capts <- droplevels(capts[completos, ])
 
 traps.xy <- data.frame(
-  trapID = interaction(pts.arms.SGT$Parcela, pts.arms.SGT$Gride),
+  trapID = interaction(pts.arms.SGT$Plot, pts.arms.SGT$Trap),
   x = pts.arms.SGT$X,
   y = pts.arms.SGT$Y
 )
@@ -467,7 +462,7 @@ traps.xy <- read.traps(data = traps.xy[, -1], detector = "multi")
 Ajalapensis.CHxy <- make.capthist(capts, traps.xy,
   fmt = "XY",
   noccasions = 15,
-  covnames = c("Parcela")
+  covnames = c("Plot")
 )
 
 intervals(Ajalapensis.CHxy) <- c(112, 245, 84) / 30
@@ -524,18 +519,18 @@ fit1 <- openCR.fit(Ajalapensis.CHxy, type = "CJS", model = list(
 ))
 summary(fit1)
 
-# Variando por parcela
+# Variando por plot
 fit2 <- openCR.fit(Ajalapensis.CHxy, type = "CJS", model = list(
-  phi ~ -1 + Parcela,
-  p ~ -1 + Parcela
+  phi ~ -1 + Plot,
+  p ~ -1 + Plot
 ))
 summary(fit2)
 predict(fit2, all = T)
 
 # Variando por pacela e pelo tempo
 fit3 <- openCR.fit(Ajalapensis.CHxy, type = "CJS", model = list(
-  phi ~ -1 + Parcela + t,
-  p ~ -1 + Parcela + t
+  phi ~ -1 + Plot + t,
+  p ~ -1 + Plot + t
 ))
 summary(fit3)
 predict(fit3, all = T)
@@ -547,8 +542,8 @@ AIC(fit0, fit1, fit2, fit3)
 fit3 <- openCR.fit(Ajalapensis.CHxy,
   type = "CJS",
   model = list(
-    phi ~ -1 + Parcela * t,
-    p ~ -1 + Parcela * t
+    phi ~ -1 + Plot * t,
+    p ~ -1 + Plot * t
   ),
   method = "CG"
 )
@@ -558,26 +553,26 @@ predict(fit3, all = T)
 
 AIC(fit0, fit1, fit2, fit3)
 
-(parcela.dat <- expand.grid(
-  Parcela = factor(c("C1", "C2", "QP", "QT"), levels = c("C1", "C2", "QP", "QT")),
+(plot.dat <- expand.grid(
+  Plot = factor(c("A2", "A1", "A3", "A4"), levels = c("A2", "A1", "A3", "A4")),
   t = factor(1:4)
 ))
 
 quartz(8, 8)
 plot(fit3,
-  newdata = parcela.dat[parcela.dat$Parcela == "C1", ], # add = TRUE,
+  newdata = plot.dat[plot.dat$Plot == "A2", ], # add = TRUE,
   xoffset = 0.1, col = "forestgreen", pch = 16, type = "o"
 )
 plot(fit3,
-  newdata = parcela.dat[parcela.dat$Parcela == "C2", ], add = TRUE,
+  newdata = plot.dat[plot.dat$Plot == "A1", ], add = TRUE,
   xoffset = 0.1, col = "navyblue", pch = 16, type = "o"
 )
 plot(fit3,
-  newdata = parcela.dat[parcela.dat$Parcela == "QP", ], add = TRUE,
+  newdata = plot.dat[plot.dat$Plot == "A3", ], add = TRUE,
   xoffset = 0.1, col = "orange", pch = 16, type = "o"
 )
 plot(fit3,
-  newdata = parcela.dat[parcela.dat$Parcela == "QT", ], add = TRUE,
+  newdata = plot.dat[plot.dat$Plot == "A4", ], add = TRUE,
   xoffset = 0.1, col = "red", pch = 16, type = "o"
 )
 
@@ -612,19 +607,19 @@ ggplot(p.fit1$f, aes()) +
   theme(plot.margin = unit(c(0, 0, 2, 0), "lines"), text = element_text(size = 10), legend.position = c(0.1, 0.5))
 
 
-pradel.fit2 <- openCR.fit(Ajalapensis.CHxy, type = "JSSAfCL", model = list(phi ~ Parcela, p ~ Parcela, f ~ Parcela))
+pradel.fit2 <- openCR.fit(Ajalapensis.CHxy, type = "JSSAfCL", model = list(phi ~ Plot, p ~ Plot, f ~ Plot))
 summary(pradel.fit2)
 p.fit2 <- predict(pradel.fit2, all = T)
-p.fit2$phi$Parcela <- factor(p.fit2$phi$Parcela,
-  levels = c("C2", "C1", "QP", "QT")
+p.fit2$phi$Plot <- factor(p.fit2$phi$Plot,
+  levels = c("A1", "A2", "A3", "A4")
 )
 
-p.fit2$p$Parcela <- factor(p.fit2$p$Parcela,
-  levels = c("C2", "C1", "QP", "QT")
+p.fit2$p$Plot <- factor(p.fit2$p$Plot,
+  levels = c("A1", "A2", "A3", "A4")
 )
 
-p.fit2$f$Parcela <- factor(p.fit2$f$Parcela,
-  levels = c("C2", "C1", "QP", "QT")
+p.fit2$f$Plot <- factor(p.fit2$f$Plot,
+  levels = c("A1", "A2", "A3", "A4")
 )
 
 #--- Steps 1, 2, 3: Extract, Subset, and Rename (No Changes Here) ---
@@ -637,19 +632,19 @@ names(phi_coefs) <- phi_names
 phi_vcov <- all_vcov[phi_names, phi_names]
 
 names(phi_coefs)[names(phi_coefs) == "phi"] <- "(Intercept)"
-names(phi_coefs) <- gsub("phi.Parcela", "Parcela", names(phi_coefs))
+names(phi_coefs) <- gsub("phi.Plot", "Plot", names(phi_coefs))
 
-#--- Step 4: Create the Data for the Grid and Run qdrg() ---
+#--- Step 4: Create the Date for the Grid and Run qdrg() ---
 
 # Define the levels of your factor
-factor_levels <- c("C2", "C1", "QP", "QT")
+factor_levels <- c("A1", "A2", "A3", "A4")
 
 # THE FIX: Create a data frame containing your factor
-grid_data <- data.frame(Parcela = factor_levels)
+grid_data <- data.frame(Plot = factor_levels)
 
 # Create the reference grid using the new 'grid_data' object
 ref_grid_phi <- qdrg(
-  formula = ~Parcela,
+  formula = ~Plot,
   data = grid_data, # <-- Add the data argument here
   coef = phi_coefs,
   vcov = phi_vcov
@@ -666,19 +661,19 @@ names(p_coefs) <- p_names
 p_vcov <- all_vcov[p_names, p_names]
 
 names(p_coefs)[names(p_coefs) == "p"] <- "(Intercept)"
-names(p_coefs) <- gsub("p.Parcela", "Parcela", names(p_coefs))
+names(p_coefs) <- gsub("p.Plot", "Plot", names(p_coefs))
 
 #--- Step 4: Create the Data for the Grid and Run qdrg() ---
 
 # Define the levels of your factor
-factor_levels <- c("C2", "C1", "QP", "QT")
+factor_levels <- c("A1", "A2", "A3", "A4")
 
 # THE FIX: Create a data frame containing your factor
-grid_data <- data.frame(Parcela = factor_levels)
+grid_data <- data.frame(Plot = factor_levels)
 
 # Create the reference grid using the new 'grid_data' object
 ref_grid_p <- qdrg(
-  formula = ~Parcela,
+  formula = ~Plot,
   data = grid_data, # <-- Add the data argument here
   coef = p_coefs,
   vcov = p_vcov
@@ -695,19 +690,19 @@ names(f_coefs) <- f_names
 f_vcov <- all_vcov[f_names, f_names]
 
 names(f_coefs)[names(f_coefs) == "f"] <- "(Intercept)"
-names(f_coefs) <- gsub("f.Parcela", "Parcela", names(f_coefs))
+names(f_coefs) <- gsub("f.Plot", "Plot", names(f_coefs))
 
 #--- Step 4: Create the Data for the Grid and Run qdrg() ---
 
 # Define the levels of your factor
-factor_levels <- c("C1", "C2", "QP", "QT")
+factor_levels <- c("A2", "A1", "A3", "A4")
 
 # THE FIX: Create a data frame containing your factor
-grid_data <- data.frame(Parcela = factor_levels)
+grid_data <- data.frame(Plot = factor_levels)
 
 # Create the reference grid using the new 'grid_data' object
 ref_grid_f <- qdrg(
-  formula = ~Parcela,
+  formula = ~Plot,
   data = grid_data, # <-- Add the data argument here
   coef = f_coefs,
   vcov = f_vcov
@@ -720,7 +715,7 @@ print(contrasts_f)
 
 quartz(8, 8)
 ggplot(p.fit2$phi[c(1, 5, 9, 13), ], aes()) +
-  geom_pointrange(aes(x = Parcela, y = estimate, ymin = lcl, ymax = ucl, color = Parcela), size = 1, show.legend = F) +
+  geom_pointrange(aes(x = Plot, y = estimate, ymin = lcl, ymax = ucl, color = Plot), size = 1, show.legend = F) +
   labs(x = "Fire severity", y = "Survival") +
   theme(plot.margin = unit(c(0, 0, 2, 0), "lines"), text = element_text(size = 10), legend.position = c(0.1, 0.5)) +
   theme_minimal() +
@@ -730,7 +725,7 @@ print(contrasts_phi)
 
 quartz(8, 8)
 ggplot(p.fit2$p[c(1, 5, 9, 13), ], aes()) +
-  geom_pointrange(aes(x = Parcela, y = estimate, ymin = lcl, ymax = ucl, color = Parcela), size = 1, show.legend = F) +
+  geom_pointrange(aes(x = Plot, y = estimate, ymin = lcl, ymax = ucl, color = Plot), size = 1, show.legend = F) +
   labs(x = "Fire severity", y = "Capture probability") +
   theme(plot.margin = unit(c(0, 0, 2, 0), "lines"), text = element_text(size = 10), legend.position = c(0.1, 0.5)) +
   theme_minimal() +
@@ -740,7 +735,7 @@ print(contrasts_p)
 
 quartz(8, 8)
 ggplot(p.fit2$f[c(1, 5, 9, 13), ], aes()) +
-  geom_pointrange(aes(x = Parcela, y = estimate, ymin = lcl, ymax = ucl, color = Parcela), size = 1, show.legend = F) +
+  geom_pointrange(aes(x = Plot, y = estimate, ymin = lcl, ymax = ucl, color = Plot), size = 1, show.legend = F) +
   labs(x = "Fire severity", y = "Recruitment") +
   theme(plot.margin = unit(c(0, 0, 2, 0), "lines"), text = element_text(size = 10), legend.position = c(0.1, 0.5)) +
   theme_minimal() +
@@ -751,9 +746,9 @@ print(contrasts_f)
 pradel.fit3 <- openCR.fit(Ajalapensis.CHxy,
   type = "JSSAfCL",
   model = list(
-    phi ~ -1 + Parcela * t,
-    p ~ -1 + Parcela * t,
-    f ~ -1 + Parcela * t
+    phi ~ -1 + Plot * t,
+    p ~ -1 + Plot * t,
+    f ~ -1 + Plot * t
   ),
   start = pradel.fit0
 )
@@ -766,9 +761,9 @@ AIC(pradel.fit0, pradel.fit1, pradel.fit2, pradel.fit3)
 pradel.fit3 <- openCR.fit(Ajalapensis.CHxy,
   type = "JSSAfCL",
   model = list(
-    phi ~ -1 + Parcela * t,
-    p ~ -1 + Parcela * t,
-    f ~ -1 + Parcela * t
+    phi ~ -1 + Plot * t,
+    p ~ -1 + Plot * t,
+    f ~ -1 + Plot * t
   ),
   method = "Nelder-Mead",
   details = list(control = list(
@@ -784,55 +779,55 @@ AIC(pradel.fit0, pradel.fit1, pradel.fit2, pradel.fit3)
 
 quartz(8, 8)
 plot(pradel.fit3,
-  newdata = parcela.dat[parcela.dat$Parcela == "C1", ], # add = TRUE,
+  newdata = plot.dat[plot.dat$Plot == "A2", ], # add = TRUE,
   xoffset = 0.1, col = "forestgreen", pch = 16, type = "o"
 )
 plot(pradel.fit3,
-  newdata = parcela.dat[parcela.dat$Parcela == "C2", ], add = TRUE,
+  newdata = plot.dat[plot.dat$Plot == "A1", ], add = TRUE,
   xoffset = 0.1, col = "navyblue", pch = 16, type = "o"
 )
 plot(pradel.fit3,
-  newdata = parcela.dat[parcela.dat$Parcela == "QP", ], add = TRUE,
+  newdata = plot.dat[plot.dat$Plot == "A3", ], add = TRUE,
   xoffset = 0.1, col = "orange", pch = 16, type = "o"
 )
 plot(pradel.fit3,
-  newdata = parcela.dat[parcela.dat$Parcela == "QT", ], add = TRUE,
+  newdata = plot.dat[plot.dat$Plot == "A4", ], add = TRUE,
   xoffset = 0.1, col = "red", pch = 16, type = "o"
 )
 
 quartz(8, 8)
 plot(pradel.fit3,
-  newdata = parcela.dat[parcela.dat$Parcela == "C1", ], # add = TRUE,
+  newdata = plot.dat[plot.dat$Plot == "A2", ], # add = TRUE,
   xoffset = 0.1, col = "forestgreen", pch = 16, type = "o", par = "f", ylim = c(0, 2)
 )
 plot(pradel.fit3,
-  newdata = parcela.dat[parcela.dat$Parcela == "C2", ], add = TRUE,
+  newdata = plot.dat[plot.dat$Plot == "A1", ], add = TRUE,
   xoffset = 0.1, col = "navyblue", pch = 16, type = "o", par = "f"
 )
 plot(pradel.fit3,
-  newdata = parcela.dat[parcela.dat$Parcela == "QP", ], add = TRUE,
+  newdata = plot.dat[plot.dat$Plot == "A3", ], add = TRUE,
   xoffset = 0.1, col = "orange", pch = 16, type = "o", par = "f"
 )
 plot(pradel.fit3,
-  newdata = parcela.dat[parcela.dat$Parcela == "QT", ], add = TRUE,
+  newdata = plot.dat[plot.dat$Plot == "A4", ], add = TRUE,
   xoffset = 0.1, col = "red", pch = 16, type = "o", par = "f"
 )
 
 quartz(8, 8)
 plot(pradel.fit3,
-  newdata = parcela.dat[parcela.dat$Parcela == "C1", ], # add = TRUE,
+  newdata = plot.dat[plot.dat$Plot == "A2", ], # add = TRUE,
   xoffset = 0.1, col = "forestgreen", pch = 16, type = "o", par = "p", ylim = c(0, .05)
 )
 plot(pradel.fit3,
-  newdata = parcela.dat[parcela.dat$Parcela == "C2", ], add = TRUE,
+  newdata = plot.dat[plot.dat$Plot == "A1", ], add = TRUE,
   xoffset = 0.1, col = "navyblue", pch = 16, type = "o", par = "p"
 )
 plot(pradel.fit3,
-  newdata = parcela.dat[parcela.dat$Parcela == "QP", ], add = TRUE,
+  newdata = plot.dat[plot.dat$Plot == "A3", ], add = TRUE,
   xoffset = 0.1, col = "orange", pch = 16, type = "o", par = "p"
 )
 plot(pradel.fit3,
-  newdata = parcela.dat[parcela.dat$Parcela == "QT", ], add = TRUE,
+  newdata = plot.dat[plot.dat$Plot == "A4", ], add = TRUE,
   xoffset = 0.1, col = "red", pch = 16, type = "o", par = "p"
 )
 
@@ -849,7 +844,7 @@ ggplot(d.pradel3[[1]]$estimates, aes(x = session, y = N, group = 1)) +
   geom_line(data = d.pradel3[[3]]$estimates, aes(x = session, y = N), size = 1, color = "orange") +
   geom_point(data = d.pradel3[[4]]$estimates, aes(x = session, y = N), size = 3, color = "red") +
   geom_line(data = d.pradel3[[4]]$estimates, aes(x = session, y = N), size = 1, color = "red") +
-  labs(x = "Campanha", y = "Tamanho populacional") +
+  labs(x = "Fieldtrip", y = "Tamanho populacional") +
   theme(plot.margin = unit(c(0, 0, 2, 0), "lines"), text = element_text(size = 10), legend.position = c(0.1, 0.5))
 
 ggplot(d.pradel3[[1]]$estimates, aes(x = session, y = phi, group = 1)) +
@@ -996,14 +991,14 @@ pradel.scr.fit.t <- openCR.fit(Ajalapensis.CHxy,
 
 summary(pradel.scr.fit.t)
 
-pradel.scr.fit.parcela <- openCR.fit(Ajalapensis.CHxy,
+pradel.scr.fit.plot <- openCR.fit(Ajalapensis.CHxy,
   type = "JSSAsecrfCL", mask = mesh,
   model = list(
-    phi ~ -1 + Parcela,
-    lambda0 ~ -1 + Parcela,
+    phi ~ -1 + Plot,
+    lambda0 ~ -1 + Plot,
     sigma ~ 1,
-    f ~ -1 + Parcela,
-    move.a ~ -1 + Parcela
+    f ~ -1 + Plot,
+    move.a ~ -1 + Plot
   ),
   # link = list(phi = "sin", move.a = "sin"),
   movementmodel = "UNIzi",
@@ -1018,21 +1013,21 @@ pradel.scr.fit.parcela <- openCR.fit(Ajalapensis.CHxy,
   ncores = 6
 )
 
-summary(pradel.scr.fit.parcela)
-predict(pradel.scr.fit.parcela, all = T)
+summary(pradel.scr.fit.plot)
+predict(pradel.scr.fit.plot, all = T)
 
 AIC(
-  pradel.scr.fit.parcela,
+  pradel.scr.fit.plot,
   pradel.scr.fit.t, pradel.scr.fit.UNIzi0
 )
 
 pradel.scr.fit.full <- openCR.fit(Ajalapensis.CHxy,
   type = "JSSAsecrfCL", mask = mesh,
   model = list(
-    phi ~ -1 + Parcela * t,
-    lambda0 ~ -1 + Parcela * t,
-    # sigma ~ -1 +Parcela + t,
-    f ~ -1 + Parcela * t
+    phi ~ -1 + Plot * t,
+    lambda0 ~ -1 + Plot * t,
+    # sigma ~ -1 +Plot + t,
+    f ~ -1 + Plot * t
   ),
   movementmodel = "UNIzi",
   kernelradius = 5,
@@ -1047,7 +1042,7 @@ summary(pradel.scr.fit.full)
 predict(pradel.scr.fit.full, all = T)
 
 AIC(
-  pradel.scr.fit.full, pradel.scr.fit.parcela,
+  pradel.scr.fit.full, pradel.scr.fit.plot,
   pradel.scr.fit.t, pradel.scr.fit.0
 )
 
@@ -1107,83 +1102,83 @@ ggplot(p.fit.scr$f, aes()) +
   labs(x = "Occasion", y = "Recruitment") +
   theme(plot.margin = unit(c(0, 0, 2, 0), "lines"), text = element_text(size = 10), legend.position = c(0.1, 0.5))
 
-p.fit.scr.parcela <- predict(pradel.scr.fit.parcela, all = T)
+p.fit.scr.plot <- predict(pradel.scr.fit.plot, all = T)
 
 quartz(8, 8)
-ggplot(p.fit.scr.parcela$phi[c(1, 5, 9, 13), ], aes()) +
-  geom_pointrange(aes(x = Parcela, y = estimate, ymin = lcl, ymax = ucl), size = 1) +
+ggplot(p.fit.scr.plot$phi[c(1, 5, 9, 13), ], aes()) +
+  geom_pointrange(aes(x = Plot, y = estimate, ymin = lcl, ymax = ucl), size = 1) +
   labs(x = "Plot", y = "Survival") +
   theme(plot.margin = unit(c(0, 0, 2, 0), "lines"), text = element_text(size = 10), legend.position = c(0.1, 0.5))
 
 quartz(8, 8)
-ggplot(p.fit.scr.parcela$lambda0[c(1, 5, 9, 13), ], aes()) +
-  geom_pointrange(aes(x = Parcela, y = estimate, ymin = lcl, ymax = ucl), size = 1) +
+ggplot(p.fit.scr.plot$lambda0[c(1, 5, 9, 13), ], aes()) +
+  geom_pointrange(aes(x = Plot, y = estimate, ymin = lcl, ymax = ucl), size = 1) +
   labs(x = "Plot", y = "Capture") +
   theme(plot.margin = unit(c(0, 0, 2, 0), "lines"), text = element_text(size = 10), legend.position = c(0.1, 0.5))
 
 quartz(8, 8)
-ggplot(p.fit.scr.parcela$f[c(1, 5, 9, 13), ], aes()) +
-  geom_pointrange(aes(x = Parcela, y = estimate, ymin = lcl, ymax = ucl), size = 1) +
+ggplot(p.fit.scr.plot$f[c(1, 5, 9, 13), ], aes()) +
+  geom_pointrange(aes(x = Plot, y = estimate, ymin = lcl, ymax = ucl), size = 1) +
   labs(x = "Plot", y = "Recruitment") +
   theme(plot.margin = unit(c(0, 0, 2, 0), "lines"), text = element_text(size = 10), legend.position = c(0.1, 0.5))
 
 quartz(8, 8)
-ggplot(p.fit.scr.parcela$move.a[c(1, 5, 9, 13), ], aes()) +
-  geom_pointrange(aes(x = Parcela, y = 1 - estimate, ymin = 1 - lcl, ymax = 1 - ucl), size = 1) +
+ggplot(p.fit.scr.plot$move.a[c(1, 5, 9, 13), ], aes()) +
+  geom_pointrange(aes(x = Plot, y = 1 - estimate, ymin = 1 - lcl, ymax = 1 - ucl), size = 1) +
   labs(x = "Plot", y = "Dispersal probability") +
   theme(plot.margin = unit(c(0, 0, 2, 0), "lines"), text = element_text(size = 10), legend.position = c(0.1, 0.5))
 
 
 
 plot(pradel.scr.fit.full,
-  newdata = parcela.dat[parcela.dat$Parcela == "C1", ], # add = TRUE,
+  newdata = plot.dat[plot.dat$Plot == "A2", ], # add = TRUE,
   xoffset = 0.1, col = "forestgreen", pch = 16, type = "o", par = "phi"
 )
 plot(pradel.scr.fit.full,
-  newdata = parcela.dat[parcela.dat$Parcela == "C2", ], add = TRUE,
+  newdata = plot.dat[plot.dat$Plot == "A1", ], add = TRUE,
   xoffset = 0.1, col = "navyblue", pch = 16, type = "o", par = "phi"
 )
 plot(pradel.scr.fit.full,
-  newdata = parcela.dat[parcela.dat$Parcela == "QP", ], add = TRUE,
+  newdata = plot.dat[plot.dat$Plot == "A3", ], add = TRUE,
   xoffset = 0.1, col = "orange", pch = 16, type = "o", par = "phi"
 )
 plot(pradel.scr.fit.full,
-  newdata = parcela.dat[parcela.dat$Parcela == "QT", ], add = TRUE,
+  newdata = plot.dat[plot.dat$Plot == "A4", ], add = TRUE,
   xoffset = 0.1, col = "red", pch = 16, type = "o", par = "phi"
 )
 
 
 plot(pradel.scr.fit.full,
-  newdata = parcela.dat[parcela.dat$Parcela == "C1", ], # add = TRUE,
+  newdata = plot.dat[plot.dat$Plot == "A2", ], # add = TRUE,
   xoffset = 0.1, col = "forestgreen", pch = 16, type = "o", par = "f", ylim = c(0, 2)
 )
 plot(pradel.scr.fit.full,
-  newdata = parcela.dat[parcela.dat$Parcela == "C2", ], add = TRUE,
+  newdata = plot.dat[plot.dat$Plot == "A1", ], add = TRUE,
   xoffset = 0.1, col = "navyblue", pch = 16, type = "o", par = "f"
 )
 plot(pradel.scr.fit.full,
-  newdata = parcela.dat[parcela.dat$Parcela == "QP", ], add = TRUE,
+  newdata = plot.dat[plot.dat$Plot == "A3", ], add = TRUE,
   xoffset = 0.1, col = "orange", pch = 16, type = "o", par = "f"
 )
 plot(pradel.scr.fit.full,
-  newdata = parcela.dat[parcela.dat$Parcela == "QT", ], add = TRUE,
+  newdata = plot.dat[plot.dat$Plot == "A4", ], add = TRUE,
   xoffset = 0.1, col = "red", pch = 16, type = "o", par = "f"
 )
 
 plot(pradel.scr.fit.full,
-  newdata = parcela.dat[parcela.dat$Parcela == "C1", ], # add = TRUE,
+  newdata = plot.dat[plot.dat$Plot == "A2", ], # add = TRUE,
   xoffset = 0.1, col = "forestgreen", pch = 16, type = "o", par = "lambda0", ylim = c(0, .01)
 )
 plot(pradel.scr.fit.full,
-  newdata = parcela.dat[parcela.dat$Parcela == "C2", ], add = TRUE,
+  newdata = plot.dat[plot.dat$Plot == "A1", ], add = TRUE,
   xoffset = 0.1, col = "navyblue", pch = 16, type = "o", par = "lambda0"
 )
 plot(pradel.scr.fit.full,
-  newdata = parcela.dat[parcela.dat$Parcela == "QP", ], add = TRUE,
+  newdata = plot.dat[plot.dat$Plot == "A3", ], add = TRUE,
   xoffset = 0.1, col = "orange", pch = 16, type = "o", par = "lambda0"
 )
 plot(pradel.scr.fit.full,
-  newdata = parcela.dat[parcela.dat$Parcela == "QT", ], add = TRUE,
+  newdata = plot.dat[plot.dat$Plot == "A4", ], add = TRUE,
   xoffset = 0.1, col = "red", pch = 16, type = "o", par = "lambda0"
 )
 
@@ -1198,7 +1193,7 @@ ggplot(p.predict.maximiliani$p, aes(time, estimate, ymin = lcl, ymax = ucl)) +
   geom_point() +
   geom_line() +
   xlab("\nMeses") +
-  ylab("Recaptura\n")
+  ylab("Recapture\n")
 
 
 # Bayesian CJS/Pradel/Growth Model ---------------------------------------------------
@@ -1209,17 +1204,17 @@ library(rjags)
 library(reshape)
 library(lubridate)
 
-demo.Ameivula$Data <- as.Date(demo.Ameivula$Data, format = "%d/%m/%Y")
+demo.Ameivula$Date <- as.Date(demo.Ameivula$Date, format = "%d/%m/%Y")
 
 demo.Ameivula$TimeWeek <- 1 + lubridate::interval(
   "2021-02-22",
-  demo.Ameivula$Data
+  demo.Ameivula$Date
 ) %/%
   weeks(1)
 
 demo.Ameivula$TimeMonth <- 1 + lubridate::interval(
   "2021-02-22",
-  demo.Ameivula$Data
+  demo.Ameivula$Date
 ) %/%
   months(1)
 
@@ -1231,19 +1226,19 @@ demo.Ameivula$TimeMonth
 ###################################################
 
 # Create ID
-IDENT <- paste0(demo.Ameivula$Parcela, demo.Ameivula$Numerodetombo)
+IDENT <- paste0(demo.Ameivula$Plot, demo.Ameivula$VoucherNumber)
 head(IDENT)
 demo.Ameivula <- data.frame(IDENT, demo.Ameivula)
 rm(IDENT)
 str(demo.Ameivula)
 
 # Filter the variables of interest
-table1 <- demo.Ameivula[, c("IDENT", "TimeWeek", "Sexo", "CRC", "Parcela")]
+table1 <- demo.Ameivula[, c("IDENT", "TimeWeek", "Sex", "SVL", "Plot")]
 str(table1)
 
 
 # Identifies captures without ID and SVL
-table2 <- complete.cases(table1[, c("IDENT", "CRC")])
+table2 <- complete.cases(table1[, c("IDENT", "SVL")])
 
 # Removes captures without ID and SVL
 table3 <- table1[table2, ]
@@ -1276,7 +1271,7 @@ head(table5)
 Age <- c(rep(NA, nrow(table5)))
 Age
 
-datA <- data.frame(table5$TimeWeek, table5$Sexo, table5$IDENT, table5$CRC, Age, table5$Parcela)
+datA <- data.frame(table5$TimeWeek, table5$Sex, table5$IDENT, table5$SVL, Age, table5$Plot)
 names(datA) <- c("TimeWeek", "Sex", "TrueID", "SVL", "Age", "Site")
 datA$Age[datA$SVL <= 35] <- 0
 # datA<-datA[datA$TrueID!="Q3021",]
@@ -1302,10 +1297,10 @@ plot <- cast(datA, TrueID ~ ., value = "Site", fun.aggregate = function(x) tail(
 plot <- as.character(plot[, 2])
 plot
 # Ordering by fire severity
-plot[plot == "C2"] <- 1
-plot[plot == "C1"] <- 2
-plot[plot == "QP"] <- 3
-plot[plot == "QT"] <- 4
+plot[plot == "A1"] <- 1
+plot[plot == "A2"] <- 2
+plot[plot == "A3"] <- 3
+plot[plot == "A4"] <- 4
 
 plot <- as.numeric(plot)
 plot
@@ -1328,7 +1323,7 @@ head(datA)
 tail(datA)
 str(datA)
 
-##### #Cria dados de recupera??o de marca para o modelo de sobreviv?ncia## ##################################################################
+##### #Cria data de recupera??o de marca para o modelo de sobreviv?ncia## ##################################################################
 known.states.cjs <- function(ch) {
   state <- ch
   for (i in 1:dim(ch)[1]) {
@@ -1381,7 +1376,7 @@ mplot <- data.frame(
   BT = as.numeric(plot == 5)
 )
 
-# Create matrix X indicating crc
+# Create matrix X indicating svl
 x <- reshape2::acast(datA, TrueID ~ TimeWeek,
   fun.aggregate = function(x) mean(x, na.rm = T),
   value.var = "SVL"
@@ -1424,8 +1419,8 @@ hist(datA$SVL[datA$SVL > 55])
 mean(datA$SVL[datA$SVL > 55], na.rm = T)
 var(datA$SVL[datA$SVL > 55], na.rm = T)
 
-hist(dados$CRC[dados$Recaptura == "N"])
-hist(dados$CRC[dados$Recaptura == "S"])
+hist(data$SVL[data$Recapture == "N"])
+hist(data$SVL[data$Recapture == "Y"])
 
 bugs.data <- list(
   first = f, nind = dim(eh)[1], n.occasions = dim(eh)[2],
@@ -1449,7 +1444,7 @@ parameters <- c(
 )
 
 # Specify model in BUGS language
-sink("cjs-Ajalapensis-crc.jags")
+sink("cjs-Ajalapensis-svl.jags")
 cat("
 
 model {
@@ -1545,7 +1540,7 @@ runjags.options(jagspath = "/usr/local/bin/jags")
 
 cjs.Ajalapensis <- run.jags(
   data = bugs.data, inits = inits, monitor = parameters,
-  model = "cjs-Ajalapensis-crc.jags",
+  model = "cjs-Ajalapensis-svl.jags",
   n.chains = nc, adapt = na, thin = nt, sample = ni,
   burnin = nb,
   method = "bgparallel", jags.refresh = 10,
@@ -1661,7 +1656,7 @@ results.cjs.Ajalapensis.df <- read.csv("results_cjs_Ajalapensis_df.csv")
 
 (xx <- 0:12)
 
-(mu.L0 <- min(dados$CRC, na.rm = T))
+(mu.L0 <- min(data$SVL, na.rm = T))
 (mu.LI <- results.cjs.Ajalapensis.df$Mean[grep(
   pattern = "mu.LI",
   x = results.cjs.Ajalapensis.df$X
@@ -1734,7 +1729,7 @@ ggplot(data = growth.df, aes(x = time, y = mean, colour = plot)) +
 
 # Pradel model ------------------------------------------------------------
 # Filter the variables of interest
-table1 <- demo.Ameivula[, c("IDENT", "TimeMonth", "Sexo", "Parcela")]
+table1 <- demo.Ameivula[, c("IDENT", "TimeMonth", "Sex", "Plot")]
 str(table1)
 summary(table1)
 
@@ -1769,7 +1764,7 @@ sum(table(recap.table$captures) * as.numeric(names(table(recap.table$captures)))
 ###########################################
 head(table5)
 
-datA <- data.frame(table5$TimeMonth, table5$Sexo, table5$IDENT, table5$Parcela)
+datA <- data.frame(table5$TimeMonth, table5$Sex, table5$IDENT, table5$Plot)
 names(datA) <- c("TimeMonth", "Sex", "TrueID", "Site")
 
 head(datA)
@@ -1794,10 +1789,10 @@ plot <- cast(datA, TrueID ~ ., value = "Site", fun.aggregate = function(x) tail(
 plot <- as.character(plot[, 2])
 plot
 # Ordering by fire severity
-plot[plot == "C2"] <- 1
-plot[plot == "C1"] <- 2
-plot[plot == "QP"] <- 3
-plot[plot == "QT"] <- 4
+plot[plot == "A1"] <- 1
+plot[plot == "A2"] <- 2
+plot[plot == "A3"] <- 3
+plot[plot == "A4"] <- 4
 
 plot <- as.numeric(plot)
 plot
@@ -1824,7 +1819,7 @@ missing.cjs <- function(ch, plot) {
 missing.samp <- missing.cjs(eh, plot) # 1 for months samples, 0 for months not sampled
 View(missing.samp)
 
-# Derivar dados para o modelo:
+# Derivar data para o modelo:
 # e = indice da observacao mais antiga
 get.first <- function(x) min(which(x != 0))
 e <- apply(eh, 1, get.first)
@@ -1972,8 +1967,8 @@ env.data <- env.data %>%
 
 TimeMonth.plot <- expand.grid(
   TimeMonth = 1:16,
-  plot = factor(c("C2", "C1", "QP", "QT"),
-    levels = c("C2", "C1", "QP", "QT")
+  plot = factor(c("A1", "A2", "A3", "A4"),
+    levels = c("A1", "A2", "A3", "A4")
   )
 )
 
@@ -1985,70 +1980,70 @@ View(env.data)
 amb <- array(
   c(
     rbind(
-      (env.data$t.med[env.data$plot == "C2"] - mean(env.data$t.med, na.rm = T)) / sd(env.data$t.med, na.rm = T),
-      (env.data$t.med[env.data$plot == "C1"] - mean(env.data$t.med, na.rm = T)) / sd(env.data$t.med, na.rm = T),
-      (env.data$t.med[env.data$plot == "QP"] - mean(env.data$t.med, na.rm = T)) / sd(env.data$t.med, na.rm = T),
-      (env.data$t.med[env.data$plot == "QT"] - mean(env.data$t.med, na.rm = T)) / sd(env.data$t.med, na.rm = T)
+      (env.data$t.med[env.data$plot == "A1"] - mean(env.data$t.med, na.rm = T)) / sd(env.data$t.med, na.rm = T),
+      (env.data$t.med[env.data$plot == "A2"] - mean(env.data$t.med, na.rm = T)) / sd(env.data$t.med, na.rm = T),
+      (env.data$t.med[env.data$plot == "A3"] - mean(env.data$t.med, na.rm = T)) / sd(env.data$t.med, na.rm = T),
+      (env.data$t.med[env.data$plot == "A4"] - mean(env.data$t.med, na.rm = T)) / sd(env.data$t.med, na.rm = T)
     ),
     rbind(
-      (env.data$t.max[env.data$plot == "C2"] - mean(env.data$t.max, na.rm = T)) / sd(env.data$t.max, na.rm = T),
-      (env.data$t.max[env.data$plot == "C1"] - mean(env.data$t.max, na.rm = T)) / sd(env.data$t.max, na.rm = T),
-      (env.data$t.max[env.data$plot == "QP"] - mean(env.data$t.max, na.rm = T)) / sd(env.data$t.max, na.rm = T),
-      (env.data$t.max[env.data$plot == "QT"] - mean(env.data$t.max, na.rm = T)) / sd(env.data$t.max, na.rm = T)
+      (env.data$t.max[env.data$plot == "A1"] - mean(env.data$t.max, na.rm = T)) / sd(env.data$t.max, na.rm = T),
+      (env.data$t.max[env.data$plot == "A2"] - mean(env.data$t.max, na.rm = T)) / sd(env.data$t.max, na.rm = T),
+      (env.data$t.max[env.data$plot == "A3"] - mean(env.data$t.max, na.rm = T)) / sd(env.data$t.max, na.rm = T),
+      (env.data$t.max[env.data$plot == "A4"] - mean(env.data$t.max, na.rm = T)) / sd(env.data$t.max, na.rm = T)
     ),
     rbind(
-      (env.data$t.max.abs[env.data$plot == "C2"] - mean(env.data$t.max.abs, na.rm = T)) / sd(env.data$t.max.abs, na.rm = T),
-      (env.data$t.max.abs[env.data$plot == "C1"] - mean(env.data$t.max.abs, na.rm = T)) / sd(env.data$t.max.abs, na.rm = T),
-      (env.data$t.max.abs[env.data$plot == "QP"] - mean(env.data$t.max.abs, na.rm = T)) / sd(env.data$t.max.abs, na.rm = T),
-      (env.data$t.max.abs[env.data$plot == "QT"] - mean(env.data$t.max.abs, na.rm = T)) / sd(env.data$t.max.abs, na.rm = T)
+      (env.data$t.max.abs[env.data$plot == "A1"] - mean(env.data$t.max.abs, na.rm = T)) / sd(env.data$t.max.abs, na.rm = T),
+      (env.data$t.max.abs[env.data$plot == "A2"] - mean(env.data$t.max.abs, na.rm = T)) / sd(env.data$t.max.abs, na.rm = T),
+      (env.data$t.max.abs[env.data$plot == "A3"] - mean(env.data$t.max.abs, na.rm = T)) / sd(env.data$t.max.abs, na.rm = T),
+      (env.data$t.max.abs[env.data$plot == "A4"] - mean(env.data$t.max.abs, na.rm = T)) / sd(env.data$t.max.abs, na.rm = T)
     ),
     rbind(
-      (env.data$rh.min.abs[env.data$plot == "C2"] - mean(env.data$rh.min.abs, na.rm = T)) / sd(env.data$rh.min.abs, na.rm = T),
-      (env.data$rh.min.abs[env.data$plot == "C1"] - mean(env.data$rh.min.abs, na.rm = T)) / sd(env.data$rh.min.abs, na.rm = T),
-      (env.data$rh.min.abs[env.data$plot == "QP"] - mean(env.data$rh.min.abs, na.rm = T)) / sd(env.data$rh.min.abs, na.rm = T),
-      (env.data$rh.min.abs[env.data$plot == "QT"] - mean(env.data$rh.min.abs, na.rm = T)) / sd(env.data$rh.min.abs, na.rm = T)
+      (env.data$rh.min.abs[env.data$plot == "A1"] - mean(env.data$rh.min.abs, na.rm = T)) / sd(env.data$rh.min.abs, na.rm = T),
+      (env.data$rh.min.abs[env.data$plot == "A2"] - mean(env.data$rh.min.abs, na.rm = T)) / sd(env.data$rh.min.abs, na.rm = T),
+      (env.data$rh.min.abs[env.data$plot == "A3"] - mean(env.data$rh.min.abs, na.rm = T)) / sd(env.data$rh.min.abs, na.rm = T),
+      (env.data$rh.min.abs[env.data$plot == "A4"] - mean(env.data$rh.min.abs, na.rm = T)) / sd(env.data$rh.min.abs, na.rm = T)
     ),
     rbind(
-      (env.data$rh.max.abs[env.data$plot == "C2"] - mean(env.data$rh.max.abs, na.rm = T)) / sd(env.data$rh.max.abs, na.rm = T),
-      (env.data$rh.max.abs[env.data$plot == "C1"] - mean(env.data$rh.max.abs, na.rm = T)) / sd(env.data$rh.max.abs, na.rm = T),
-      (env.data$rh.max.abs[env.data$plot == "QP"] - mean(env.data$rh.max.abs, na.rm = T)) / sd(env.data$rh.max.abs, na.rm = T),
-      (env.data$rh.max.abs[env.data$plot == "QT"] - mean(env.data$rh.max.abs, na.rm = T)) / sd(env.data$rh.max.abs, na.rm = T)
+      (env.data$rh.max.abs[env.data$plot == "A1"] - mean(env.data$rh.max.abs, na.rm = T)) / sd(env.data$rh.max.abs, na.rm = T),
+      (env.data$rh.max.abs[env.data$plot == "A2"] - mean(env.data$rh.max.abs, na.rm = T)) / sd(env.data$rh.max.abs, na.rm = T),
+      (env.data$rh.max.abs[env.data$plot == "A3"] - mean(env.data$rh.max.abs, na.rm = T)) / sd(env.data$rh.max.abs, na.rm = T),
+      (env.data$rh.max.abs[env.data$plot == "A4"] - mean(env.data$rh.max.abs, na.rm = T)) / sd(env.data$rh.max.abs, na.rm = T)
     ),
     rbind(
-      (env.data$VARI.all[env.data$plot == "C2"] - mean(env.data$VARI.all, na.rm = T)) / sd(env.data$VARI.all, na.rm = T),
-      (env.data$VARI.all[env.data$plot == "C1"] - mean(env.data$VARI.all, na.rm = T)) / sd(env.data$VARI.all, na.rm = T),
-      (env.data$VARI.all[env.data$plot == "QP"] - mean(env.data$VARI.all, na.rm = T)) / sd(env.data$VARI.all, na.rm = T),
-      (env.data$VARI.all[env.data$plot == "QT"] - mean(env.data$VARI.all, na.rm = T)) / sd(env.data$VARI.all, na.rm = T)
+      (env.data$VARI.all[env.data$plot == "A1"] - mean(env.data$VARI.all, na.rm = T)) / sd(env.data$VARI.all, na.rm = T),
+      (env.data$VARI.all[env.data$plot == "A2"] - mean(env.data$VARI.all, na.rm = T)) / sd(env.data$VARI.all, na.rm = T),
+      (env.data$VARI.all[env.data$plot == "A3"] - mean(env.data$VARI.all, na.rm = T)) / sd(env.data$VARI.all, na.rm = T),
+      (env.data$VARI.all[env.data$plot == "A4"] - mean(env.data$VARI.all, na.rm = T)) / sd(env.data$VARI.all, na.rm = T)
     ),
     rbind(
-      (env.data$zentropy[env.data$plot == "C2"] - mean(env.data$zentropy, na.rm = T)) / sd(env.data$zentropy, na.rm = T),
-      (env.data$zentropy[env.data$plot == "C1"] - mean(env.data$zentropy, na.rm = T)) / sd(env.data$zentropy, na.rm = T),
-      (env.data$zentropy[env.data$plot == "QP"] - mean(env.data$zentropy, na.rm = T)) / sd(env.data$zentropy, na.rm = T),
-      (env.data$zentropy[env.data$plot == "QT"] - mean(env.data$zentropy, na.rm = T)) / sd(env.data$zentropy, na.rm = T)
+      (env.data$zentropy[env.data$plot == "A1"] - mean(env.data$zentropy, na.rm = T)) / sd(env.data$zentropy, na.rm = T),
+      (env.data$zentropy[env.data$plot == "A2"] - mean(env.data$zentropy, na.rm = T)) / sd(env.data$zentropy, na.rm = T),
+      (env.data$zentropy[env.data$plot == "A3"] - mean(env.data$zentropy, na.rm = T)) / sd(env.data$zentropy, na.rm = T),
+      (env.data$zentropy[env.data$plot == "A4"] - mean(env.data$zentropy, na.rm = T)) / sd(env.data$zentropy, na.rm = T)
     ),
     rbind(
-      (env.data$tree.density[env.data$plot == "C2"] - mean(env.data$tree.density, na.rm = T)) / sd(env.data$tree.density, na.rm = T),
-      (env.data$tree.density[env.data$plot == "C1"] - mean(env.data$tree.density, na.rm = T)) / sd(env.data$tree.density, na.rm = T),
-      (env.data$tree.density[env.data$plot == "QP"] - mean(env.data$tree.density, na.rm = T)) / sd(env.data$tree.density, na.rm = T),
-      (env.data$tree.density[env.data$plot == "QT"] - mean(env.data$tree.density, na.rm = T)) / sd(env.data$tree.density, na.rm = T)
+      (env.data$tree.density[env.data$plot == "A1"] - mean(env.data$tree.density, na.rm = T)) / sd(env.data$tree.density, na.rm = T),
+      (env.data$tree.density[env.data$plot == "A2"] - mean(env.data$tree.density, na.rm = T)) / sd(env.data$tree.density, na.rm = T),
+      (env.data$tree.density[env.data$plot == "A3"] - mean(env.data$tree.density, na.rm = T)) / sd(env.data$tree.density, na.rm = T),
+      (env.data$tree.density[env.data$plot == "A4"] - mean(env.data$tree.density, na.rm = T)) / sd(env.data$tree.density, na.rm = T)
     ),
     rbind(
-      (env.data$Ajalapensis_perf[env.data$plot == "C2"] - mean(env.data$Ajalapensis_perf, na.rm = T)) / sd(env.data$Ajalapensis_perf, na.rm = T),
-      (env.data$Ajalapensis_perf[env.data$plot == "C1"] - mean(env.data$Ajalapensis_perf, na.rm = T)) / sd(env.data$Ajalapensis_perf, na.rm = T),
-      (env.data$Ajalapensis_perf[env.data$plot == "QP"] - mean(env.data$Ajalapensis_perf, na.rm = T)) / sd(env.data$Ajalapensis_perf, na.rm = T),
-      (env.data$Ajalapensis_perf[env.data$plot == "QT"] - mean(env.data$Ajalapensis_perf, na.rm = T)) / sd(env.data$Ajalapensis_perf, na.rm = T)
+      (env.data$Ajalapensis_perf[env.data$plot == "A1"] - mean(env.data$Ajalapensis_perf, na.rm = T)) / sd(env.data$Ajalapensis_perf, na.rm = T),
+      (env.data$Ajalapensis_perf[env.data$plot == "A2"] - mean(env.data$Ajalapensis_perf, na.rm = T)) / sd(env.data$Ajalapensis_perf, na.rm = T),
+      (env.data$Ajalapensis_perf[env.data$plot == "A3"] - mean(env.data$Ajalapensis_perf, na.rm = T)) / sd(env.data$Ajalapensis_perf, na.rm = T),
+      (env.data$Ajalapensis_perf[env.data$plot == "A4"] - mean(env.data$Ajalapensis_perf, na.rm = T)) / sd(env.data$Ajalapensis_perf, na.rm = T)
     ),
     rbind(
-      (env.data$Ajalapensis_ha90[env.data$plot == "C2"] - mean(env.data$Ajalapensis_ha90, na.rm = T)) / sd(env.data$Ajalapensis_ha90, na.rm = T),
-      (env.data$Ajalapensis_ha90[env.data$plot == "C1"] - mean(env.data$Ajalapensis_ha90, na.rm = T)) / sd(env.data$Ajalapensis_ha90, na.rm = T),
-      (env.data$Ajalapensis_ha90[env.data$plot == "QP"] - mean(env.data$Ajalapensis_ha90, na.rm = T)) / sd(env.data$Ajalapensis_ha90, na.rm = T),
-      (env.data$Ajalapensis_ha90[env.data$plot == "QT"] - mean(env.data$Ajalapensis_ha90, na.rm = T)) / sd(env.data$Ajalapensis_ha90, na.rm = T)
+      (env.data$Ajalapensis_ha90[env.data$plot == "A1"] - mean(env.data$Ajalapensis_ha90, na.rm = T)) / sd(env.data$Ajalapensis_ha90, na.rm = T),
+      (env.data$Ajalapensis_ha90[env.data$plot == "A2"] - mean(env.data$Ajalapensis_ha90, na.rm = T)) / sd(env.data$Ajalapensis_ha90, na.rm = T),
+      (env.data$Ajalapensis_ha90[env.data$plot == "A3"] - mean(env.data$Ajalapensis_ha90, na.rm = T)) / sd(env.data$Ajalapensis_ha90, na.rm = T),
+      (env.data$Ajalapensis_ha90[env.data$plot == "A4"] - mean(env.data$Ajalapensis_ha90, na.rm = T)) / sd(env.data$Ajalapensis_ha90, na.rm = T)
     ),
     rbind(
-      (env.data$TSLF[env.data$plot == "C2"] - mean(env.data$TSLF, na.rm = T)) / sd(env.data$TSLF, na.rm = T),
-      (env.data$TSLF[env.data$plot == "C1"] - mean(env.data$TSLF, na.rm = T)) / sd(env.data$TSLF, na.rm = T),
-      (env.data$TSLF[env.data$plot == "QP"] - mean(env.data$TSLF, na.rm = T)) / sd(env.data$TSLF, na.rm = T),
-      (env.data$TSLF[env.data$plot == "QT"] - mean(env.data$TSLF, na.rm = T)) / sd(env.data$TSLF, na.rm = T)
+      (env.data$TSLF[env.data$plot == "A1"] - mean(env.data$TSLF, na.rm = T)) / sd(env.data$TSLF, na.rm = T),
+      (env.data$TSLF[env.data$plot == "A2"] - mean(env.data$TSLF, na.rm = T)) / sd(env.data$TSLF, na.rm = T),
+      (env.data$TSLF[env.data$plot == "A3"] - mean(env.data$TSLF, na.rm = T)) / sd(env.data$TSLF, na.rm = T),
+      (env.data$TSLF[env.data$plot == "A4"] - mean(env.data$TSLF, na.rm = T)) / sd(env.data$TSLF, na.rm = T)
     )
   ),
   dim = c(4, 16, 11)
@@ -2814,9 +2809,9 @@ ggplot(p.pradel.mean, aes(x = plot, colour = plot)) +
 
 env.data <- readRDS("env_data_SGT.rds")
 
-svl.data <- dados[, c(
-  "Campanha", "Data", "Mes", "Ano", "Parcela", "Gride", "Numerodetombo", "Recaptura",
-  "Massa", "CRC", "CC", "BC", "Quebrada", "Sexo", "Ovos", "Morto"
+svl.data <- data[, c(
+  "Fieldtrip", "Date", "Month", "Year", "Plot", "Trap", "VoucherNumber", "Recapture",
+  "Mass", "SVL", "TL", "TB", "Broken", "Sex", "Eggs", "Dead"
 )]
 
 names(svl.data) <- c(
@@ -2988,18 +2983,18 @@ summary(svl.env$sampling_day)
 trap_locations <- fire.regimes.arms %>%
   distinct(plot, trap, treatment)
 
-trap_locations$campaign <- substr(trap_locations$trap, 1, 2)
-trap_locations$campaign[trap_locations$plot == "C1"] <- NA
-trap_locations$campaign[trap_locations$plot == "C2"] <- NA
-trap_locations$campaign[trap_locations$plot == "QP"] <- NA
-trap_locations$campaign[trap_locations$plot == "QT"] <- NA
+trap_locations$fieldtrip <- substr(trap_locations$trap, 1, 2)
+trap_locations$fieldtrip[trap_locations$plot == "A2"] <- NA
+trap_locations$fieldtrip[trap_locations$plot == "A1"] <- NA
+trap_locations$fieldtrip[trap_locations$plot == "A3"] <- NA
+trap_locations$fieldtrip[trap_locations$plot == "A4"] <- NA
 
-trap_locations_heitor <- trap_locations[is.na(trap_locations$campaign), ]
-trap_locations_bruna <- trap_locations[!is.na(trap_locations$campaign), ]
+trap_locations_heitor <- trap_locations[is.na(trap_locations$fieldtrip), ]
+trap_locations_bruna <- trap_locations[!is.na(trap_locations$fieldtrip), ]
 
 trap_locations_heitor <- expand.grid.df(
   trap_locations_heitor[, -4],
-  data.frame(campaign = as.character(c(1:4)))
+  data.frame(fieldtrip = as.character(c(1:4)))
 )
 
 trap_locations <- rbind(trap_locations_bruna, trap_locations_heitor)
@@ -3012,17 +3007,17 @@ all_sampling_events <- crossing(trap_locations, sampling_day = 1:15)
 capture_counts <- svl.env %>%
   count(campanha, plot, trap, sampling_day, name = "freq")
 
-names(capture_counts) <- c("campaign", "plot", "trap", "sampling_day", "freq")
+names(capture_counts) <- c("fieldtrip", "plot", "trap", "sampling_day", "freq")
 str(capture_counts)
 str(all_sampling_events)
 
-capture_counts$campaign <- as.character(capture_counts$campaign)
+capture_counts$fieldtrip <- as.character(capture_counts$fieldtrip)
 capture_counts$plot <- as.character(capture_counts$plot)
 capture_counts$trap <- as.character(capture_counts$trap)
 
 # Join the actual captures to the master list of all sampling events
 Ajalapensis.captures.day <- all_sampling_events %>%
-  left_join(capture_counts, by = c("campaign", "plot", "trap", "sampling_day")) %>%
+  left_join(capture_counts, by = c("fieldtrip", "plot", "trap", "sampling_day")) %>%
   # If a trap on a given day had no captures, its freq is NA. Change that to 0.
   mutate(freq = replace_na(freq, 0))
 
@@ -3045,11 +3040,11 @@ str(Ajalapensis.captures.day)
 
 env.data$plot <- as.character(env.data$plot)
 env.data$trap <- as.character(env.data$trap)
-env.data$campaign <- as.character(env.data$campanha)
+env.data$fieldtrip <- as.character(env.data$campanha)
 
 Ajalapensis.captures.day.env <- left_join(env.data,
   Ajalapensis.captures.day,
-  by = c("campaign", "plot", "trap")
+  by = c("fieldtrip", "plot", "trap")
 )
 str(env.data)
 str(Ajalapensis.captures.day.env)
@@ -3119,7 +3114,7 @@ quartz(height = 8, width = 8)
 plot(cvvs_capts, deltas = T, stats = "mlpd") + theme_minimal()
 
 
-msel.capts.re <- brm(capts ~ Ajalapensis_ha90 + (1 | campaign / plot / trap),
+msel.capts.re <- brm(capts ~ Ajalapensis_ha90 + (1 | fieldtrip / plot / trap),
   data = capts.env, cores = 4, family = "poisson",
   iter = 5000, control = list(adapt_delta = 0.999)
 )
@@ -3135,7 +3130,7 @@ pp_check(msel.capts.re)
 p1 <- conditional_effects(msel.capts.re)
 
 capts.env$plot <- factor(capts.env$plot,
-  levels = c("C2", "C1", "QP", "QT")
+  levels = c("A1", "A2", "A3", "A4")
 )
 
 # Salvar!
@@ -3151,7 +3146,7 @@ ggplot(p1$Ajalapensis_ha90, aes(x = Ajalapensis_ha90, y = estimate__)) +
 
 
 
-msel.capts.plot.re <- brm(capts ~ plot + (1 | campaign / trap),
+msel.capts.plot.re <- brm(capts ~ plot + (1 | fieldtrip / trap),
   data = capts.env, cores = 4, family = "poisson",
   iter = 4000, control = list(adapt_delta = 0.99)
 )
@@ -3211,12 +3206,12 @@ emmeans::emmeans(msel.capts.plot.re, pairwise ~ plot)
 counts.and.count.covs <- inla.mdata(
   y.mat,
   1,
-  Ajalapensis.captures.day.env$campaign,
-  paste(Ajalapensis.captures.day.env$campaign,
+  Ajalapensis.captures.day.env$fieldtrip,
+  paste(Ajalapensis.captures.day.env$fieldtrip,
     Ajalapensis.captures.day.env$plot,
     sep = "_"
   ),
-  paste(Ajalapensis.captures.day.env$campaign,
+  paste(Ajalapensis.captures.day.env$fieldtrip,
     Ajalapensis.captures.day.env$plot,
     Ajalapensis.captures.day.env$trap,
     sep = "_"
@@ -3294,7 +3289,7 @@ out.inla.env1 <- inla(
     f(plot_id),
   data = list(
     counts.and.count.covs = counts.and.count.covs[, c(1:16)],
-    campaign = counts.and.count.covs$X2,
+    fieldtrip = counts.and.count.covs$X2,
     plot_id = counts.and.count.covs$X3
   ),
   family = "nmixnb",
@@ -3371,7 +3366,7 @@ counts.and.count.covs <- inla.mdata(
   y.mat,
   1,
   scale(Ajalapensis.captures.day.env$Ajalapensis_ha90),
-  paste(Ajalapensis.captures.day.env$campaign,
+  paste(Ajalapensis.captures.day.env$fieldtrip,
     Ajalapensis.captures.day.env$plot,
     sep = "_"
   )
@@ -3466,7 +3461,7 @@ plot(out.inla.env2,
 
 # Plots effects
 dummy_vars <- model.matrix(~ factor(Ajalapensis.captures.day.env$plot,
-  levels = c("C2", "C1", "QP", "QT")
+  levels = c("A1", "A2", "A3", "A4")
 ))
 
 counts.and.count.covs <- inla.mdata(
@@ -3482,13 +3477,13 @@ print(counts.and.count.covs)
 
 
 
-out.inla.env3 <- inla(counts.and.count.covs ~ 1 + plot + f(campaign, model = "iid"),
+out.inla.env3 <- inla(counts.and.count.covs ~ 1 + plot + f(fieldtrip, model = "iid"),
   data = list(
     counts.and.count.covs = counts.and.count.covs,
     plot = factor(Ajalapensis.captures.day.env$plot,
-      levels = c("C2", "C1", "QP", "QT")
+      levels = c("A1", "A2", "A3", "A4")
     ), # 'plot' factor for the detection model
-    campaign = Ajalapensis.captures.day.env$campaign # 'campaign' for the detection model
+    fieldtrip = Ajalapensis.captures.day.env$fieldtrip # 'fieldtrip' for the detection model
   ),
   family = "nmixnb",
   # Priors for detection parameters
@@ -3576,10 +3571,10 @@ counts.and.count.covs <- inla.mdata(
 
 print(counts.and.count.covs)
 
-out.inla.env4 <- inla(counts.and.count.covs ~ 1 + f(campaign, model = "iid"),
+out.inla.env4 <- inla(counts.and.count.covs ~ 1 + f(fieldtrip, model = "iid"),
   data = list(
     counts.and.count.covs = counts.and.count.covs,
-    campaign = Ajalapensis.captures.day.env$campaign # 'campaign' for the detection model
+    fieldtrip = Ajalapensis.captures.day.env$fieldtrip # 'fieldtrip' for the detection model
   ),
   family = "nmixnb",
   # Priors for detection parameters
@@ -3694,10 +3689,10 @@ waic_table <- data.frame(
 )
 
 waic_table$formula[1] <- "(lambda ~ 1), (p ~ 1)"
-waic_table$formula[2] <- "(lambda ~ 1), (p ~ (1|campaign:plot))"
-waic_table$formula[3] <- "(lambda ~ ha90), (p ~ ha90 + (1|campaign:plot))"
-waic_table$formula[4] <- "(lambda ~ plot), (p ~ plot + (1|campaign))"
-waic_table$formula[5] <- "(lambda ~ 1), (p ~ 1 + (1|campaign))"
+waic_table$formula[2] <- "(lambda ~ 1), (p ~ (1|fieldtrip:plot))"
+waic_table$formula[3] <- "(lambda ~ ha90), (p ~ ha90 + (1|fieldtrip:plot))"
+waic_table$formula[4] <- "(lambda ~ plot), (p ~ plot + (1|fieldtrip))"
+waic_table$formula[5] <- "(lambda ~ 1), (p ~ 1 + (1|fieldtrip))"
 
 # Sort by WAIC (best model first)
 waic_table <- waic_table[order(waic_table$WAIC), ]
@@ -3760,7 +3755,7 @@ pred_df <- data.frame(
   ha_90 = scale(Ajalapensis.captures.day.env$Ajalapensis_ha90),
   trap = Ajalapensis.captures.day.env$trap,
   plot = factor(Ajalapensis.captures.day.env$plot,
-    levels = c("C2", "C1", "QP", "QT")
+    levels = c("A1", "A2", "A3", "A4")
   ),
   p = plogis(out.inla.env2$summary.linear.predictor$`0.5quant`),
   ncaps = rowSums(y.mat)
@@ -3807,12 +3802,12 @@ b_QT <- sapply(post_samples_fixed, function(s) s$latent[idx_QT, 1])
 # The coefficients themselves are already differences relative to the intercept.
 # To compare other levels, we subtract their respective coefficients.
 contrasts_p <- list(
-  `C1 - C2` = b_C1,
-  `QP - C2` = b_QP,
-  `QT - C2` = b_QT,
-  `C1 - QP` = b_C1 - b_QP,
-  `C1 - QT` = b_C1 - b_QT,
-  `QP - QT` = b_QP - b_QT
+  `A2 - A1` = b_C1,
+  `A3 - A1` = b_QP,
+  `A4 - A1` = b_QT,
+  `A2 - A3` = b_C1 - b_QP,
+  `A2 - A4` = b_C1 - b_QT,
+  `A3 - A4` = b_QP - b_QT
 )
 
 #--- Step 5: Summarize the results into a data frame ---
@@ -3837,10 +3832,10 @@ p_QT_post <- sapply(post_samples_fixed, function(s) plogis(s$latent[idx_intercep
 #--- Step 3: Summarize the posteriors for plotting ---
 
 p_post <- data.frame(
-  C2 = p_C2_post,
-  C1 = p_C1_post,
-  QP = p_QP_post,
-  QT = p_QT_post
+  A1 = p_C2_post,
+  A2 = p_C1_post,
+  A3 = p_QP_post,
+  A4 = p_QT_post
 )
 
 
@@ -3850,7 +3845,7 @@ p_post_long <- p_post %>%
     names_to = "Plot",
     values_to = "p"
   ) %>%
-  mutate(Plot = factor(Plot, levels = c("C2", "C1", "QP", "QT")))
+  mutate(Plot = factor(Plot, levels = c("A1", "A2", "A3", "A4")))
 
 quartz(h = 8, w = 8)
 ggplot(p_post_long, aes(x = Plot, y = p, fill = Plot, color = Plot)) +
@@ -3886,19 +3881,19 @@ post_samples <- inla.hyperpar.sample(10000, out.inla.env3)
 
 # Extract the posterior samples for each beta coefficient for abundance.
 # Use the exact names from your model's summary output.
-beta1 <- post_samples[, "beta[1] for NMixNB observations"] # Intercept (C2)
-beta2 <- post_samples[, "beta[2] for NMixNB observations"] # C1 vs C2
-beta3 <- post_samples[, "beta[3] for NMixNB observations"] # QP vs C2
-beta4 <- post_samples[, "beta[4] for NMixNB observations"] # QT vs C2
+beta1 <- post_samples[, "beta[1] for NMixNB observations"] # Intercept (A1)
+beta2 <- post_samples[, "beta[2] for NMixNB observations"] # A2 vs A1
+beta3 <- post_samples[, "beta[3] for NMixNB observations"] # A3 vs A1
+beta4 <- post_samples[, "beta[4] for NMixNB observations"] # A4 vs A1
 
 #--- Step 2: Calculate all 6 pairwise contrasts ---
 contrasts <- list(
-  `C1 - C2` = beta2,
-  `QP - C2` = beta3,
-  `QT - C2` = beta4,
-  `C1 - QP` = beta2 - beta3,
-  `C1 - QT` = beta2 - beta4,
-  `QP - QT` = beta3 - beta4
+  `A2 - A1` = beta2,
+  `A3 - A1` = beta3,
+  `A4 - A1` = beta4,
+  `A2 - A3` = beta2 - beta3,
+  `A2 - A4` = beta2 - beta4,
+  `A3 - A4` = beta3 - beta4
 )
 
 #--- Step 3: Summarize the results into a data frame ---
@@ -3913,10 +3908,10 @@ print(contrast_summary_df, digits = 3)
 #--- Step 1: Calculate lambda for each plot type using the posterior samples ---
 # These are on the log scale, so we use exp() to transform them back
 lambda_post <- data.frame(
-  C2 = exp(beta1),
-  C1 = exp(beta1 + beta2),
-  QP = exp(beta1 + beta3),
-  QT = exp(beta1 + beta4)
+  A1 = exp(beta1),
+  A2 = exp(beta1 + beta2),
+  A3 = exp(beta1 + beta3),
+  A4 = exp(beta1 + beta4)
 )
 
 
@@ -3926,7 +3921,7 @@ lambda_post_long <- lambda_post %>%
     names_to = "Plot",
     values_to = "lambda"
   ) %>%
-  mutate(Plot = factor(Plot, levels = c("C2", "C1", "QP", "QT")))
+  mutate(Plot = factor(Plot, levels = c("A1", "A2", "A3", "A4")))
 
 y_limits <- quantile(lambda_post_long$lambda, c(0.025, 0.975))
 y_min <- y_limits[1]
@@ -4115,20 +4110,20 @@ table(svl.env$sex, svl.env$plot)
 
 # Body condition with environment -----------------------------------------------
 
-# Remove casos onde massa = NA
+# Remove casos onde mass = NA
 completos <- complete.cases(svl.env[, c("mass")])
-condicao.dados <- droplevels(svl.env[completos, ])
+condition.data <- droplevels(svl.env[completos, ])
 
-# Visualiza dados (crc, massa)
-plot(condicao.dados$svl, condicao.dados$mass, las = 1, bty = "n")
-plot(log(condicao.dados$svl), log(condicao.dados$mass), las = 1, bty = "n")
+# Visualiza data (svl, mass)
+plot(condition.data$svl, condition.data$mass, las = 1, bty = "n")
+plot(log(condition.data$svl), log(condition.data$mass), las = 1, bty = "n")
 
 
-# Calcula a condicao corporal como "scaled mass index" (Peig & Green, 2009)
+# Calcula a condition corporal como "scaled mass index" (Peig & Green, 2009)
 # install.packages("lmodel2", dependencies=T)
 library(lmodel2)
 
-sma.jalapensis <- lmodel2(log(mass + 1) ~ log(svl), data = condicao.dados, "relative", "relative", 99)
+sma.jalapensis <- lmodel2(log(mass + 1) ~ log(svl), data = condition.data, "relative", "relative", 99)
 sma.jalapensis
 par(mfrow = c(1, 2))
 
@@ -4139,22 +4134,22 @@ plot(sma.jalapensis, "RMA")
 
 par(mfrow = c(1, 1))
 
-attach(condicao.dados)
+attach(condition.data)
 smi <- mass * ((mean(svl) / svl)^2.027180) # 2.027180 = slope of SMA regression
 boxplot(smi)
 plot(svl, smi, las = 1, bty = "n")
 boxplot(smi ~ sex)
-detach(condicao.dados)
-condicao.dados$smi <- smi
+detach(condition.data)
+condition.data$smi <- smi
 rm(smi)
 detach("package:lmodel2", unload = TRUE)
 
-# Testa efeitos das variaveis ambientais sobbre a condicao corporal
+# Testa efeitos das variaveis ambientais sobbre a condition corporal
 
 mfull.smi <- brm(
   smi ~ plot + TSLF + t.med + t.max + t.max.abs + rh.min.abs + rh.max.abs +
     VARI.all + zentropy + tree.density + Ajalapensis_perf + Ajalapensis_ha90,
-  data = condicao.dados, cores = 4
+  data = condition.data, cores = 4
 )
 
 summary(mfull.smi)
@@ -4208,7 +4203,7 @@ plot(cvvs_smi, deltas = T, stats = "mlpd") + theme_minimal()
 
 
 msel.smi.re <- brm(smi ~ Ajalapensis_perf + (1 | campanha / plot / trap),
-  data = condicao.dados, cores = 4, iter = 5000,
+  data = condition.data, cores = 4, iter = 5000,
   control = list(adapt_delta = 0.999),
   silent = 0
 )
@@ -4228,7 +4223,7 @@ quartz(height = 8, width = 8)
 ggplot(p1$Ajalapensis_perf, aes(x = Ajalapensis_perf, y = estimate__)) +
   geom_ribbon(aes(ymin = lower__, ymax = upper__), alpha = 0.3) +
   geom_line(color = "blue", linewidth = 1) +
-  geom_point(data = condicao.dados, aes(x = Ajalapensis_perf, y = smi, color = plot), alpha = 0.5, size = 2) +
+  geom_point(data = condition.data, aes(x = Ajalapensis_perf, y = smi, color = plot), alpha = 0.5, size = 2) +
   scale_colour_manual(values = turbo(4), name = "Fire severity") +
   labs(x = "Locomotor performance", y = "Scaled mass index") +
   theme_minimal()
@@ -4236,7 +4231,7 @@ ggplot(p1$Ajalapensis_perf, aes(x = Ajalapensis_perf, y = estimate__)) +
 
 
 msel.smi.plot.re <- brm(smi ~ plot + (1 | campanha / trap),
-  data = condicao.dados, cores = 4, iter = 5000,
+  data = condition.data, cores = 4, iter = 5000,
   control = list(adapt_delta = 0.999)
 )
 
@@ -4250,7 +4245,7 @@ p1 <- conditional_effects(msel.smi.plot.re)
 
 quartz(height = 8, width = 8)
 ggplot(
-  condicao.dados,
+  condition.data,
   aes(x = plot, y = smi, colour = plot)
 ) +
   ggdist::stat_halfeye(aes(fill = plot),
@@ -4292,7 +4287,7 @@ brunadata <- readxl::read_excel("Ameivula_jalapensis_EESGT_BrunaGomes.xlsx", na 
 glimpse(brunadata)
 
 brunadata <- dplyr::rename(brunadata, "plot" = "sampling_point")
-brunadata$trap <- paste0(brunadata$campaign, brunadata$Y)
+brunadata$trap <- paste0(brunadata$fieldtrip, brunadata$Y)
 glimpse(brunadata)
 summary(brunadata)
 brunadata$plot <- as.character(brunadata$plot)
@@ -4347,7 +4342,7 @@ plot(svl_mm ~ TUF, data = brunadata)
 boxplot(svl_mm ~ treatment, data = brunadata)
 
 svlbruna <- brunadata[, c(
-  "campaign", "date", "plot", "aiq_code", "TUF", "treatment", "treat_code",
+  "fieldtrip", "date", "plot", "aiq_code", "TUF", "treatment", "treat_code",
   "recapture", "svl_mm", "weight_animal", "cicatriz_umbilical", "sex", "ovada",
   "trap", "freq", "MeanTSLF", "MFRI", "severity", "TSLF"
 )]
@@ -4395,7 +4390,7 @@ ggplot(svlbruna, aes(x = log(svl_mm), y = log(weight_animal))) +
   geom_smooth(method = "lm")
 
 names(svlbruna) <- c(
-  "campaign", "date", "plot", "aiq_code", "TUF", "treatment", "treat_code",
+  "fieldtrip", "date", "plot", "aiq_code", "TUF", "treatment", "treat_code",
   "recapture", "svl", "mass", "umb_scar", "sex", "eggs",
   "trap", "freq", "MeanTSLF", "MFRI", "severity", "TSLF"
 )
@@ -4412,22 +4407,22 @@ table(svlbruna$recapture) / nrow(svlbruna)
 # Sex
 table(svlbruna$sex)
 
-svl.data <- dados[, c(
-  "Campanha", "Data", "Mes", "Ano", "Parcela", "Gride", "Numerodetombo", "Recaptura",
-  "CRC", "Massa", "Sexo", "Ovos"
+svl.data <- data[, c(
+  "Fieldtrip", "Date", "Month", "Year", "Plot", "Trap", "VoucherNumber", "Recapture",
+  "SVL", "Mass", "Sex", "Eggs"
 )]
 
 names(svl.data) <- c(
-  "campaign", "date", "month", "year", "plot", "trap",
+  "fieldtrip", "date", "month", "year", "plot", "trap",
   "ID", "recapture", "svl", "mass", "sex", "eggs"
 )
 
 svl.data$trap <- as.factor(paste(svl.data$plot, svl.data$trap, sep = "_"))
-svl.data$campaign <- as.factor(svl.data$campaign)
+svl.data$fieldtrip <- as.factor(svl.data$fieldtrip)
 
 svl.fire <- left_join(svl.data, fire.regimes.arms[, -c(1:2, 10)], by = c("plot", "trap"))
-env.data$campaign <- env.data$campanha
-svl.fire <- left_join(svl.fire, env.data[, c(1:3, 5, 18)], by = c("plot", "trap", "campaign"))
+env.data$fieldtrip <- env.data$campanha
+svl.fire <- left_join(svl.fire, env.data[, c(1:3, 5, 18)], by = c("plot", "trap", "fieldtrip"))
 
 svl.fire$date <- as.POSIXct(svl.fire$date, format = "%d/%m/%Y", tz = "UTC")
 summary(svl.fire)
@@ -4517,7 +4512,7 @@ usdm::vif(svl.merged[, c(13:16, 19)])
 svl.merged[, c(13:16, 19)] <- scale(svl.merged[, c(13:16, 19)])
 
 # Testing the effects of fire components
-msel.svl.MeanTSLF.re <- brm(svl ~ MeanTSLF + (1 | campaign / plot / trap),
+msel.svl.MeanTSLF.re <- brm(svl ~ MeanTSLF + (1 | fieldtrip / plot / trap),
   data = svl.merged,
   cores = 4
 )
@@ -4529,7 +4524,7 @@ bayes_R2(msel.svl.MeanTSLF.re)
 plot(msel.svl.MeanTSLF.re)
 pp_check(msel.svl.MeanTSLF.re)
 
-msel.svl.TSLF.re <- brm(svl ~ TSLF + (1 | campaign / plot / trap),
+msel.svl.TSLF.re <- brm(svl ~ TSLF + (1 | fieldtrip / plot / trap),
   data = svl.merged,
   cores = 4
 )
@@ -4541,7 +4536,7 @@ bayes_R2(msel.svl.TSLF.re)
 plot(msel.svl.TSLF.re)
 pp_check(msel.svl.TSLF.re)
 
-msel.svl.severity.re <- brm(svl ~ severity + (1 | campaign / plot / trap),
+msel.svl.severity.re <- brm(svl ~ severity + (1 | fieldtrip / plot / trap),
   data = svl.merged,
   cores = 4
 )
@@ -4553,7 +4548,7 @@ bayes_R2(msel.svl.severity.re)
 plot(msel.svl.severity.re)
 pp_check(msel.svl.severity.re)
 
-msel.svl.firenull.re <- brm(svl ~ 1 + (1 | campaign / plot / trap),
+msel.svl.firenull.re <- brm(svl ~ 1 + (1 | fieldtrip / plot / trap),
   data = svl.merged,
   cores = 4
 )
@@ -4604,81 +4599,81 @@ ggplot(p1$severity, aes(x = severity, y = estimate__)) +
 
 ## Body condition -----------------------------------------------
 
-# Remove casos onde massa = NA
+# Remove casos onde mass = NA
 completos <- complete.cases(svl.merged[, c("mass")])
-condicao.dados <- droplevels(svl.merged[completos, ])
+condition.data <- droplevels(svl.merged[completos, ])
 
-# Visualiza dados (crc, massa)
-plot(condicao.dados$svl, condicao.dados$mass, las = 1, bty = "n")
-plot(log(condicao.dados$svl), log(condicao.dados$mass), las = 1, bty = "n")
+# Visualiza data (svl, mass)
+plot(condition.data$svl, condition.data$mass, las = 1, bty = "n")
+plot(log(condition.data$svl), log(condition.data$mass), las = 1, bty = "n")
 
 
-mod1 <- lm(condicao.dados$mass ~ condicao.dados$svl)
+mod1 <- lm(condition.data$mass ~ condition.data$svl)
 summary(mod1)
 
-mod2 <- lm(sqrt(condicao.dados$mass) ~ condicao.dados$svl)
+mod2 <- lm(sqrt(condition.data$mass) ~ condition.data$svl)
 summary(mod2)
 
-mod3 <- lm((condicao.dados$mass^(1 / 3)) ~ condicao.dados$svl)
+mod3 <- lm((condition.data$mass^(1 / 3)) ~ condition.data$svl)
 summary(mod3)
 
-mod4 <- lm(log(condicao.dados$mass^(1 / 3)) ~ log(condicao.dados$svl))
+mod4 <- lm(log(condition.data$mass^(1 / 3)) ~ log(condition.data$svl))
 summary(mod4)
 
 AIC(mod1, mod2, mod3, mod4)
 
-plot(condicao.dados$svl,
-  log(condicao.dados$mass^(1 / 3)),
+plot(condition.data$svl,
+  log(condition.data$mass^(1 / 3)),
   pch = 21,
   cex = 1,
   col = rgb(217, 72, 1, 100, maxColorValue = 255),
   bg = rgb(253, 174, 107, 100, maxColorValue = 255),
   las = 1,
   bty = "n",
-  ylab = "log(Massa ^ 1/3 (g))",
+  ylab = "log(Mass ^ 1/3 (g))",
   xlab = "Comprimento Rostro-Cloacal (mm)"
 ) +
-  abline(a = lm(log(condicao.dados$mass^(1 / 3)) ~ condicao.dados$svl), col = "darkred")
+  abline(a = lm(log(condition.data$mass^(1 / 3)) ~ condition.data$svl), col = "darkred")
 
 zcrit <- qnorm(0.9999)
 summary(rstandard(mod4))
-st_residuals <- condicao.dados %>%
+st_residuals <- condition.data %>%
   filter(abs(rstandard(mod4)) > zcrit)
 st_residuals
 
 # Remove outliers
-condicao.dados <- condicao.dados %>%
+condition.data <- condition.data %>%
   filter(abs(rstandard(mod4)) < zcrit)
 
-mod4 <- lm(log(condicao.dados$mass^(1 / 3)) ~ log(condicao.dados$svl))
+mod4 <- lm(log(condition.data$mass^(1 / 3)) ~ log(condition.data$svl))
 summary(mod4)
 
-plot(condicao.dados$svl,
-  log(condicao.dados$mass^(1 / 3)),
+plot(condition.data$svl,
+  log(condition.data$mass^(1 / 3)),
   pch = 21,
   cex = 1,
   col = rgb(217, 72, 1, 100, maxColorValue = 255),
   bg = rgb(253, 174, 107, 100, maxColorValue = 255),
   las = 1,
   bty = "n",
-  ylab = "log(Massa ^ 1/3 (g))",
+  ylab = "log(Mass ^ 1/3 (g))",
   xlab = "Comprimento Rostro-Cloacal (mm)"
 ) +
-  abline(a = lm(log(condicao.dados$mass^(1 / 3)) ~ condicao.dados$svl), col = "darkred")
+  abline(a = lm(log(condition.data$mass^(1 / 3)) ~ condition.data$svl), col = "darkred")
 
-st_residuals <- condicao.dados %>%
+st_residuals <- condition.data %>%
   filter(abs(rstandard(mod4)) > zcrit)
 st_residuals
 
 p <- length(coefficients(mod4))
 n <- length(fitted(mod4))
 ratio <- p / n
-leverage <- condicao.dados %>%
+leverage <- condition.data %>%
   filter(hatvalues(mod4) > (3 * ratio))
 leverage
 
-cutoff <- 4 / (dim(condicao.dados)[1])
-cooks_dis <- condicao.dados %>%
+cutoff <- 4 / (dim(condition.data)[1])
+cooks_dis <- condition.data %>%
   filter(cooks.distance(mod4) > cutoff)
 cooks_dis
 
@@ -4686,13 +4681,13 @@ bonf <- car::outlierTest(mod4,
   n.max = 9999
 )
 
-condicao.dados[names(bonf$rstudent), ]
+condition.data[names(bonf$rstudent), ]
 
-# Calcula a condicao corporal como "scaled mass index" (Peig & Green, 2009)
+# Calcula a condition corporal como "scaled mass index" (Peig & Green, 2009)
 # install.packages("lmodel2", dependencies=T)
 library(lmodel2)
 
-sma.jalapensis <- lmodel2(log(mass + 1) ~ log(svl), data = condicao.dados, "relative", "relative", 99)
+sma.jalapensis <- lmodel2(log(mass + 1) ~ log(svl), data = condition.data, "relative", "relative", 99)
 sma.jalapensis
 par(mfrow = c(1, 2))
 
@@ -4703,19 +4698,19 @@ plot(sma.jalapensis, "RMA")
 
 par(mfrow = c(1, 1))
 
-attach(condicao.dados)
+attach(condition.data)
 smi <- mass * ((mean(svl) / svl)^1.929048) # 1.929048= slope of SMA regression
 boxplot(smi)
 plot(svl, smi, las = 1, bty = "n")
 boxplot(smi ~ sex)
-detach(condicao.dados)
-condicao.dados$smi <- smi
+detach(condition.data)
+condition.data$smi <- smi
 rm(smi)
 detach("package:lmodel2", unload = TRUE)
 
 # Testing the effects of fire components
-msel.smi.MeanTSLF.re <- brm(smi ~ MeanTSLF + (1 | campaign / plot / trap),
-  data = condicao.dados,
+msel.smi.MeanTSLF.re <- brm(smi ~ MeanTSLF + (1 | fieldtrip / plot / trap),
+  data = condition.data,
   cores = 4
 )
 
@@ -4726,8 +4721,8 @@ bayes_R2(msel.smi.MeanTSLF.re)
 plot(msel.smi.MeanTSLF.re)
 pp_check(msel.smi.MeanTSLF.re)
 
-msel.smi.TSLF.re <- brm(smi ~ TSLF + (1 | campaign / plot / trap),
-  data = condicao.dados,
+msel.smi.TSLF.re <- brm(smi ~ TSLF + (1 | fieldtrip / plot / trap),
+  data = condition.data,
   cores = 4
 )
 
@@ -4738,8 +4733,8 @@ bayes_R2(msel.smi.TSLF.re)
 plot(msel.smi.TSLF.re)
 pp_check(msel.smi.TSLF.re)
 
-msel.smi.severity.re <- brm(smi ~ severity + (1 | campaign / plot / trap),
-  data = condicao.dados,
+msel.smi.severity.re <- brm(smi ~ severity + (1 | fieldtrip / plot / trap),
+  data = condition.data,
   cores = 4
 )
 
@@ -4750,8 +4745,8 @@ bayes_R2(msel.smi.severity.re)
 plot(msel.smi.severity.re)
 pp_check(msel.smi.severity.re)
 
-msel.smi.firenull.re <- brm(smi ~ 1 + (1 | campaign / plot / trap),
-  data = condicao.dados,
+msel.smi.firenull.re <- brm(smi ~ 1 + (1 | fieldtrip / plot / trap),
+  data = condition.data,
   cores = 4
 )
 
@@ -4777,7 +4772,7 @@ quartz(height = 8, width = 8)
 ggplot(p1$TSLF, aes(x = TSLF, y = estimate__)) +
   geom_ribbon(aes(ymin = lower__, ymax = upper__), alpha = 0.3) +
   geom_line(color = "blue", linewidth = 1) +
-  geom_point(data = condicao.dados, aes(x = TSLF, y = smi), alpha = 0.5, size = 2) +
+  geom_point(data = condition.data, aes(x = TSLF, y = smi), alpha = 0.5, size = 2) +
   # scale_colour_manual(values = turbo(4), name = "Fire severity")+
   labs(x = "Time since last fire", y = "Scaled mass index") +
   theme_minimal()
@@ -4791,7 +4786,7 @@ quartz(height = 8, width = 8)
 ggplot(p1$severity, aes(x = severity, y = estimate__)) +
   geom_ribbon(aes(ymin = lower__, ymax = upper__), alpha = 0.3) +
   geom_line(color = "blue", linewidth = 1) +
-  geom_point(data = condicao.dados, aes(x = severity, y = smi), alpha = 0.5, size = 2) +
+  geom_point(data = condition.data, aes(x = severity, y = smi), alpha = 0.5, size = 2) +
   # scale_colour_manual(values = turbo(4), name = "Fire severity")+
   labs(x = "Mean fire severity", y = "Scaled mass index") +
   theme_minimal()
@@ -4814,7 +4809,7 @@ cdplot(as.factor(sex) ~ severity, data = svl.merged)
 cdplot(as.factor(sex) ~ freq, data = svl.merged)
 
 # Testing the effects of fire components
-msel.sex.MeanTSLF.re <- brm(sex ~ MeanTSLF + (1 | campaign / plot / trap),
+msel.sex.MeanTSLF.re <- brm(sex ~ MeanTSLF + (1 | fieldtrip / plot / trap),
   data = svl.merged, family = "bernoulli",
   cores = 4
 )
@@ -4826,7 +4821,7 @@ bayes_R2(msel.sex.MeanTSLF.re)
 plot(msel.sex.MeanTSLF.re)
 pp_check(msel.sex.MeanTSLF.re)
 
-msel.sex.TSLF.re <- brm(sex ~ TSLF + (1 | campaign / plot / trap),
+msel.sex.TSLF.re <- brm(sex ~ TSLF + (1 | fieldtrip / plot / trap),
   data = svl.merged, family = "bernoulli",
   cores = 4
 )
@@ -4838,7 +4833,7 @@ bayes_R2(msel.sex.TSLF.re)
 plot(msel.sex.TSLF.re)
 pp_check(msel.sex.TSLF.re)
 
-msel.sex.severity.re <- brm(sex ~ severity + (1 | campaign / plot / trap),
+msel.sex.severity.re <- brm(sex ~ severity + (1 | fieldtrip / plot / trap),
   data = svl.merged, family = "bernoulli",
   cores = 4
 )
@@ -4851,7 +4846,7 @@ plot(msel.sex.severity.re)
 pp_check(msel.sex.severity.re)
 
 
-msel.sex.firenull.re <- brm(sex ~ 1 + (1 | campaign / plot / trap),
+msel.sex.firenull.re <- brm(sex ~ 1 + (1 | fieldtrip / plot / trap),
   data = svl.merged, family = "bernoulli",
   cores = 4
 )
@@ -4889,7 +4884,7 @@ str(svl.merged)
 
 
 svl.merged <- svl.merged %>%
-  group_by(campaign) %>%
+  group_by(fieldtrip) %>%
   mutate(sampling_day = dense_rank(date)) %>% # Rank the dates within each month
   ungroup()
 
@@ -4898,18 +4893,18 @@ summary(svl.merged$sampling_day)
 trap_locations <- fire.regimes.arms %>%
   distinct(plot, trap, treatment)
 
-trap_locations$campaign <- substr(trap_locations$trap, 1, 2)
-trap_locations$campaign[trap_locations$plot == "C1"] <- NA
-trap_locations$campaign[trap_locations$plot == "C2"] <- NA
-trap_locations$campaign[trap_locations$plot == "QP"] <- NA
-trap_locations$campaign[trap_locations$plot == "QT"] <- NA
+trap_locations$fieldtrip <- substr(trap_locations$trap, 1, 2)
+trap_locations$fieldtrip[trap_locations$plot == "A2"] <- NA
+trap_locations$fieldtrip[trap_locations$plot == "A1"] <- NA
+trap_locations$fieldtrip[trap_locations$plot == "A3"] <- NA
+trap_locations$fieldtrip[trap_locations$plot == "A4"] <- NA
 
-trap_locations_heitor <- trap_locations[is.na(trap_locations$campaign), ]
-trap_locations_bruna <- trap_locations[!is.na(trap_locations$campaign), ]
+trap_locations_heitor <- trap_locations[is.na(trap_locations$fieldtrip), ]
+trap_locations_bruna <- trap_locations[!is.na(trap_locations$fieldtrip), ]
 
 trap_locations_heitor <- expand.grid.df(
   trap_locations_heitor[, -4],
-  data.frame(campaign = as.character(c(1:4)))
+  data.frame(fieldtrip = as.character(c(1:4)))
 )
 
 trap_locations <- rbind(trap_locations_bruna, trap_locations_heitor)
@@ -4920,11 +4915,11 @@ all_sampling_events <- crossing(trap_locations, sampling_day = 1:15)
 
 # Count captures only for existing combinations in your data
 capture_counts <- svl.merged %>%
-  count(campaign, plot, trap, sampling_day, name = "freq")
+  count(fieldtrip, plot, trap, sampling_day, name = "freq")
 
 # Join the actual captures to the master list of all sampling events
 Ajalapensis.captures.day <- all_sampling_events %>%
-  left_join(capture_counts, by = c("campaign", "plot", "trap", "sampling_day")) %>%
+  left_join(capture_counts, by = c("fieldtrip", "plot", "trap", "sampling_day")) %>%
   # If a trap on a given day had no captures, its freq is NA. Change that to 0.
   mutate(freq = replace_na(freq, 0))
 
@@ -4953,7 +4948,7 @@ Ajalapensis.captures.day.fire <- left_join(Ajalapensis.captures.day,
 
 Ajalapensis.captures.day.fire <- left_join(Ajalapensis.captures.day.fire,
   env.data[, c(1, 2, 5, 18)],
-  by = c("plot", "trap", "campaign")
+  by = c("plot", "trap", "fieldtrip")
 )
 summary(Ajalapensis.captures.day.fire)
 
@@ -4991,7 +4986,7 @@ ggplot(data = Ajalapensis.captures.fire, aes(y = capts, x = freq)) +
   geom_smooth()
 
 # Testing the effects of fire components
-msel.capts.MeanTSLF.re <- brm(capts ~ MeanTSLF + (1 | campaign / plot / trap),
+msel.capts.MeanTSLF.re <- brm(capts ~ MeanTSLF + (1 | fieldtrip / plot / trap),
   data = Ajalapensis.captures.fire, family = "poisson",
   cores = 4
 )
@@ -5004,7 +4999,7 @@ plot(msel.capts.MeanTSLF.re)
 pp_check(msel.capts.MeanTSLF.re)
 plot(conditional_effects(msel.capts.MeanTSLF.re), points = T)
 
-msel.capts.TSLF.re <- brm(capts ~ TSLF + (1 | campaign / plot / trap),
+msel.capts.TSLF.re <- brm(capts ~ TSLF + (1 | fieldtrip / plot / trap),
   data = Ajalapensis.captures.fire, family = "poisson",
   cores = 4
 )
@@ -5018,7 +5013,7 @@ plot(conditional_effects(msel.capts.TSLF.re), points = T)
 plot(msel.capts.TSLF.re)
 pp_check(msel.capts.TSLF.re)
 
-msel.capts.severity.re <- brm(capts ~ severity + (1 | campaign / plot / trap),
+msel.capts.severity.re <- brm(capts ~ severity + (1 | fieldtrip / plot / trap),
   data = Ajalapensis.captures.fire, family = "poisson",
   cores = 4, control = list(adapt_delta = 0.9)
 )
@@ -5033,7 +5028,7 @@ plot(conditional_effects(msel.capts.severity.re), points = T)
 plot(msel.capts.severity.re)
 pp_check(msel.capts.severity.re)
 
-msel.capts.firenull.re <- brm(capts ~ 1 + (1 | campaign / plot / trap),
+msel.capts.firenull.re <- brm(capts ~ 1 + (1 | fieldtrip / plot / trap),
   data = Ajalapensis.captures.fire, family = "poisson",
   cores = 4, control = list(adapt_delta = 0.9)
 )
@@ -5096,12 +5091,12 @@ ggplot(p1$TSLF, aes(x = TSLF, y = estimate__)) +
 counts.and.count.covs <- inla.mdata(
   y.mat,
   1,
-  Ajalapensis.captures.day.fire$campaign,
-  paste(Ajalapensis.captures.day.fire$campaign,
+  Ajalapensis.captures.day.fire$fieldtrip,
+  paste(Ajalapensis.captures.day.fire$fieldtrip,
     Ajalapensis.captures.day.fire$plot,
     sep = "_"
   ),
-  paste(Ajalapensis.captures.day.fire$campaign,
+  paste(Ajalapensis.captures.day.fire$fieldtrip,
     Ajalapensis.captures.day.fire$plot,
     Ajalapensis.captures.day.fire$trap,
     sep = "_"
@@ -5177,10 +5172,10 @@ plot(out.inla.0,
 
 
 # Only random effects
-out.inla.1 <- inla(counts.and.count.covs[, c(1:18)] ~ 1 + f(campaign) + f(plot_id),
+out.inla.1 <- inla(counts.and.count.covs[, c(1:18)] ~ 1 + f(fieldtrip) + f(plot_id),
   data = list(
     counts.and.count.covs = counts.and.count.covs[, c(1:18)],
-    campaign = counts.and.count.covs$X2,
+    fieldtrip = counts.and.count.covs$X2,
     plot_id = counts.and.count.covs$X3
   ),
   family = "nmixnb",
@@ -5258,8 +5253,8 @@ counts.and.count.covs <- inla.mdata(
   y.mat,
   1,
   scale(Ajalapensis.captures.day.fire$MeanTSLF),
-  Ajalapensis.captures.day.fire$campaign,
-  paste(Ajalapensis.captures.day.fire$campaign,
+  Ajalapensis.captures.day.fire$fieldtrip,
+  paste(Ajalapensis.captures.day.fire$fieldtrip,
     Ajalapensis.captures.day.fire$plot,
     sep = "_"
   )
@@ -5267,10 +5262,10 @@ counts.and.count.covs <- inla.mdata(
 
 print(counts.and.count.covs)
 
-out.inla.2 <- inla(counts.and.count.covs ~ 1 + MeanTSLF + f(campaign) + f(plot_id),
+out.inla.2 <- inla(counts.and.count.covs ~ 1 + MeanTSLF + f(fieldtrip) + f(plot_id),
   data = list(
     counts.and.count.covs = counts.and.count.covs,
-    campaign = counts.and.count.covs$X3,
+    fieldtrip = counts.and.count.covs$X3,
     plot_id = counts.and.count.covs$X4,
     MeanTSLF = counts.and.count.covs$X2
   ),
@@ -5359,8 +5354,8 @@ counts.and.count.covs <- inla.mdata(
   y.mat,
   1,
   scale(Ajalapensis.captures.day.fire$severity),
-  Ajalapensis.captures.day.fire$campaign,
-  paste(Ajalapensis.captures.day.fire$campaign,
+  Ajalapensis.captures.day.fire$fieldtrip,
+  paste(Ajalapensis.captures.day.fire$fieldtrip,
     Ajalapensis.captures.day.fire$plot,
     sep = "_"
   )
@@ -5368,10 +5363,10 @@ counts.and.count.covs <- inla.mdata(
 
 print(counts.and.count.covs)
 
-out.inla.3 <- inla(counts.and.count.covs ~ 1 + severity + f(campaign) + f(plot_id),
+out.inla.3 <- inla(counts.and.count.covs ~ 1 + severity + f(fieldtrip) + f(plot_id),
   data = list(
     counts.and.count.covs = counts.and.count.covs,
-    campaign = counts.and.count.covs$X3,
+    fieldtrip = counts.and.count.covs$X3,
     plot_id = counts.and.count.covs$X4,
     severity = counts.and.count.covs$X2
   ),
@@ -5460,8 +5455,8 @@ counts.and.count.covs <- inla.mdata(
   y.mat,
   1,
   scale(Ajalapensis.captures.day.fire$TSLF),
-  Ajalapensis.captures.day.fire$campaign,
-  paste(Ajalapensis.captures.day.fire$campaign,
+  Ajalapensis.captures.day.fire$fieldtrip,
+  paste(Ajalapensis.captures.day.fire$fieldtrip,
     Ajalapensis.captures.day.fire$plot,
     sep = "_"
   )
@@ -5469,10 +5464,10 @@ counts.and.count.covs <- inla.mdata(
 
 print(counts.and.count.covs)
 
-out.inla.4 <- inla(counts.and.count.covs ~ 1 + TSLF + f(campaign) + f(plot_id),
+out.inla.4 <- inla(counts.and.count.covs ~ 1 + TSLF + f(fieldtrip) + f(plot_id),
   data = list(
     counts.and.count.covs = counts.and.count.covs,
-    campaign = counts.and.count.covs$X3,
+    fieldtrip = counts.and.count.covs$X3,
     plot_id = counts.and.count.covs$X4,
     TSLF = counts.and.count.covs$X2
   ),
@@ -5588,10 +5583,10 @@ waic_table <- data.frame(
 )
 
 waic_table$formula[1] <- "(lambda ~ 1), (p ~ 1)"
-waic_table$formula[2] <- "(lambda ~ 1), (p ~ (1|campaign/plot))"
-waic_table$formula[3] <- "(lambda ~ MeanTSLF), (p ~ MeanTSLF + (1|campaign/plot))"
-waic_table$formula[4] <- "(lambda ~ FireSev), (p ~ FireSev + (1|campaign/plot))"
-waic_table$formula[5] <- "(lambda ~ TSLF), (p ~ TSLF + (1|campaign/plot))"
+waic_table$formula[2] <- "(lambda ~ 1), (p ~ (1|fieldtrip/plot))"
+waic_table$formula[3] <- "(lambda ~ MeanTSLF), (p ~ MeanTSLF + (1|fieldtrip/plot))"
+waic_table$formula[4] <- "(lambda ~ FireSev), (p ~ FireSev + (1|fieldtrip/plot))"
+waic_table$formula[5] <- "(lambda ~ TSLF), (p ~ TSLF + (1|fieldtrip/plot))"
 
 
 
