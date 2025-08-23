@@ -15,6 +15,7 @@ library(brms)
 library(projpred)
 library(GGally)
 library(emmeans)
+library(scales)
 
 # If needed, install INLA by uncommenting the following lines
 # install.packages("INLA", repos = c(getOption("repos"),
@@ -2962,7 +2963,7 @@ trap_locations$fieldtrip[trap_locations$plot == "A4"] <- NA
 trap_locations_heitor <- trap_locations[is.na(trap_locations$fieldtrip), ]
 trap_locations_bruna <- trap_locations[!is.na(trap_locations$fieldtrip), ]
 
-trap_locations_heitor <- expand.grid.df(
+trap_locations_heitor <- reshape::expand.grid.df(
   trap_locations_heitor[, -4],
   data.frame(fieldtrip = as.character(c(1:4)))
 )
@@ -3012,7 +3013,7 @@ Ajalapensis.captures.day.fire <- left_join(
 
 Ajalapensis.captures.day.fire <- left_join(
   Ajalapensis.captures.day.fire,
-  env.data[, c(1, 2, 5, 18)],
+  env.data[, c(1:3, 5)],
   by = c("plot", "trap", "fieldtrip")
 )
 summary(Ajalapensis.captures.day.fire)
@@ -3027,7 +3028,7 @@ Ajalapensis.captures.day.fire$TSLF.y[is.na(
 Ajalapensis.captures.day.fire$TSLF.y[
   Ajalapensis.captures.day.fire$treatment == "Q"
 ] <- 0
-Ajalapensis.captures.day.fire <- Ajalapensis.captures.day.fire[, -23]
+Ajalapensis.captures.day.fire <- Ajalapensis.captures.day.fire[, -24]
 Ajalapensis.captures.day.fire <- dplyr::rename(
   Ajalapensis.captures.day.fire,
   "TSLF" = "TSLF.y"
@@ -3036,7 +3037,7 @@ Ajalapensis.captures.day.fire <- dplyr::rename(
 summary(Ajalapensis.captures.day.fire)
 
 ## brms------------------------------------------------------------------------
-Ajalapensis.captures.fire <- Ajalapensis.captures.day.fire[, c(1:4, 20:23)]
+Ajalapensis.captures.fire <- Ajalapensis.captures.day.fire[, c(1:4, 20:24)]
 
 Ajalapensis.captures.fire$capts <- rowSums(Ajalapensis.captures.day.fire[, c(
   5:19
@@ -3065,7 +3066,9 @@ msel.capts.MeanTSLF.re <- brm(
   capts ~ MeanTSLF + (1 | fieldtrip / plot / trap),
   data = Ajalapensis.captures.fire,
   family = "poisson",
-  cores = 4
+  iter = 4000,
+  cores = 4,
+  control = list(adapt_delta = 0.99)
 )
 
 summary(msel.capts.MeanTSLF.re)
@@ -3080,7 +3083,9 @@ msel.capts.TSLF.re <- brm(
   capts ~ TSLF + (1 | fieldtrip / plot / trap),
   data = Ajalapensis.captures.fire,
   family = "poisson",
-  cores = 4
+  iter = 4000,
+  cores = 4,
+  control = list(adapt_delta = 0.99)
 )
 
 summary(msel.capts.TSLF.re)
@@ -3096,8 +3101,9 @@ msel.capts.severity.re <- brm(
   capts ~ severity + (1 | fieldtrip / plot / trap),
   data = Ajalapensis.captures.fire,
   family = "poisson",
+  iter = 4000,
   cores = 4,
-  control = list(adapt_delta = 0.9)
+  control = list(adapt_delta = 0.99)
 )
 
 summary(msel.capts.severity.re)
@@ -3114,8 +3120,9 @@ msel.capts.firenull.re <- brm(
   capts ~ 1 + (1 | fieldtrip / plot / trap),
   data = Ajalapensis.captures.fire,
   family = "poisson",
+  iter = 4000,
   cores = 4,
-  control = list(adapt_delta = 0.9)
+  control = list(adapt_delta = 0.99)
 )
 
 summary(msel.capts.firenull.re)
@@ -3839,7 +3846,6 @@ inla.nmix.lambda.fitted <- function(
 
 
 # Severity effect
-# Frequency effects
 out.inla.3.lambda.fits <- inla.nmix.lambda.fitted(
   result = out.inla.3,
   sample.size = 10000,
@@ -3919,10 +3925,10 @@ rel_p_severity <- data.frame(
 pred_df <- data.frame(
   severity = scale(Ajalapensis.captures.day.fire$severity),
   trap = Ajalapensis.captures.day.fire$trap,
-  N = out.inla.4.lambda.fits$median.lambda,
-  Nlow = out.inla.4.lambda.fits$quant025.lambda,
-  Nhigh = out.inla.4.lambda.fits$quant975.lambda,
-  p = plogis(out.inla.4$summary.linear.predictor$`0.5quant`),
+  N = out.inla.3.lambda.fits$median.lambda,
+  Nlow = out.inla.3.lambda.fits$quant025.lambda,
+  Nhigh = out.inla.3.lambda.fits$quant975.lambda,
+  p = plogis(out.inla.3$summary.linear.predictor$`0.5quant`),
   ncaps = rowSums(y.mat)
 )
 
