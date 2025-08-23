@@ -1714,7 +1714,7 @@ b_intercept <- sapply(post_samples_fixed, function(s) {
   s$latent[idx_intercept, 1]
 })
 b_A2 <- sapply(post_samples_fixed, function(s) s$latent[idx_A2, 1])
-b_A1 <- sapply(post_samples_fixed, function(s) s$latent[idx_A1, 1])
+b_A3 <- sapply(post_samples_fixed, function(s) s$latent[idx_A3, 1])
 b_A4 <- sapply(post_samples_fixed, function(s) s$latent[idx_A4, 1])
 
 #--- Step 4: Calculate all 6 pairwise contrasts on the logit scale ---
@@ -1858,7 +1858,6 @@ y_max <- y_limits[2]
 
 ggplot(lambda_post_long, aes(x = Plot, y = lambda, fill = Plot, color = Plot)) +
 
-  # FIX 1: Use the correct function name 'stat_halfeye'
   ggdist::stat_halfeye(
     adjust = 1,
     width = .8,
@@ -1868,9 +1867,8 @@ ggplot(lambda_post_long, aes(x = Plot, y = lambda, fill = Plot, color = Plot)) +
     point_interval = "median_hdi" # Display the median and Highest Density Interval
   ) +
 
-  # FIX 2: Wrap the labels argument in a function
   scale_y_log10(
-    labels = function(x) number(x, accuracy = 1)
+    labels = function(x) scales::number(x, accuracy = 1)
   ) +
 
   # Add other labels and scales
@@ -1882,7 +1880,7 @@ ggplot(lambda_post_long, aes(x = Plot, y = lambda, fill = Plot, color = Plot)) +
   scale_color_viridis_d(option = "turbo") +
   coord_cartesian(ylim = c(y_min, y_max)) +
   theme_minimal() +
-  guides(fill = "none") # Hide the redundant legend
+  guides(fill = "none")
 
 
 # Sex with environment -----------------------------------------------
@@ -2073,9 +2071,10 @@ attach(condition.data)
 smi <- mass * ((mean(svl) / svl)^2.027180) # 2.027180 = slope of SMA regression
 boxplot(smi)
 plot(svl, smi, las = 1, bty = "n")
-boxplot(smi ~ sex)
 detach(condition.data)
 condition.data$smi <- smi
+boxplot(smi ~ sex, data = condition.data)
+
 rm(smi)
 detach("package:lmodel2", unload = TRUE)
 
@@ -2439,10 +2438,10 @@ svl.fire <- left_join(
   fire.regimes.arms[, -c(1:2, 10)],
   by = c("plot", "trap")
 )
-env.data$fieldtrip <- env.data$fieldtrip
+
 svl.fire <- left_join(
   svl.fire,
-  env.data[, c(1:3, 5, 18)],
+  env.data[, c(1:3, 5)],
   by = c("plot", "trap", "fieldtrip")
 )
 
@@ -2527,11 +2526,11 @@ ggplot(svl.merged, aes(x = log(svl), y = log(mass))) +
   geom_smooth(method = "lm")
 
 
-ggpairs(svl.merged[, c(13:16, 19)])
-usdm::vifstep(svl.merged[, c(13:16, 19)], keep = "severity", th = 2)
-usdm::vif(svl.merged[, c(13:16, 19)])
+ggpairs(svl.merged[, c(13:16, 18)])
+usdm::vifstep(svl.merged[, c(13:16, 18)], keep = "severity", th = 2)
+usdm::vif(svl.merged[, c(13:16, 18)])
 
-svl.merged[, c(13:16, 19)] <- scale(svl.merged[, c(13:16, 19)])
+svl.merged[, c(13:16, 18)] <- scale(svl.merged[, c(13:16, 18)])
 
 # Testing the effects of fire components
 msel.svl.MeanTSLF.re <- brm(
@@ -2630,8 +2629,8 @@ ggplot(p1$severity, aes(x = severity, y = estimate__)) +
 ## Body condition -----------------------------------------------
 
 # Remove cases where mass = NA
-completos <- complete.cases(svl.merged[, c("mass")])
-condition.data <- droplevels(svl.merged[completos, ])
+complete <- complete.cases(svl.merged[, c("mass")])
+condition.data <- droplevels(svl.merged[complete, ])
 
 # View data (svl, mass)
 plot(condition.data$svl, condition.data$mass, las = 1, bty = "n")
@@ -2744,7 +2743,7 @@ attach(condition.data)
 smi <- mass * ((mean(svl) / svl)^1.929048) # 1.929048= slope of SMA regression
 boxplot(smi)
 plot(svl, smi, las = 1, bty = "n")
-boxplot(smi ~ sex)
+
 detach(condition.data)
 condition.data$smi <- smi
 rm(smi)
