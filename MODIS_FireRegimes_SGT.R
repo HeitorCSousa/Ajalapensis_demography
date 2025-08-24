@@ -183,9 +183,10 @@ fire.regimes.traps$treatment <- traps.pts.sp$treatment
 
 fire.regimes.traps$TSLF <- traps.pts.sp$tslf
 
-
+# Save data
 write.csv(fire.regimes.traps, "fire_regimes_traps_df.csv")
 
+# Simple plots
 plot(severity ~ freq, data = fire.regimes.traps)
 plot(severity ~ TSLF, data = fire.regimes.traps)
 plot(severity ~ MeanTSLF, data = fire.regimes.traps)
@@ -197,4 +198,6 @@ plot(MFRI ~ MeanTSLF, data = fire.regimes.traps)
 plot(MFRI ~ freq, data = fire.regimes.traps)
 plot(severity ~ MFRI, data = fire.regimes.traps)
 GGally::ggpairs(fire.regimes.traps[, c(2:5, 9)])
+
+# Check for collinear variables
 usdm::vifstep(as.data.frame(fire.regimes.traps[, c(2:5, 9)]), th = 2, keep = "severity")

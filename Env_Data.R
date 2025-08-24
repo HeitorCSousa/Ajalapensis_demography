@@ -1,5 +1,8 @@
 rm(list = ls())
 
+
+# Load packages -----------------------------------------------------------
+
 library(tidyverse)
 library(missForest)
 library(Boruta)
@@ -10,7 +13,8 @@ library(gamm4)
 library(ggplot2)
 
 
-# Environmental variables
+# Read environmental data -------------------------------------------------
+
 env.vars <- readRDS("env_vars.rds")
 env.vars$plot <- factor(env.vars$plot, levels = c(
   "A1",
@@ -31,23 +35,21 @@ env.vars <- do.call(
 summary(env.vars)
 
 
-# Ecophysiology#
-###############
+# Ecophysiological variables ----------------------------------------------
 
-# Critical temperatures#
-#######################
-# setwd("/Volumes/Extreme SSD/Heitor/Documentos/UFT/Discentes/Raquel_Acacio/Analises")
+## Critical temperatures ---------------------------------------------------
 
-# Le tabela
+# Load data
 ct.sgt <- read.table("CT_Data.txt", h = T)
 
+# Filter by species
 ct.Ajalapensis <- ct.sgt[ct.sgt$Species == "Ameivula_jalapensis", ]
 ct.Ajalapensis
 
 table(ct.Ajalapensis$Sex)
 
-# Desempenho locomotor#
-######################
+## Locomotor performance ---------------------------------------------------
+# Load data
 loc.perf <- read.table("loc_perf_SGT.txt", h = T)
 str(loc.perf)
 head(loc.perf)
@@ -56,9 +58,9 @@ table(loc.perf$sp, loc.perf$SGT)
 
 summary(abs(loc.perf$v))
 summary(abs(loc.perf$a))
-# windows(10,10)
 boxplot(abs(loc.perf$v))
 
+# Get the maximum speed per lizard run
 data <- aggregate(abs(loc.perf$v),
   by = list(
     loc.perf$sp,
@@ -72,6 +74,8 @@ data <- aggregate(abs(loc.perf$v),
 )
 
 head(data)
+
+# Rename columns
 names(data) <- c(
   "species", "SGT", "temp",
   "run", "sex", "SVL",
@@ -79,8 +83,11 @@ names(data) <- c(
 )
 
 head(data)
+
+# Visualize variation among species
 boxplot(Veloc ~ species, data = data)
 
+# Organize data
 data.ctmin <- data.frame(
   "species" = ct.sgt$Species,
   "SGT" = ct.sgt$ID,
@@ -124,22 +131,22 @@ data.complete$species[data.complete$species == "V_savanicola"] <- "Vanzosaura_sa
 
 table(data.complete$species)
 
-
-# Curvas de desempenho locomotor#
-################################
+# Thermal locomotor performance curves ------------------------------------
 
 # Ameivula jalapensis
 data.Ajalapensis <- data.complete[data.complete$species == "Ameivula_jalapensis", ]
 
 data.Ajalapensis$sex <- as.factor(data.Ajalapensis$sex)
 summary(data.Ajalapensis$sex)
-# Modelo generalizado aditivo de efeitos mistos
+
+# Generalized additive mixed effects model (GAMM), considering individual as random factor
 m.Ajalapensis.sprint <- gamm4(Veloc ~ t2(temp),
   random = ~ (1 | SGT),
   data = data.complete[data.complete$species == "Ameivula_jalapensis", ]
 )
 summary(m.Ajalapensis.sprint$gam)
 
+# Fit GAMM by sex
 m.Ajalapensis.sex.sprint <- gamm4(Veloc ~ t2(temp, by = sex),
   random = ~ (1 | SGT),
   data = data.Ajalapensis
@@ -148,35 +155,39 @@ m.Ajalapensis.sex.sprint <- gamm4(Veloc ~ t2(temp, by = sex),
 summary(m.Ajalapensis.sex.sprint$gam)
 plot(m.Ajalapensis.sex.sprint$gam)
 
+# Compare models
 AIC(m.Ajalapensis.sprint$mer)
 AIC(m.Ajalapensis.sex.sprint$mer)
 
+# Refit removing NAs
 m.Ajalapensis.sprint.refit <- gamm4(Veloc ~ t2(temp),
   random = ~ (1 | SGT),
   data = data.Ajalapensis[!is.na(data.Ajalapensis$sex), ]
 )
+
+# Compare models with likelihood ratio test (LRT)
 anova(m.Ajalapensis.sprint.refit$mer, m.Ajalapensis.sex.sprint$mer)
 
-
+# Plot curve
 plot(m.Ajalapensis.sprint$gam,
   main = expression(italic("Ameivula jalapensis")),
   ylab = "Desempenho locomotor", xlab = "Temperatura (°C)"
 )
 
-
+# Predict to make a better plot
 preddata_tpc <- data.frame(temp = seq(10, 50, 0.1))
 
-## Faz a predicao
 pred_tpc_Ajalapensis <- predict(m.Ajalapensis.sprint$gam,
   preddata_tpc,
   se.fit = T
 )
 
-## Anexa as predicoes e erros na tabela de data
+# Merge predictions and SEs in data.frame
 preddata_tpc <- rbind(preddata_tpc)
 preddata_tpc$predicted <- c(pred_tpc_Ajalapensis$fit)
 preddata_tpc$se <- c(pred_tpc_Ajalapensis$se.fit)
 
+# Plot thermal performance curve
 ggplot(preddata_tpc, aes(x = temp, y = predicted)) +
   geom_line(color = "blue", linewidth = 1.5) +
   geom_ribbon(aes(ymin = predicted - se, ymax = predicted + se), linetype = 3, alpha = .2) +
@@ -188,12 +199,12 @@ ggplot(preddata_tpc, aes(x = temp, y = predicted)) +
   lims(x = c(15, 45), y = c(0, 1.8)) +
   theme(plot.title = element_text(hjust = 0.5))
 
-# Temperatura ótima
+# Optimal temperature
 preddata_tpc[preddata_tpc$predicted == max(pred_tpc_Ajalapensis$fit), ]
 
 # 31.7 for A. jalapensis
 
-# Prediz com os data microclimaticos
+# Predict locomotor performance with microclimatic data
 microclim.SGT <- readRDS("microclimate_EESGT.rds")
 
 env.var.hour <- microclim.SGT %>%
@@ -207,16 +218,20 @@ env.var.hour$Ajalapensis_perf <- predict.gam(m.Ajalapensis.sprint$gam,
   newdata = data.frame(temp = env.var.hour$tmed)
 )
 
+# Save object
 saveRDS(m.Ajalapensis.sprint, "tpc_Ajalapensis.rds")
 
-# Temperatura preferencial#
-##########################
+
+# Preferred temperatures --------------------------------------------------
+# Load data
 tpref_SGT <- read.table("Data_Tpref_SGT.txt", h = T)
 
+# Filter A. jalapensis data
 tpref_Ajalapensis <- dplyr::filter(tpref_SGT, sp == "A_jalapensis")
 table(tpref_Ajalapensis$SGT, tpref_Ajalapensis$sp)
 nrow(table(tpref_Ajalapensis$SGT, tpref_Ajalapensis$sp))
 
+# Function to calculate hours of activity based on quantiles
 hvtFUN <- function(temp.envr, temp.lab, quantiles, radiation) {
   vtmin <- quantile(temp.lab, quantiles[1], na.rm = TRUE)
   vtmax <- quantile(temp.lab, quantiles[2], na.rm = TRUE)
@@ -225,10 +240,11 @@ hvtFUN <- function(temp.envr, temp.lab, quantiles, radiation) {
   hv
 }
 
+# Calculate hours of activity considering 50% and 90% percentiles
 (tpref90_Ajalapensis <- quantile(tpref_Ajalapensis$temp, c(0.05, 0.95), na.rm = T))
 (tpref50_Ajalapensis <- quantile(tpref_Ajalapensis$temp, c(0.25, 0.75), na.rm = T))
 
-
+# Save objects
 saveRDS(
   tpref90_Ajalapensis,
   "tpref90_Ajalapensis.rds"
@@ -239,6 +255,7 @@ saveRDS(
   "tpref50_Ajalapensis.rds"
 )
 
+# Predict with microclimatic data
 env.var.hour$Ajalapensis_ha90 <- hvtFUN(
   env.var.hour$tmed,
   tpref_Ajalapensis$temp,
@@ -253,6 +270,7 @@ env.var.hour$Ajalapensis_ha50 <- hvtFUN(
   rep(1, nrow(env.var.hour))
 )
 
+# Summarize by day
 ecophys.day <-
   env.var.hour %>%
   dplyr::group_by(plot, trap.int, fieldtrip, day, month, year) %>%
@@ -266,6 +284,7 @@ summary(ecophys.day)
 pts.traps <- read.table("Points_Traps.txt", h = T)
 pts.traps.SGT <- pts.traps[pts.traps$local == "EESGT", ]
 
+# Consider the day length variation as a threshold (diurnal species)
 daylength <- geosphere::daylength(
   lat = mean(pts.traps.SGT$lat),
   doy = yday(paste(ecophys.day$year,
@@ -285,7 +304,7 @@ ecophys.day$Ajalapensis_ha90 <- ifelse(ecophys.day$Ajalapensis_ha90 > daylength,
   ecophys.day$Ajalapensis_ha90
 )
 
-
+# Summarize by month
 ecophys.month <-
   ecophys.day %>%
   dplyr::group_by(plot, trap.int, fieldtrip) %>%
@@ -302,6 +321,7 @@ ecophys.month$plot <- factor(ecophys.month$plot, levels = c(
   "A4"
 ))
 
+# Merge environmental variables with ecophysiological variables
 env.vars <- left_join(env.vars, ecophys.month, by = c("plot", "trap.int", "fieldtrip"))
 summary(env.vars)
 
@@ -324,14 +344,16 @@ env.vars.imputed <- missForest::missForest(as.matrix(env.vars[, -1]),
 )
 env.vars.imputed$OOBerror
 
-names(env.vars[, -1])[env.vars.imputed$OOBerror > 1] # Varables with error higher than 1
-names(env.vars[, -1])[env.vars.imputed$OOBerror > 5] # Varables with error higher than 5
+names(env.vars[, -1])[env.vars.imputed$OOBerror > 1] # Variables with error higher than 1
+names(env.vars[, -1])[env.vars.imputed$OOBerror > 5] # Variables with error higher than 5
 
 env.vars.imputed.df <- as.data.frame(env.vars.imputed$ximp)
 env.vars.imputed.df <- cbind(env.vars[, 1], env.vars.imputed.df)
 
 names(env.vars.imputed.df) <- c("plot", names(env.vars.imputed.df)[-1])
 summary(env.vars.imputed.df)
+
+# Save object
 saveRDS(env.vars.imputed.df, "env_vars_imputed_df.rds")
 
 # Which variables better explain the differences among plots?
@@ -364,12 +386,12 @@ plotImpHistory(Borutaplot)
 attStats(Borutaplot)
 TentativeRoughFix(Borutaplot)
 
-boxplot(env.vars.imputed.df$pground)
-
+# Pairwise plot
 ggpairs.env <- ggpairs(env.vars.imputed.df[env.vars.imputed.df$pground > 70, -c(2, 3, 18)])
 quartz(height = 8, width = 12)
 ggpairs.env
 
+# Other plots
 ggplot(
   env.vars.imputed.df,
   aes(x = plot, y = VARI.all)
@@ -507,6 +529,7 @@ plot(VARI.all ~ TSLF, data = env.data, col = pal.plot[as.numeric(as.factor(env.d
 plot(tree.density ~ TSLF, data = env.data, col = pal.plot[as.numeric(as.factor(env.data$plot))])
 plot(zentropy ~ TSLF, data = env.data, col = pal.plot[as.numeric(as.factor(env.data$plot))])
 
+# Principal component analysis
 pca.env.all <- prcomp(
   env.data[, c(
     "TSLF", "t.med", "t.max", "t.max.abs",
@@ -636,6 +659,7 @@ env.data <- env.data[, c(
   "Ajalapensis_perf", "Ajalapensis_ha90"
 )]
 
+# Other plots
 quartz(height = 8, width = 8)
 ggplot(
   env.data,
@@ -696,4 +720,5 @@ quartz(height = 8, width = 12)
 ggpairs.env <- ggpairs(env.data[, -c(2:4)])
 ggpairs.env
 
+# Save object
 saveRDS(env.data, "env_data_SGT.rds")
