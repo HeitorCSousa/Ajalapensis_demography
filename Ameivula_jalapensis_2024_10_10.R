@@ -185,19 +185,19 @@ detach(data)
 # Pradel-Jolly-Seber Model ------------------------------------------------
 
 # Load
-pts.arms <- read.table("Points_Traps.txt", h = T)
-pts.arms.SGT <- pts.arms[pts.arms$locality == "EESGT", ]
+pts.traps <- read.table("Points_Traps.txt", h = T)
+pts.traps.SGT <- pts.traps[pts.traps$locality == "EESGT", ]
 
-# (arms.pts.SGT <- subset(arms.pts,locality=="SGT"))
-coordinates(pts.arms.SGT) <- c("long", "lat")
-proj4string(pts.arms.SGT) <- CRS("+proj=longlat +datum=WGS84")
-pts.arms.SGT.utm <- spTransform(pts.arms.SGT, CRS = CRS("+init=epsg:32722"))
+# (traps.pts.SGT <- subset(traps.pts,locality=="SGT"))
+coordinates(pts.traps.SGT) <- c("long", "lat")
+proj4string(pts.traps.SGT) <- CRS("+proj=longlat +datum=WGS84")
+pts.traps.SGT.utm <- spTransform(pts.traps.SGT, CRS = CRS("+init=epsg:32722"))
 
-pts.arms.SGT <- pts.arms[pts.arms$locality == "EESGT", ]
-pts.arms.SGT$X <- coordinates(pts.arms.SGT.utm)[, 1]
-pts.arms.SGT$Y <- coordinates(pts.arms.SGT.utm)[, 2]
+pts.traps.SGT <- pts.traps[pts.traps$locality == "EESGT", ]
+pts.traps.SGT$X <- coordinates(pts.traps.SGT.utm)[, 1]
+pts.traps.SGT$Y <- coordinates(pts.traps.SGT.utm)[, 2]
 
-names(pts.arms.SGT) <- c(
+names(pts.traps.SGT) <- c(
   "Plot",
   "Trap",
   "Lat",
@@ -207,7 +207,7 @@ names(pts.arms.SGT) <- c(
   "Y"
 )
 
-Ajalapensis.planilha.XY <- left_join(data, pts.arms.SGT, by = c("Plot", "Trap"))
+Ajalapensis.planilha.XY <- left_join(data, pts.traps.SGT, by = c("Plot", "Trap"))
 head(Ajalapensis.planilha.XY)
 
 
@@ -295,9 +295,9 @@ complete <- complete.cases(capts[, c("ID", "X", "Y")]) # remove NAs
 capts <- droplevels(capts[complete, ])
 
 traps.xy <- data.frame(
-  trapID = interaction(pts.arms.SGT$Plot, pts.arms.SGT$Trap),
-  x = pts.arms.SGT$X,
-  y = pts.arms.SGT$Y
+  trapID = interaction(pts.traps.SGT$Plot, pts.traps.SGT$Trap),
+  x = pts.traps.SGT$X,
+  y = pts.traps.SGT$Y
 )
 traps.xy <- read.traps(data = traps.xy[, -1], detector = "multi")
 
@@ -812,9 +812,9 @@ svl.env <- svl.env %>%
 
 summary(svl.env$sampling_day)
 
-fire.regimes.arms <- read.csv("fire_regimes_arms_df.csv")
+fire.regimes.traps <- read.csv("fire_regimes_traps_df.csv")
 
-trap_locations <- fire.regimes.arms %>%
+trap_locations <- fire.regimes.traps %>%
   distinct(plot, trap, treatment)
 
 trap_locations$fieldtrip <- substr(trap_locations$trap, 1, 2)
@@ -2251,11 +2251,11 @@ glimpse(brunadata)
 summary(brunadata)
 brunadata$plot <- as.character(brunadata$plot)
 
-fire.regimes.arms <- read.csv("fire_regimes_arms_df.csv")
+fire.regimes.traps <- read.csv("fire_regimes_traps_df.csv")
 
 brunadata <- left_join(
   brunadata,
-  fire.regimes.arms[, -1],
+  fire.regimes.traps[, -1],
   by = c("plot", "trap", "treatment")
 )
 summary(brunadata)
@@ -2436,7 +2436,7 @@ svl.data$fieldtrip <- as.factor(svl.data$fieldtrip)
 
 svl.fire <- left_join(
   svl.data,
-  fire.regimes.arms[, -c(1:2, 10)],
+  fire.regimes.traps[, -c(1:2, 10)],
   by = c("plot", "trap")
 )
 
@@ -2951,7 +2951,7 @@ svl.merged <- svl.merged %>%
 
 summary(svl.merged$sampling_day)
 
-trap_locations <- fire.regimes.arms %>%
+trap_locations <- fire.regimes.traps %>%
   distinct(plot, trap, treatment)
 
 trap_locations$fieldtrip <- substr(trap_locations$trap, 1, 2)
@@ -3007,7 +3007,7 @@ str(Ajalapensis.captures.day)
 
 Ajalapensis.captures.day.fire <- left_join(
   Ajalapensis.captures.day,
-  fire.regimes.arms[, -c(1, 2)],
+  fire.regimes.traps[, -c(1, 2)],
   by = c("plot", "trap", "treatment")
 )
 
@@ -4023,20 +4023,20 @@ writeRaster(severity_raster, "SGT_Severity.tif", overwrite = TRUE)
 plot(severity_raster)
 
 # Read and plot points coordinates
-arms.pts <- read.table("Pontos_Arms_Bruna_Heitor.txt", h = T)
-summary(arms.pts)
-arms.pts$sampdes <- c(
+traps.pts <- read.table("Points_Traps_Bruna_Heitor.txt", h = T)
+summary(traps.pts)
+traps.pts$sampdes <- c(
   rep("Rotating", 172),
   rep("Fixed", 48)
 )
 
-coordinates(arms.pts) <- c("Longitude", "Latitude")
-proj4string(arms.pts) <- CRS("+proj=longlat +datum=WGS84")
-arms.pts
-arms.pts <- st_as_sf(arms.pts)
+coordinates(traps.pts) <- c("Longitude", "Latitude")
+proj4string(traps.pts) <- CRS("+proj=longlat +datum=WGS84")
+traps.pts
+traps.pts <- st_as_sf(traps.pts)
 
 plot(severity_raster)
-plot(arms.pts, add = T)
+plot(traps.pts, add = T)
 
 # Read biomes
 biomes <- read_biomes()
@@ -4093,7 +4093,7 @@ inset.sgt <- ggplot() +
   geom_sf(data = SGT, color = "forestgreen", fill = NA, linewidth = 1.25) +
   # Add your trap locations
   geom_sf(
-    data = arms.pts,
+    data = traps.pts,
     aes(shape = sampdes), # Use shape to distinguish sampling design
     fill = "white",
     color = "black",
@@ -4122,28 +4122,28 @@ inset.sgt <- ggplot() +
   labs(x = "Longitude", y = "Latitude")
 
 # dowload tiles and compose raster (SpatRaster)
-bbox.arms <- st_bbox(arms.pts)
-bbox.arms[1:4] <- c(
-  bbox.arms[1] - 0.05,
-  bbox.arms[2] - 0.01,
-  bbox.arms[3] + 0.05,
-  bbox.arms[4] + 0.01
+bbox.traps <- st_bbox(traps.pts)
+bbox.traps[1:4] <- c(
+  bbox.traps[1] - 0.05,
+  bbox.traps[2] - 0.01,
+  bbox.traps[3] + 0.05,
+  bbox.traps[4] + 0.01
 )
 
 imagery <- get_tiles(
-  bbox.arms,
+  bbox.traps,
   crop = TRUE,
   provider = "Esri.WorldImagery",
   zoom = 15
 )
 plot(imagery)
-plot(st_geometry(arms.pts), col = "red", pch = 21, add = T)
+plot(st_geometry(traps.pts), col = "red", pch = 21, add = T)
 
-map.arms.sgt <- ggplot() +
+map.traps.sgt <- ggplot() +
   geom_spatraster_rgb(data = imagery, interpolate = F) +
   # Add your trap locations
   geom_sf(
-    data = arms.pts,
+    data = traps.pts,
     size = 3,
     aes(shape = sampdes), # Use shape to distinguish sampling design
     fill = "white",
@@ -4154,8 +4154,8 @@ map.arms.sgt <- ggplot() +
     values = c("Fixed" = 22, "Rotating" = 21),
     name = "Sampling Design"
   ) +
-  xlim(bbox.arms[1], bbox.arms[3]) +
-  ylim(bbox.arms[2], bbox.arms[4]) +
+  xlim(bbox.traps[1], bbox.traps[3]) +
+  ylim(bbox.traps[2], bbox.traps[4]) +
   theme_test() +
   guides(size = "none") +
   ggspatial::annotation_scale(
@@ -4174,14 +4174,14 @@ map.arms.sgt <- ggplot() +
     )
   ) +
   coord_sf(
-    xlim = c(bbox.arms[1], bbox.arms[3]),
-    ylim = c(bbox.arms[2], bbox.arms[4]),
+    xlim = c(bbox.traps[1], bbox.traps[3]),
+    ylim = c(bbox.traps[2], bbox.traps[4]),
     expand = FALSE
   ) +
   labs(x = "Longitude", y = "Latitude")
 
 
-map.arms.sgt
+map.traps.sgt
 
 # Combining both maps
 print(inset.cerrado, vp = viewport(0.7, 0.8, width = 0.2, height = 0.2))
@@ -4190,7 +4190,7 @@ print(inset.sgt, vp = viewport(0.68, 0.6, width = 0.2, height = 0.2))
 # Map with fire severity
 
 #--- Create the Final Map ---
-map.arms.severity <- ggplot() +
+map.traps.severity <- ggplot() +
   # Use geom_spatraster to plot your severity raster
   geom_spatraster(data = severity_raster) +
 
@@ -4203,7 +4203,7 @@ map.arms.severity <- ggplot() +
 
   # Add your trap locations
   geom_sf(
-    data = arms.pts,
+    data = traps.pts,
     size = 3,
     aes(shape = sampdes), # Use shape to distinguish sampling design
     fill = "white",
@@ -4233,17 +4233,17 @@ map.arms.severity <- ggplot() +
 
   # Set coordinates and labels
   coord_sf(
-    xlim = c(bbox.arms[1], bbox.arms[3]),
-    ylim = c(bbox.arms[2], bbox.arms[4]),
+    xlim = c(bbox.traps[1], bbox.traps[3]),
+    ylim = c(bbox.traps[2], bbox.traps[4]),
     expand = FALSE
   ) +
   labs(x = "Longitude", y = "Latitude") +
   theme_minimal()
 
 # Display the map
-print(map.arms.severity)
+print(map.traps.severity)
 
-print(map.arms.severity)
+print(map.traps.severity)
 
 # Combining both maps
 print(inset.cerrado, vp = viewport(0.7, 0.8, width = 0.2, height = 0.2))
