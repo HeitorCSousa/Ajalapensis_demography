@@ -6,6 +6,8 @@ library(Boruta)
 library(GGally)
 library(viridis)
 library(ggfortify)
+library(gamm4)
+library(ggplot2)
 
 
 # Environmental variables
@@ -42,33 +44,29 @@ ct.sgt <- read.table("CT_Data.txt", h = T)
 ct.Ajalapensis <- ct.sgt[ct.sgt$Species == "Ameivula_jalapensis", ]
 ct.Ajalapensis
 
-ct.Toreadicus <- ct.sgt[ct.sgt$Species == "Tropidurus_oreadicus", ]
-ct.Toreadicus
-
-
 table(ct.Ajalapensis$Sex)
 
 # Desempenho locomotor#
 ######################
-des.loc <- read.table("desemp_loc_SGT.txt", h = T)
-str(des.loc)
-head(des.loc)
+loc.perf <- read.table("loc_perf_SGT.txt", h = T)
+str(loc.perf)
+head(loc.perf)
 
-table(des.loc$sp, des.loc$SGT)
+table(loc.perf$sp, loc.perf$SGT)
 
-summary(abs(des.loc$v))
-summary(abs(des.loc$a))
+summary(abs(loc.perf$v))
+summary(abs(loc.perf$a))
 # windows(10,10)
-boxplot(abs(des.loc$v))
+boxplot(abs(loc.perf$v))
 
-data <- aggregate(abs(des.loc$v),
+data <- aggregate(abs(loc.perf$v),
   by = list(
-    des.loc$sp,
-    des.loc$SGT,
-    des.loc$Temp,
-    des.loc$Run,
-    des.loc$Sex,
-    des.loc$SVL
+    loc.perf$sp,
+    loc.perf$SGT,
+    loc.perf$Temp,
+    loc.perf$Run,
+    loc.perf$Sex,
+    loc.perf$SVL
   ),
   FUN = max, na.rm = T
 )
@@ -129,15 +127,6 @@ table(data.complete$species)
 
 # Curvas de desempenho locomotor#
 ################################
-# install.packages("gamm4",dep=T)
-library(gamm4)
-library(brms)
-library(ggplot2)
-
-# options(brms.backend = "cmdstanr")
-
-
-# detach(des.loc)
 
 # Ameivula jalapensis
 data.Ajalapensis <- data.complete[data.complete$species == "Ameivula_jalapensis", ]
