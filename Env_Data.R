@@ -157,31 +157,7 @@ m.Ajalapensis.sprint.refit <- gamm4(Veloc ~ t2(temp),
 )
 anova(m.Ajalapensis.sprint.refit$mer, m.Ajalapensis.sex.sprint$mer)
 
-m.Ajalapensis.sprint.brms <- brm(Veloc ~ t2(temp) + (1 | SGT),
-  data = data.complete[data.complete$species == "Ameivula_jalapensis", ]
-)
-summary(m.Ajalapensis.sprint.brms)
-plot(m.Ajalapensis.sprint.brms)
-plot(conditional_effects(m.Ajalapensis.sprint.brms),
-  points = T,
-  xlab = "Temperature (°C)", ylab = "Predicted Speed (m/s)"
-)
 
-p1 <- conditional_effects(m.Ajalapensis.sprint.brms)
-# windows(10,10)
-quartz(8, 8)
-ggplot(
-  data = data.complete[data.complete$species == "Ameivula_jalapensis", ],
-  aes(x = temp, y = Veloc)
-) +
-  geom_point(alpha = 0.5) +
-  geom_line(data = p1$temp, aes(x = temp, y = estimate__), colour = "blue", linewidth = 1.2) +
-  geom_ribbon(data = p1$temp, aes(ymin = lower__, ymax = upper__), linetype = 3, alpha = .2) +
-  labs(y = "Predicted Speed (m/s)", x = "Temperature (°C)") +
-  theme(plot.title = element_text(hjust = 0.5))
-
-# windows(10,10)
-quartz(8, 8)
 plot(m.Ajalapensis.sprint$gam,
   main = expression(italic("Ameivula jalapensis")),
   ylab = "Desempenho locomotor", xlab = "Temperatura (°C)"
@@ -201,7 +177,6 @@ preddata_tpc <- rbind(preddata_tpc)
 preddata_tpc$predicted <- c(pred_tpc_Ajalapensis$fit)
 preddata_tpc$se <- c(pred_tpc_Ajalapensis$se.fit)
 
-quartz(h = 8, w = 8)
 ggplot(preddata_tpc, aes(x = temp, y = predicted)) +
   geom_line(color = "blue", linewidth = 1.5) +
   geom_ribbon(aes(ymin = predicted - se, ymax = predicted + se), linetype = 3, alpha = .2) +
@@ -215,10 +190,6 @@ ggplot(preddata_tpc, aes(x = temp, y = predicted)) +
 
 # Temperatura ótima
 preddata_tpc[preddata_tpc$predicted == max(pred_tpc_Ajalapensis$fit), ]
-p1$temp[p1$temp$estimate__ == max(p1$temp$estimate__), ]
-p1$temp[p1$temp$upper__ == max(p1$temp$upper__), ]
-p1$temp[p1$temp$lower__ == max(p1$temp$lower__), ]
-
 
 # 31.7 for A. jalapensis
 
@@ -236,111 +207,15 @@ env.var.hour$Ajalapensis_perf <- predict.gam(m.Ajalapensis.sprint$gam,
   newdata = data.frame(temp = env.var.hour$tmed)
 )
 
-# Tropidurus oreadicus
-# Modelo generalizado aditivo de efeitos mistos
-m.Toreadicus.sprint <- gamm4(Veloc ~ t2(temp),
-  random = ~ (1 | SGT),
-  data = data.complete[data.complete$species == "Tropidurus_oreadicus", ]
-)
-summary(m.Toreadicus.sprint$gam)
-
-m.Toreadicus.sprint.brms <- brm(Veloc ~ t2(temp) + (1 | SGT),
-  data = data.complete[data.complete$species == "Tropidurus_oreadicus", ]
-)
-summary(m.Toreadicus.sprint.brms)
-plot(m.Toreadicus.sprint.brms)
-plot(conditional_effects(m.Toreadicus.sprint.brms),
-  points = T,
-  xlab = "Temperature (°C)", ylab = "Predicted Speed (m/s)"
-)
-
-p2 <- conditional_effects(m.Toreadicus.sprint.brms)
-# windows(10,10)
-quartz(8, 8)
-ggplot(
-  data = data.complete[data.complete$species == "Tropidurus_oreadicus", ],
-  aes(x = temp, y = Veloc)
-) +
-  geom_point(alpha = 0.5) +
-  geom_line(data = p2$temp, aes(x = temp, y = estimate__), colour = "blue", linewidth = 1.2) +
-  geom_ribbon(data = p2$temp, aes(ymin = lower__, ymax = upper__), linetype = 3, alpha = .2) +
-  labs(y = "Predicted Speed (m/s)", x = "Temperature (°C)") +
-  theme(plot.title = element_text(hjust = 0.5))
-
-# windows(10,10)
-quartz(8, 8)
-plot(m.Toreadicus.sprint$gam,
-  main = expression(italic("Tropidurus oreadicus")),
-  ylab = "Locomotor performance", xlab = "Temperature (°C)"
-)
-
-
-preddata_tpc <- data.frame(temp = seq(10, 50, 0.1))
-
-## Faz a predicao
-pred_tpc_Toreadicus <- predict(m.Toreadicus.sprint$gam,
-  preddata_tpc,
-  se.fit = T
-)
-
-## Anexa as predicoes e erros na tabela de data
-preddata_tpc <- rbind(preddata_tpc)
-preddata_tpc$predicted <- c(pred_tpc_Toreadicus$fit)
-preddata_tpc$se <- c(pred_tpc_Toreadicus$se.fit)
-
-quartz(8, 8)
-ggplot(preddata_tpc, aes(x = temp, y = predicted)) +
-  geom_line() +
-  geom_ribbon(aes(ymin = predicted - se, ymax = predicted + se), linetype = 3, alpha = .2) +
-  geom_point(
-    data = data.complete[data.complete$species == "Tropidurus_oreadicus", ],
-    aes(x = temp, y = Veloc), alpha = 0.5
-  ) +
-  labs(y = "Predicted Speed (m/s)", x = "Temperature (°C)") +
-  lims(x = c(10, 50), y = c(0, 5)) +
-  theme(plot.title = element_text(hjust = 0.5))
-
-# Temperatura ótima
-preddata_tpc[preddata_tpc$predicted == max(pred_tpc_Toreadicus$fit), ]
-p2$temp[p2$temp$estimate__ == max(p2$temp$estimate__), ]
-p2$temp[p2$temp$upper__ == max(p2$temp$upper__), ]
-p2$temp[p2$temp$lower__ == max(p2$temp$lower__), ]
-
-
-# 30.4 for T. oreadicus
-
-# Prediz com os data microclimaticos
-microclim.SGT <- readRDS("microclimate_EESGT.rds")
-
-env.var.hour <- microclim.SGT %>%
-  group_by(plot, trap.int, fieldtrip, hour, day, month, year) %>%
-  summarise(
-    tmed = mean(temp, na.rm = T),
-    rhmed = mean(rh, na.rm = T)
-  )
-
-env.var.hour$Ajalapensis_perf <- predict.gam(m.Ajalapensis.sprint$gam,
-  newdata = data.frame(temp = env.var.hour$tmed)
-)
-
-env.var.hour$Toreadicus_perf <- predict.gam(m.Toreadicus.sprint$gam,
-  newdata = data.frame(temp = env.var.hour$tmed)
-)
-
 saveRDS(m.Ajalapensis.sprint, "tpc_Ajalapensis.rds")
-saveRDS(m.Toreadicus.sprint, "tpc_Toreadicus.rds")
 
 # Temperatura preferencial#
 ##########################
-tpref_SGT <- read.table("Dados_Tpref_SGT.txt", h = T)
+tpref_SGT <- read.table("Data_Tpref_SGT.txt", h = T)
 
 tpref_Ajalapensis <- dplyr::filter(tpref_SGT, sp == "A_jalapensis")
 table(tpref_Ajalapensis$SGT, tpref_Ajalapensis$sp)
 nrow(table(tpref_Ajalapensis$SGT, tpref_Ajalapensis$sp))
-
-tpref_Toreadicus <- dplyr::filter(tpref_SGT, sp == "T_oreadicus")
-table(tpref_Toreadicus$SGT, tpref_Toreadicus$sp)
-nrow(table(tpref_Toreadicus$SGT, tpref_Toreadicus$sp))
 
 hvtFUN <- function(temp.envr, temp.lab, quantiles, radiation) {
   vtmin <- quantile(temp.lab, quantiles[1], na.rm = TRUE)
@@ -353,8 +228,6 @@ hvtFUN <- function(temp.envr, temp.lab, quantiles, radiation) {
 (tpref90_Ajalapensis <- quantile(tpref_Ajalapensis$temp, c(0.05, 0.95), na.rm = T))
 (tpref50_Ajalapensis <- quantile(tpref_Ajalapensis$temp, c(0.25, 0.75), na.rm = T))
 
-(tpref90_Toreadicus <- quantile(tpref_Toreadicus$temp, c(0.05, 0.95), na.rm = T))
-(tpref50_Toreadicus <- quantile(tpref_Toreadicus$temp, c(0.25, 0.75), na.rm = T))
 
 saveRDS(
   tpref90_Ajalapensis,
@@ -364,16 +237,6 @@ saveRDS(
 saveRDS(
   tpref50_Ajalapensis,
   "tpref50_Ajalapensis.rds"
-)
-
-saveRDS(
-  tpref90_Toreadicus,
-  "tpref90_Toreadicus.rds"
-)
-
-saveRDS(
-  tpref50_Toreadicus,
-  "tpref50_Toreadicus.rds"
 )
 
 env.var.hour$Ajalapensis_ha90 <- hvtFUN(
@@ -390,34 +253,17 @@ env.var.hour$Ajalapensis_ha50 <- hvtFUN(
   rep(1, nrow(env.var.hour))
 )
 
-env.var.hour$Toreadicus_ha90 <- hvtFUN(
-  env.var.hour$tmed,
-  tpref_Toreadicus$temp,
-  c(0.05, 0.95),
-  rep(1, nrow(env.var.hour))
-)
-
-env.var.hour$Toreadicus_ha50 <- hvtFUN(
-  env.var.hour$tmed,
-  tpref_Toreadicus$temp,
-  c(0.25, 0.75),
-  rep(1, nrow(env.var.hour))
-)
-
 ecophys.day <-
   env.var.hour %>%
   dplyr::group_by(plot, trap.int, fieldtrip, day, month, year) %>%
   dplyr::summarise(
     Ajalapensis_perf = mean(Ajalapensis_perf),
     Ajalapensis_ha50 = sum(Ajalapensis_ha50),
-    Ajalapensis_ha90 = sum(Ajalapensis_ha90),
-    Toreadicus_perf = mean(Toreadicus_perf),
-    Toreadicus_ha50 = sum(Toreadicus_ha50),
-    Toreadicus_ha90 = sum(Toreadicus_ha90)
+    Ajalapensis_ha90 = sum(Ajalapensis_ha90)
   )
 
 summary(ecophys.day)
-pts.traps <- read.table("Pontos_Armadilhas.txt", h = T)
+pts.traps <- read.table("Points_Traps.txt", h = T)
 pts.traps.SGT <- pts.traps[pts.traps$local == "EESGT", ]
 
 daylength <- geosphere::daylength(
@@ -439,15 +285,6 @@ ecophys.day$Ajalapensis_ha90 <- ifelse(ecophys.day$Ajalapensis_ha90 > daylength,
   ecophys.day$Ajalapensis_ha90
 )
 
-ecophys.day$Toreadicus_ha50 <- ifelse(ecophys.day$Toreadicus_ha50 > daylength,
-  daylength,
-  ecophys.day$Toreadicus_ha50
-)
-
-ecophys.day$Toreadicus_ha90 <- ifelse(ecophys.day$Toreadicus_ha90 > daylength,
-  daylength,
-  ecophys.day$Toreadicus_ha90
-)
 
 ecophys.month <-
   ecophys.day %>%
@@ -455,10 +292,7 @@ ecophys.month <-
   dplyr::summarise(
     Ajalapensis_perf = mean(Ajalapensis_perf),
     Ajalapensis_ha50 = mean(Ajalapensis_ha50),
-    Ajalapensis_ha90 = mean(Ajalapensis_ha90),
-    Toreadicus_perf = mean(Toreadicus_perf),
-    Toreadicus_ha50 = mean(Toreadicus_ha50),
-    Toreadicus_ha90 = mean(Toreadicus_ha90)
+    Ajalapensis_ha90 = mean(Ajalapensis_ha90)
   )
 
 ecophys.month$plot <- factor(ecophys.month$plot, levels = c(
@@ -503,7 +337,7 @@ saveRDS(env.vars.imputed.df, "env_vars_imputed_df.rds")
 # Which variables better explain the differences among plots?
 set.seed(123)
 Borutaplot <- Boruta(plot ~ .,
-  data = env.vars.imputed.df[, -c(2, 3, 15:21)], doTrace = 2,
+  data = env.vars.imputed.df[, -c(2, 3, 15:18)], doTrace = 2,
   maxRuns = 500
 )
 
@@ -532,7 +366,7 @@ TentativeRoughFix(Borutaplot)
 
 boxplot(env.vars.imputed.df$pground)
 
-ggpairs.env <- ggpairs(env.vars.imputed.df[env.vars.imputed.df$pground > 70, -c(2, 3, 21)])
+ggpairs.env <- ggpairs(env.vars.imputed.df[env.vars.imputed.df$pground > 70, -c(2, 3, 18)])
 quartz(height = 8, width = 12)
 ggpairs.env
 
@@ -618,7 +452,7 @@ env.data <- left_join(env.vars.imputed.df, fire.traps.df, by = c(
 ))
 head(env.data)
 summary(env.data)
-tapply(env.data$TSLF, INDEX = list(env.data$trap, env.data$camp), FUN = min)
+tapply(env.data$TSLF, INDEX = list(env.data$trap, env.data$fieldtrip), FUN = min)
 
 pal.plot <- turbo(4)
 
@@ -661,7 +495,7 @@ seq.fire <- 173:220
 env.data <- env.data[order(env.vars.imputed.df$plot), ]
 env.data$plot
 
-env.data$severity <- c(severity.A2, severity.A1, severity.A3, severity.A4)
+env.data$severity <- c(severity.A1, severity.A2, severity.A3, severity.A4)
 
 # Some plots to see relationship of TSLF with environmental data
 plot(t.med ~ TSLF, data = env.data, col = pal.plot[as.numeric(as.factor(env.data$plot))])
@@ -672,7 +506,6 @@ plot(rh.min.abs ~ TSLF, data = env.data, col = pal.plot[as.numeric(as.factor(env
 plot(VARI.all ~ TSLF, data = env.data, col = pal.plot[as.numeric(as.factor(env.data$plot))])
 plot(tree.density ~ TSLF, data = env.data, col = pal.plot[as.numeric(as.factor(env.data$plot))])
 plot(zentropy ~ TSLF, data = env.data, col = pal.plot[as.numeric(as.factor(env.data$plot))])
-
 
 pca.env.all <- prcomp(
   env.data[, c(
@@ -800,8 +633,7 @@ autoplot(pca.env.ecophys,
 env.data <- env.data[, c(
   "plot", "trap", "fieldtrip", "severity", "TSLF", "t.med", "t.max", "t.max.abs",
   "rh.min.abs", "rh.max.abs", "VARI.all", "zentropy", "tree.density",
-  "Ajalapensis_perf", "Ajalapensis_ha90",
-  "Toreadicus_perf", "Toreadicus_ha90"
+  "Ajalapensis_perf", "Ajalapensis_ha90"
 )]
 
 quartz(height = 8, width = 8)
