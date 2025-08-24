@@ -1,5 +1,5 @@
 # Capture histories exported from 'Ajalapensis.CHxy' 
-# Fri Aug 22 15:49:36 2025 
+# Sat Aug 23 18:08:44 2025 
 # Session ID Occasion Detector Plot 
 1 SGT00007 7 4 4
 1 SGT00015 7 47 3

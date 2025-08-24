@@ -1,5 +1,5 @@
 # Detector locations exported from traps(Ajalapensis.CHxy)
-# Fri Aug 22 15:49:35 2025 
+# Sat Aug 23 18:08:44 2025 
 # Detector  x  y 
 1 965972.88 8766534.36
 2 965968.47 8766578

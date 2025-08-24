@@ -3966,6 +3966,7 @@ ggplot(pred_df, aes(x = severity, y = N)) +
 ggplot(pred_df, aes(x = severity, y = ncaps)) +
   geom_point(size = 3, alpha = 0.3)
 
+save.image(file = "Ajalapensis_demography.RData")
 
 # Map location ------------------------------------------------------------
 
