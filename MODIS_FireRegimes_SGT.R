@@ -7,24 +7,24 @@ library(tidyverse)
 
 
 # Read and plot points coordinates
-arms.pts <- read.table("Pontos_Arms_Bruna_Heitor.txt", h = T)
-arms.pts
+traps.pts <- read.table("Points_Traps_Bruna_Heitor.txt", h = T)
+traps.pts
 
-arms.pts.sp <- arms.pts
+traps.pts.sp <- traps.pts
 
-coordinates(arms.pts.sp) <- c("Longitude", "Latitude")
-proj4string(arms.pts.sp) <- CRS("+proj=longlat +datum=WGS84")
-arms.pts.sp
-arms.pts.sp <- st_as_sf(arms.pts.sp)
+coordinates(traps.pts.sp) <- c("Longitude", "Latitude")
+proj4string(traps.pts.sp) <- CRS("+proj=longlat +datum=WGS84")
+traps.pts.sp
+traps.pts.sp <- st_as_sf(traps.pts.sp)
 
 mt_products()
 # MODIS/Terra+Aqua Burned Area (Burned Area) Monthly L3 Global 500 m SIN Grid
 mt_bands(product = "MCD64A1")
 
 # MODIS/Terra+Aqua Burned Area (Burned Area) Monthly L3 Global 500 m SIN Grid
-mt_dates("MCD64A1", arms.pts$Latitude[1], arms.pts$Longitude[1])
+mt_dates("MCD64A1", traps.pts$Latitude[1], traps.pts$Longitude[1])
 
-arms.pts <- arms.pts[, c("tratamento", "Latitude", "Longitude")]
+traps.pts <- traps.pts[, c("treatment", "Latitude", "Longitude")]
 
 SGT.fire <- mt_subset(
   product = "MCD64A1",
@@ -42,38 +42,38 @@ SGT.fire <- mt_subset(
 
 head(SGT.fire)
 
-saveRDS(SGT.fire, "SGT.fire.rds")
-SGT.fire <- readRDS("SGT.fire.rds")
+saveRDS(SGT.fire, "SGT_fire.rds")
+SGT.fire <- readRDS("SGT_fire.rds")
 
 SGT.fire_r <- mt_to_terra(df = SGT.fire, reproject = T)
 SGT.fire_r
 names(SGT.fire_r)
 plot(SGT.fire_r[[9]])
-plot(arms.pts.sp, add = T)
-plot(arms.pts.sp$geometry)
+plot(traps.pts.sp, add = T)
+plot(traps.pts.sp$geometry)
 
 terra::writeRaster(SGT.fire_r, "SGT_Fire.tif", overwrite = T)
 SGT.fire_r <- rast("SGT_Fire.tif")
 
-fire.arms.wide <- data.frame(st_coordinates(arms.pts.sp),
-  plot = arms.pts.sp$ponto,
-  regime = arms.pts.sp$tratamento,
-  fire = terra::extract(SGT.fire_r, arms.pts.sp)
+fire.traps.wide <- data.frame(st_coordinates(traps.pts.sp),
+  plot = traps.pts.sp$point,
+  regime = traps.pts.sp$treatment,
+  fire = terra::extract(SGT.fire_r, traps.pts.sp)
 )
 
-fire.arms.df <- data.frame(
-  long = rep(fire.arms.wide$X, 261),
-  lat = rep(fire.arms.wide$Y, 261),
-  plot = rep(fire.arms.wide$plot, 261),
-  regime = rep(fire.arms.wide$regime, 261),
-  burn_date = c(unlist(c(fire.arms.wide[, 6:266])))
+fire.traps.df <- data.frame(
+  long = rep(fire.traps.wide$X, 261),
+  lat = rep(fire.traps.wide$Y, 261),
+  plot = rep(fire.traps.wide$plot, 261),
+  regime = rep(fire.traps.wide$regime, 261),
+  burn_date = c(unlist(c(fire.traps.wide[, 6:266])))
 )
 
-fire.arms.df$year <- as.integer(substr(row.names(fire.arms.df), 6, 9))
-fire.arms.df$month <- as.integer(c(substr(row.names(fire.arms.df), 11, 14)))
+fire.traps.df$year <- as.integer(substr(row.names(fire.traps.df), 6, 9))
+fire.traps.df$month <- as.integer(c(substr(row.names(fire.traps.df), 11, 14)))
 
-fire.arms.df$fire <- ifelse(fire.arms.df$burn_date > 1, 1, 0)
-fire.arms.df$ID <- as.integer(rep(row.names(fire.arms.wide), 261))
+fire.traps.df$fire <- ifelse(fire.traps.df$burn_date > 1, 1, 0)
+fire.traps.df$ID <- as.integer(rep(row.names(fire.traps.wide), 261))
 
 
 library(lubridate)
@@ -95,7 +95,7 @@ TSLF_function <- function(df) {
 }
 
 
-TSLF.df <- TSLF_function(fire.arms.df)
+TSLF.df <- TSLF_function(fire.traps.df)
 
 TSLF.longdf <- data.frame(
   TSLF = c(unlist(c(TSLF.df[, 1:220]))),
@@ -108,12 +108,12 @@ TSLF.longdf$year <- as.integer(year(TSLF.longdf$time))
 summary(TSLF.longdf)
 
 library(dplyr)
-fire.arms.df <- full_join(fire.arms.df, TSLF.longdf)
+fire.traps.df <- full_join(fire.traps.df, TSLF.longdf)
 
 # ID, year, month, and fire (0 or 1)
 
 #--- Step 1: Isolate all fire events and create a proper date column ---
-fire_events <- fire.arms.df %>%
+fire_events <- fire.traps.df %>%
   filter(fire == 1) %>%
   mutate(date = as.Date(paste(year, month, 1, sep = "-"))) %>%
   arrange(ID, date) # IMPORTANT: Ensure dates are in order for each site
@@ -148,9 +148,9 @@ MFRI_results <- fire_intervals %>%
 # View the first few rows of the result
 print(head(MFRI_results))
 
-write.csv(fire.arms.df, "fire_arms_df.csv")
+write.csv(fire.traps.df, "fire_traps_df.csv")
 
-fire.regimes.df <- fire.arms.df %>%
+fire.regimes.df <- fire.traps.df %>%
   group_by(ID, month) %>%
   summarise(
     fire = sum(fire, na.rm = T),
@@ -162,7 +162,7 @@ fire.regimes.df$severity <- fire.regimes.df$fire * fire.regimes.df$weight
 
 write.csv(fire.regimes.df, "fire_regimes_months_df.csv")
 
-fire.regimes.arms <- fire.regimes.df %>%
+fire.regimes.traps <- fire.regimes.df %>%
   group_by(ID) %>%
   summarise(
     freq = sum(fire, na.rm = T),
@@ -170,31 +170,31 @@ fire.regimes.arms <- fire.regimes.df %>%
     severity = mean(severity, na.rm = T),
   )
 
-fire.regimes.arms$MFRI <- MFRI_results$MFRI_months
+fire.regimes.traps$MFRI <- MFRI_results$MFRI_months
 
-fire.regimes.arms$plot <- arms.pts.sp$ponto
-fire.regimes.arms$trap <- c(
-  paste0(arms.pts.sp$campanha[1:172], arms.pts.sp$armadilha[1:172]),
-  arms.pts.sp$tratamento[173:220]
+fire.regimes.traps$plot <- traps.pts.sp$point
+fire.regimes.traps$trap <- c(
+  paste0(traps.pts.sp$fieldtrip[1:172], traps.pts.sp$trap[1:172]),
+  traps.pts.sp$treatment[173:220]
 )
 
 
-fire.regimes.arms$treatment <- arms.pts.sp$tratamento
+fire.regimes.traps$treatment <- traps.pts.sp$treatment
 
-fire.regimes.arms$TSLF <- arms.pts.sp$tuf
+fire.regimes.traps$TSLF <- traps.pts.sp$tslf
 
 
-write.csv(fire.regimes.arms, "fire_regimes_arms_df.csv")
+write.csv(fire.regimes.traps, "fire_regimes_traps_df.csv")
 
-plot(severity ~ freq, data = fire.regimes.arms)
-plot(severity ~ TSLF, data = fire.regimes.arms)
-plot(severity ~ MeanTSLF, data = fire.regimes.arms)
-plot(MeanTSLF ~ freq, data = fire.regimes.arms)
-plot(TSLF ~ freq, data = fire.regimes.arms)
-plot(MeanTSLF ~ TSLF, data = fire.regimes.arms)
+plot(severity ~ freq, data = fire.regimes.traps)
+plot(severity ~ TSLF, data = fire.regimes.traps)
+plot(severity ~ MeanTSLF, data = fire.regimes.traps)
+plot(MeanTSLF ~ freq, data = fire.regimes.traps)
+plot(TSLF ~ freq, data = fire.regimes.traps)
+plot(MeanTSLF ~ TSLF, data = fire.regimes.traps)
 
-plot(MFRI ~ MeanTSLF, data = fire.regimes.arms)
-plot(MFRI ~ freq, data = fire.regimes.arms)
-plot(severity ~ MFRI, data = fire.regimes.arms)
-GGally::ggpairs(fire.regimes.arms[, c(2:5, 9)])
-usdm::vifstep(as.data.frame(fire.regimes.arms[, c(2:5, 9)]), th = 2, keep = "severity")
+plot(MFRI ~ MeanTSLF, data = fire.regimes.traps)
+plot(MFRI ~ freq, data = fire.regimes.traps)
+plot(severity ~ MFRI, data = fire.regimes.traps)
+GGally::ggpairs(fire.regimes.traps[, c(2:5, 9)])
+usdm::vifstep(as.data.frame(fire.regimes.traps[, c(2:5, 9)]), th = 2, keep = "severity")
