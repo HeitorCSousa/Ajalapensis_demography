@@ -136,7 +136,7 @@ table(Sex, Plot)
 sex <- table(Sex, Plot)
 
 # Reorder columns by plot name.
-sex <- (sex[, order(colnames(sex))]) 
+sex <- (sex[, order(colnames(sex))])
 
 # Reorder rows for a more logical presentation (Male, Female, Indeterminate).
 sex <- sex[c(2, 1, 3), ]
@@ -261,7 +261,11 @@ names(pts.traps.SGT) <- c(
 )
 
 # Join the capture data with the trap coordinates.
-Ajalapensis.planilha.XY <- left_join(data, pts.traps.SGT, by = c("Plot", "Trap"))
+Ajalapensis.planilha.XY <- left_join(
+  data,
+  pts.traps.SGT,
+  by = c("Plot", "Trap")
+)
 head(Ajalapensis.planilha.XY)
 
 # -- Create Capture History Object --
@@ -501,7 +505,7 @@ phi_vcov <- all_vcov[phi_names, phi_names]
 names(phi_coefs)[names(phi_coefs) == "phi"] <- "(Intercept)"
 names(phi_coefs) <- gsub("phi.Plot", "Plot", names(phi_coefs))
 
-# Create the Date for the Grid and Run qdrg() 
+# Create the Date for the Grid and Run qdrg()
 
 # Define the levels of the factor
 factor_levels <- c("A1", "A2", "A3", "A4")
@@ -677,7 +681,7 @@ predict(pradel.fit3, all = T)
 
 AIC(pradel.fit0, pradel.fit1, pradel.fit2, pradel.fit3)
 
-# Conclusion: The most complex model is the least parsimonious. Populations vary over time, but not across plots. 
+# Conclusion: The most complex model is the least parsimonious. Populations vary over time, but not across plots.
 
 # SVL with environment ----------------------------------------------------
 
@@ -741,17 +745,17 @@ hist((svl.env$svl))
 mfull.svl <- brm(
   svl ~
     plot +
-      TSLF +
-      t.med +
-      t.max +
-      t.max.abs +
-      rh.min.abs +
-      rh.max.abs +
-      VARI.all +
-      zentropy +
-      tree.density +
-      Ajalapensis_perf +
-      Ajalapensis_ha90,
+    TSLF +
+    t.med +
+    t.max +
+    t.max.abs +
+    rh.min.abs +
+    rh.max.abs +
+    VARI.all +
+    zentropy +
+    tree.density +
+    Ajalapensis_perf +
+    Ajalapensis_ha90,
   data = svl.env,
   cores = 4
 )
@@ -1017,17 +1021,17 @@ capts.env[, c(4:15)] <- scale(capts.env[, c(4:15)])
 mfull.capts <- brm(
   capts ~
     plot +
-      TSLF +
-      t.med +
-      t.max +
-      t.max.abs +
-      rh.min.abs +
-      rh.max.abs +
-      VARI.all +
-      zentropy +
-      tree.density +
-      Ajalapensis_perf +
-      Ajalapensis_ha90,
+    TSLF +
+    t.med +
+    t.max +
+    t.max.abs +
+    rh.min.abs +
+    rh.max.abs +
+    VARI.all +
+    zentropy +
+    tree.density +
+    Ajalapensis_perf +
+    Ajalapensis_ha90,
   data = capts.env,
   cores = 4,
   # Use Poisson distribution for count data.
@@ -1286,7 +1290,7 @@ plot(
 out.inla.env1 <- inla(
   counts.and.count.covs[, c(1:16)] ~
     1 +
-      f(plot_id),
+    f(plot_id),
   data = list(
     counts.and.count.covs = counts.and.count.covs[, c(1:16)],
     fieldtrip = counts.and.count.covs$X2,
@@ -1771,7 +1775,7 @@ slope_idx <- contents$start[contents$tag == "ha_90"]
 
 # Run the sapply loop
 predicted_lines <- sapply(posterior_samples, function(s) {
-  # Access the column by its position [ ,1] 
+  # Access the column by its position [ ,1]
   intercept <- s$latent[intercept_idx, 1]
   slope <- s$latent[slope_idx, 1]
   linear_predictor <- intercept + slope * ha_xx
@@ -1916,9 +1920,9 @@ ggplot(p_post_long, aes(x = Plot, y = p, fill = Plot, color = Plot)) +
     justification = -.1,
     alpha = 0.5,
     # Sets the credible interval to 95%
-    .width = 0.95, 
+    .width = 0.95,
     # Display the median and Highest Density Interval
-    point_interval = "median_hdi" 
+    point_interval = "median_hdi"
   ) +
 
   # Wrap the labels argument in a function
@@ -1933,7 +1937,7 @@ ggplot(p_post_long, aes(x = Plot, y = p, fill = Plot, color = Plot)) +
   scale_color_viridis_d(option = "turbo") +
   theme_minimal() +
   # Hide the redundant legend
-  guides(fill = "none") 
+  guides(fill = "none")
 
 # Abundance
 
@@ -1997,9 +2001,9 @@ ggplot(lambda_post_long, aes(x = Plot, y = lambda, fill = Plot, color = Plot)) +
     justification = -.1,
     alpha = 0.5,
     # Sets the credible interval to 95%
-    .width = 0.95, 
+    .width = 0.95,
     # Display the median and Highest Density Interval
-    point_interval = "median_hdi" 
+    point_interval = "median_hdi"
   ) +
 
   scale_y_log10(
@@ -2031,17 +2035,17 @@ table(svl.env$sex)
 mfull.sex <- brm(
   sex ~
     plot +
-      TSLF +
-      t.med +
-      t.max +
-      t.max.abs +
-      rh.min.abs +
-      rh.max.abs +
-      VARI.all +
-      zentropy +
-      tree.density +
-      Ajalapensis_perf +
-      Ajalapensis_ha90,
+    TSLF +
+    t.med +
+    t.max +
+    t.max.abs +
+    rh.min.abs +
+    rh.max.abs +
+    VARI.all +
+    zentropy +
+    tree.density +
+    Ajalapensis_perf +
+    Ajalapensis_ha90,
   data = svl.env,
   cores = 4,
   family = "bernoulli"
@@ -2234,17 +2238,17 @@ detach("package:lmodel2", unload = TRUE)
 mfull.smi <- brm(
   smi ~
     plot +
-      TSLF +
-      t.med +
-      t.max +
-      t.max.abs +
-      rh.min.abs +
-      rh.max.abs +
-      VARI.all +
-      zentropy +
-      tree.density +
-      Ajalapensis_perf +
-      Ajalapensis_ha90,
+    TSLF +
+    t.med +
+    t.max +
+    t.max.abs +
+    rh.min.abs +
+    rh.max.abs +
+    VARI.all +
+    zentropy +
+    tree.density +
+    Ajalapensis_perf +
+    Ajalapensis_ha90,
   data = condition.data,
   cores = 4
 )
@@ -3920,8 +3924,12 @@ waic_table <- data.frame(
 
 waic_table$formula[1] <- "(lambda ~ 1), (p ~ 1)"
 waic_table$formula[2] <- "(lambda ~ 1), (p ~ (1|fieldtrip/plot))"
-waic_table$formula[3] <- "(lambda ~ MeanTSLF), (p ~ MeanTSLF + (1|fieldtrip/plot))"
-waic_table$formula[4] <- "(lambda ~ FireSev), (p ~ FireSev + (1|fieldtrip/plot))"
+waic_table$formula[
+  3
+] <- "(lambda ~ MeanTSLF), (p ~ MeanTSLF + (1|fieldtrip/plot))"
+waic_table$formula[
+  4
+] <- "(lambda ~ FireSev), (p ~ FireSev + (1|fieldtrip/plot))"
 waic_table$formula[5] <- "(lambda ~ TSLF), (p ~ TSLF + (1|fieldtrip/plot))"
 
 
@@ -4444,3 +4452,118 @@ print(map.traps.severity)
 # Combining both maps
 print(inset.cerrado, vp = viewport(0.7, 0.8, width = 0.2, height = 0.2))
 print(inset.sgt, vp = viewport(0.68, 0.6, width = 0.2, height = 0.2))
+
+# Power analysis (PJS) -----------------------------------------------
+## 0. Setup -------------------------------------------------------
+library(openCR)
+library(parallel)
+set.seed(123)
+
+## 1. Define empirical parameters (from your fitted model) ------------------------
+plots <- c("A1", "A2", "A3", "A4")
+
+N_true <- c(25, 25, 25, 25)
+names(N_true) <- plots
+
+p_true <- c(0.007, 0.011, 0.027, 0.016)
+names(p_true) <- plots
+
+phi_true <- c(0.75, 0.84, 0.72, 0.91)
+
+## 2. Match your sampling design ---------------------------------------------------
+nsessions <- 4 # field trips
+noccasions <- 15 # days per field trip
+
+## 3. Function to simulate one plot ------------------------------------------------
+
+sim_one_plot <- function(N, phi, p) {
+  sim.nonspatial(
+    N = N,
+    turnover = list(phi = phi, lambda = 1),
+    p = p,
+    nsessions = nsessions,
+    noccasions = noccasions
+  )
+}
+
+## 4. Simulate one full dataset (4 plots combined) -------------------------------
+sim_one_dataset <- function(phi, p, N = 400) {
+  sim.nonspatial(
+    N = N,
+    turnover = list(phi = phi, lambda = 1),
+    p = p,
+    nsessions = 4,
+    noccasions = 15
+  )
+}
+
+
+## 5. Fit the same model you used (Pradel / JSSAfCL) ------------------------------
+fit_pradel <- function(ch) {
+  openCR.fit(
+    ch,
+    type = "JSSAfCL",
+    model = list(
+      p ~ 1,
+      phi ~ 1,
+      f ~ 1
+    )
+  )
+}
+
+## 6. Define a power criterion --------------------------------------
+detect_p_difference <- function(fit) {
+  est <- predict(fit)$p
+  est <- est[!is.na(est$estimate), ]
+
+  combs <- combn(plots, 2, simplify = FALSE)
+
+  for (cc in combs) {
+    a <- est[est$Plot == cc[1], ]
+    b <- est[est$Plot == cc[2], ]
+
+    overlap <- !(a$ucl < b$lcl | b$ucl < a$lcl)
+    if (!overlap) return(TRUE)
+  }
+
+  FALSE
+}
+
+phi_estimable <- function(fit) {
+  est <- predict(fit)$phi
+  est <- est[!is.na(est$estimate), ]
+
+  if (nrow(est) == 0) {
+    return(FALSE)
+  }
+
+  (est$ucl - est$lcl) < 0.2
+}
+
+## 7. Run the simulation (power analysis) ------------------------------
+phi_vals <- c(0.75, 0.85, 0.90)
+p_vals <- c(0.007, 0.015, 0.03)
+
+nrepl <- 1000
+
+out <- expand.grid(phi = phi_vals, p = p_vals)
+out$power <- NA
+
+for (i in seq_len(nrow(out))) {
+  res <- replicate(nrepl, {
+    ch <- sim_one_dataset(phi = out$phi[i], p = out$p[i])
+    fit <- try(fit_pradel(ch), silent = TRUE)
+
+    if (inherits(fit, "try-error")) {
+      return(FALSE)
+    }
+    phi_estimable(fit)
+  })
+
+  out$power[i] <- mean(res)
+}
+
+
+## 8. Power estimate -----------------------------------------------
+
+out
