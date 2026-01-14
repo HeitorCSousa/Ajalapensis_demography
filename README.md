@@ -105,6 +105,142 @@ install.packages("INLA",
 
 The data supporting the results of this article will be archived in **\[Zenodo/Dryad\]** and the DOI will be listed here upon publication.
 
+### **1. Population Monitoring Data**
+
+-   `Ameivula_jalapensis_EESGT_BrunaGomes.xlsx`
+
+    -   **Description:** The main dataset containing capture records for *Ameivula jalapensis* from the rotating plots.
+
+    -   **Key Variables:**
+
+        -   `fieldtrip`: Campaign identifier (e.g., C1, C6).
+
+        -   `date`, `hour`: Date and time of capture.
+
+        -   `trap_code`: Unique identifier for the trap (e.g., C1-7A).
+
+        -   `treatment`: Fire treatment code (e.g., C = Control/Unburned, Q = Burned).
+
+        -   `specie`: Species name (*jalapensis*).
+
+        -   `sex`, `svl_mm`, `weight_animal`: Biological measurements (Sex, Snout-Vent Length, Weight).
+
+        -   `recapture`: Indicates if the individual is a recapture.
+
+        -   `lat`, `long`: Geographic coordinates.
+
+### **2. Spatial & Trap Location Data**
+
+-   **`Points_Traps_Bruna_Heitor.txt`**
+
+    -   **Description:** A master file containing coordinates and metadata for all sampling points (likely combining Fixed and Rotating plots).
+
+    -   **Key Variables:**
+
+        -   `fieldtrip`: Campaign ID.
+
+        -   `point`, `trap`, `trap_code`: Identifiers for the specific trap location.
+
+        -   `tslf`: Time Since Last Fire (categorical or continuous).
+
+        -   `treatment`: Treatment type (e.g., C, Q).
+
+        -   `Latitude`, `Longitude`: WGS84 coordinates.
+
+        -   `elevation`: Elevation in meters.
+
+-   **`Points_Traps.txt`**
+
+    -   **Description:** Coordinates for specific plots (likely the Fixed plots or a specific subset).
+
+    -   **Key Variables:** `plot`, `trap`, `lat`, `long`, `locality` (e.g., PEL).
+
+-   **`pontos_aiq.csv`** (from Excel)
+
+    -   **Description:** Additional spatial data for specific "AIQ" points.
+
+    -   **Key Variables:** `campanha` (Campaign), `ponto`, `armadilha` (Trap), `lat`, `long`, `elevacao`.
+
+-   **`coord_acampamentos.csv`**
+
+    -   **Description:** Locations of the base camps used during fieldwork.
+
+    -   **Key Variables:** `acampamento` (Camp name), `lat`, `long`.
+
+### **3. Fire Regime Data (Derived from MODIS)**
+
+-   **`fire_regimes_traps_df.csv`**
+
+    -   **Description:** Summarized fire metrics calculated for each trap location, used for statistical modeling.
+
+    -   **Key Variables:**
+
+        -   `freq`: Fire frequency (number of times burned).
+
+        -   `MeanTSLF`: Mean Time Since Last Fire.
+
+        -   `severity`: Calculated fire regime severity index.
+
+        -   `MFRI`: Mean Fire Return Interval.
+
+        -   `treatment`, `TSLF`: Treatment and current time since fire.
+
+-   **`fire_traps_df.csv`**
+
+    -   **Description:** Time-series data of burn events for each trap location.
+
+    -   **Key Variables:** `burn_date`, `year`, `month`, `fire` (binary: 0/1), `TSLF` (time steps since last fire).
+
+-   **`fire_regimes_months_df.csv`**
+
+    -   **Description:** Monthly fire data likely used to calculate the severity index.
+
+    -   **Key Variables:** `month`, `fire`, `weight` (seasonality weight for severity), `severity`.
+
+### **4. Ecophysiological Data**
+
+-   **`CT_Data.txt`**
+
+    -   **Description:** Critical thermal limits (CTmax​ and CTmin​) for captured individuals.
+
+    -   **Key Variables:**
+
+        -   `Species`: Species name.
+
+        -   `Ctmin`, `Ctmax`: Critical thermal minimum and maximum temperatures.
+
+        -   `Sex`, `SVL`: Individual traits.
+
+        -   `Broken_Tail`: Flag for individuals with tail loss (potential stressor).
+
+-   **`loc_perf_SGT.txt`**
+
+    -   **Description:** Locomotor performance data (running speed) measured at different temperatures.
+
+    -   **Key Variables:**
+
+        -   `Temp`: Body temperature during the trial.
+
+        -   `Run`: Trial number.
+
+        -   `v`: Velocity/Speed (likely max speed in m/s).
+
+        -   `a`: Acceleration.
+
+        -   `x`, `y`: Position coordinates on the track.
+
+-   **`Data_Tpref_SGT.txt`**
+
+    -   **Description:** Preferred body temperature (Tpref​) data from thermal gradient experiments.
+
+    -   **Key Variables:**
+
+        -   `temp`: Selected body temperature.
+
+        -   `sp`: Species.
+
+        -   `SGT`: Individual ID.
+
 ## 🛡️ License
 
 This project is licensed under the MIT License - see the `LICENSE` file for details.
