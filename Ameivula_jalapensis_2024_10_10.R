@@ -37,7 +37,7 @@ library(INLA)
 ## Load capture data  ------------------------------------------
 
 # Load the main dataset containing all capture records.
-data <- read.table("Ameivula_jalapensis_04.txt", h = T)
+data <- read.table("Data/Ameivula_jalapensis_04.txt", h = T)
 
 # Ensure the 'Plot' column is a factor with a specific order for consistent plotting.
 data$Plot <- factor(data$Plot, levels = c("A1", "A2", "A3", "A4"))
@@ -232,7 +232,7 @@ detach(data)
 # This section merges capture data with trap coordinates and formats it for analysis.
 
 # Load trap coordinates data.
-pts.traps <- read.table("Points_Traps.txt", h = T)
+pts.traps <- read.table("Data/Points_Traps.txt", h = T)
 
 # Filter for the specific locality.
 pts.traps.SGT <- pts.traps[pts.traps$locality == "EESGT", ]
@@ -687,7 +687,7 @@ AIC(pradel.fit0, pradel.fit1, pradel.fit2, pradel.fit3)
 
 # -- Data Preparation --
 # Merge capture data with environmental data and scale predictors.
-env.data <- readRDS("env_data_SGT.rds")
+env.data <- readRDS("Data/env_data_SGT.rds")
 
 # Prepare a clean SVL dataset for merging.
 svl.data <- data[, c(
@@ -931,7 +931,7 @@ svl.env <- svl.env %>%
 
 summary(svl.env$sampling_day)
 
-fire.regimes.traps <- read.csv("fire_regimes_traps_df.csv")
+fire.regimes.traps <- read.csv("Data/fire_regimes_traps_df.csv")
 
 trap_locations <- fire.regimes.traps %>%
   distinct(plot, trap, treatment)
@@ -2402,7 +2402,7 @@ emmeans::emmeans(msel.smi.plot.re, pairwise ~ plot)
 
 # Load data from rotating plots.
 brunadata <- readxl::read_excel(
-  "Ameivula_jalapensis_EESGT_BrunaGomes.xlsx",
+  "Data/Ameivula_jalapensis_EESGT_BrunaGomes.xlsx",
   na = "NA"
 )
 glimpse(brunadata)
@@ -2414,7 +2414,7 @@ summary(brunadata)
 brunadata$plot <- as.character(brunadata$plot)
 
 # Load fire regime data for all traps.
-fire.regimes.traps <- read.csv("fire_regimes_traps_df.csv")
+fire.regimes.traps <- read.csv("Data/fire_regimes_traps_df.csv")
 
 # Merge the datasets.
 brunadata <- left_join(
@@ -4186,7 +4186,7 @@ library(tidyterra)
 library(spData)
 
 # Load the multi-layer raster of burn dates
-SGT_fire_r <- rast("SGT_Fire.tif")
+SGT_fire_r <- rast("Output/SGT_Fire.tif")
 
 # First, create a binary raster stack (1 if a fire occurred, 0 if not)
 fire_binary_stack <- SGT_fire_r > 0
@@ -4221,13 +4221,13 @@ severity_raster <- app(monthly_severity_stack, "mean", na.rm = TRUE)
 names(severity_raster) <- "severity"
 
 # Optional: Save your new raster
-writeRaster(severity_raster, "SGT_Severity.tif", overwrite = TRUE)
+writeRaster(severity_raster, "Output/SGT_Severity.tif", overwrite = TRUE)
 
 # Plot to check
 plot(severity_raster)
 
 # Read and plot points coordinates
-traps.pts <- read.table("Points_Traps_Bruna_Heitor.txt", h = T)
+traps.pts <- read.table("Data/Points_Traps_Bruna_Heitor.txt", h = T)
 summary(traps.pts)
 traps.pts$sampdes <- c(
   rep("Rotating", 172),

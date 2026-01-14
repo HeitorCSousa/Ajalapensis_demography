@@ -7,7 +7,7 @@ library(tidyverse)
 
 
 # Read and plot points coordinates
-traps.pts <- read.table("Points_Traps_Bruna_Heitor.txt", h = T)
+traps.pts <- read.table("Data/Points_Traps_Bruna_Heitor.txt", h = T)
 traps.pts
 
 traps.pts.sp <- traps.pts
@@ -42,8 +42,8 @@ SGT.fire <- mt_subset(
 
 head(SGT.fire)
 
-saveRDS(SGT.fire, "SGT_fire.rds")
-SGT.fire <- readRDS("SGT_fire.rds")
+saveRDS(SGT.fire, "Output/SGT_fire.rds")
+SGT.fire <- readRDS("Output/SGT_fire.rds")
 
 SGT.fire_r <- mt_to_terra(df = SGT.fire, reproject = T)
 SGT.fire_r
@@ -52,10 +52,11 @@ plot(SGT.fire_r[[9]])
 plot(traps.pts.sp, add = T)
 plot(traps.pts.sp$geometry)
 
-terra::writeRaster(SGT.fire_r, "SGT_Fire.tif", overwrite = T)
-SGT.fire_r <- rast("SGT_Fire.tif")
+terra::writeRaster(SGT.fire_r, "Output/SGT_Fire.tif", overwrite = T)
+SGT.fire_r <- rast("Output/SGT_Fire.tif")
 
-fire.traps.wide <- data.frame(st_coordinates(traps.pts.sp),
+fire.traps.wide <- data.frame(
+  st_coordinates(traps.pts.sp),
   plot = traps.pts.sp$point,
   regime = traps.pts.sp$treatment,
   fire = terra::extract(SGT.fire_r, traps.pts.sp)
@@ -79,15 +80,25 @@ fire.traps.df$ID <- as.integer(rep(row.names(fire.traps.wide), 261))
 library(lubridate)
 
 TSLF_function <- function(df) {
-  fire.time <- seq.Date(as.Date("2000/11/01"), as.Date("2022/07/30"), by = "month")
+  fire.time <- seq.Date(
+    as.Date("2000/11/01"),
+    as.Date("2022/07/30"),
+    by = "month"
+  )
   # fire.time <- fire.time[-c(257:259)]
-  new.df <- as.data.frame(matrix(NA, nrow = length(fire.time), ncol = length(unique(df$ID))))
+  new.df <- as.data.frame(matrix(
+    NA,
+    nrow = length(fire.time),
+    ncol = length(unique(df$ID))
+  ))
   for (i in unique(df$ID)) {
     df_index <- dplyr::filter(df, ID == i)
     df_index$time <- fire.time
     last_event_index <- cumsum(df_index$fire) + 1
     last_event_index <- c(1, last_event_index[1:length(last_event_index) - 1])
-    TSLF <- c(as.Date(NA), df_index[which(df_index$fire == 1), "time"])[last_event_index]
+    TSLF <- c(as.Date(NA), df_index[which(df_index$fire == 1), "time"])[
+      last_event_index
+    ]
     new.df[, as.integer(i)] <- (fire.time - TSLF) / 30
   }
   new.df$time <- fire.time
@@ -148,7 +159,7 @@ MFRI_results <- fire_intervals %>%
 # View the first few rows of the result
 print(head(MFRI_results))
 
-write.csv(fire.traps.df, "fire_traps_df.csv")
+write.csv(fire.traps.df, "Data/fire_traps_df.csv")
 
 fire.regimes.df <- fire.traps.df %>%
   group_by(ID, month) %>%
@@ -157,10 +168,13 @@ fire.regimes.df <- fire.traps.df %>%
     MeanTSLF = mean(TSLF, na.rm = T)
   )
 
-fire.regimes.df$weight <- rep(c(rep(1, 5), rep(2, 2), rep(3, 3), rep(1, 2)), 220)
+fire.regimes.df$weight <- rep(
+  c(rep(1, 5), rep(2, 2), rep(3, 3), rep(1, 2)),
+  220
+)
 fire.regimes.df$severity <- fire.regimes.df$fire * fire.regimes.df$weight
 
-write.csv(fire.regimes.df, "fire_regimes_months_df.csv")
+write.csv(fire.regimes.df, "Data/fire_regimes_months_df.csv")
 
 fire.regimes.traps <- fire.regimes.df %>%
   group_by(ID) %>%
@@ -184,7 +198,7 @@ fire.regimes.traps$treatment <- traps.pts.sp$treatment
 fire.regimes.traps$TSLF <- traps.pts.sp$tslf
 
 # Save data
-write.csv(fire.regimes.traps, "fire_regimes_traps_df.csv")
+write.csv(fire.regimes.traps, "Data/fire_regimes_traps_df.csv")
 
 # Simple plots
 plot(severity ~ freq, data = fire.regimes.traps)
@@ -200,4 +214,8 @@ plot(severity ~ MFRI, data = fire.regimes.traps)
 GGally::ggpairs(fire.regimes.traps[, c(2:5, 9)])
 
 # Check for collinear variables
-usdm::vifstep(as.data.frame(fire.regimes.traps[, c(2:5, 9)]), th = 2, keep = "severity")
+usdm::vifstep(
+  as.data.frame(fire.regimes.traps[, c(2:5, 9)]),
+  th = 2,
+  keep = "severity"
+)
