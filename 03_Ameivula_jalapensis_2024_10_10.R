@@ -82,8 +82,12 @@ sum(cap)
 sum(recap)
 
 
-# Average recapture rate per individual.
+# Proportion of recaptures.
 sum(table(Plot[Recapture != "N"])) / length(SVL)
+
+# Average number of recaptures per unique individual
+sum(data$Recapture == "Y", na.rm = TRUE) /
+  length(unique(data$VoucherNumber[!is.na(data$VoucherNumber)]))
 
 # Maximum number of times a single individual was recaptured.
 max(table(VoucherNumber[Recapture == "Y"]))
@@ -182,11 +186,9 @@ ggplot(
     outlier.shape = NA
   ) +
   ## add justified jitter from the {gghalves} package
-  gghalves::geom_half_point(
-    ## draw jitter on the left
-    side = "l",
-    ## control range of jitter
-    range_scale = .5,
+  geom_jitter(
+    ## draw jitter
+    position = position_jitter(.2, .2, seed = 123),
     ## add some transparency
     alpha = .3
   ) +
@@ -4567,3 +4569,51 @@ for (i in seq_len(nrow(out))) {
 ## 8. Power estimate -----------------------------------------------
 
 out
+
+# Diagnose seasonal effect on fire metrics (rotating plots) -------------------------------------------------------
+fire_rotating_plots <- read.table("Data/fire_rotating_plots.txt", h = T)
+fire_rotating_plots$TSLF[fire_rotating_plots$treatment == "Q"] <- 0
+fire_rotating_plots$TSLF[fire_rotating_plots$treatment == "QT"] <- 0
+
+# Fire Frequency
+ggplot(fire_rotating_plots, aes(y = freq, group = Season)) +
+  geom_boxplot() +
+  theme_minimal() +
+  labs(x = "Season", y = "Fire frequency")
+
+r <- rank(fire_rotating_plots$freq)
+freq_anova <- aov(r ~ Season, data = fire_rotating_plots)
+summary(freq_anova)
+TukeyHSD(freq_anova)
+
+# Fire Severity
+ggplot(fire_rotating_plots, aes(y = severity, x = Season, group = Season)) +
+  geom_boxplot() +
+  theme_minimal() +
+  labs(x = "Season", y = "Fire regime severity")
+
+
+r <- rank(fire_rotating_plots$severity)
+severity_anova <- aov(r ~ Season, data = fire_rotating_plots)
+summary(severity_anova)
+TukeyHSD(severity_anova)
+
+# Mean TSLF
+ggplot(fire_rotating_plots, aes(y = MeanTSLF, x = Season, group = Season)) +
+  geom_boxplot() +
+  theme_minimal() +
+  labs(x = "Season", y = "Mean time since last fire (months)")
+
+r <- rank(fire_rotating_plots$MeanTSLF)
+MeanTSLF_anova <- aov(r ~ Season, data = fire_rotating_plots)
+summary(MeanTSLF_anova)
+
+# TSLF
+ggplot(fire_rotating_plots, aes(y = TSLF * 12, x = Season, group = Season)) +
+  geom_boxplot() +
+  theme_minimal() +
+  labs(x = "Season", y = "Time since last fire (months)")
+
+r <- rank(fire_rotating_plots$TSLF)
+TSLF_anova <- aov(r ~ Season, data = fire_rotating_plots)
+summary(TSLF_anova)

@@ -11,6 +11,7 @@ library(viridis)
 library(ggfortify)
 library(gamm4)
 library(ggplot2)
+library(mgcViz)
 
 
 # Read environmental data -------------------------------------------------
@@ -172,6 +173,7 @@ m.Ajalapensis.sprint <- gamm4(
 )
 summary(m.Ajalapensis.sprint$gam)
 
+
 # Fit GAMM by sex
 m.Ajalapensis.sex.sprint <- gamm4(
   Veloc ~ t2(temp, by = sex),
@@ -192,9 +194,11 @@ m.Ajalapensis.sprint.refit <- gamm4(
   random = ~ (1 | SGT),
   data = data.Ajalapensis[!is.na(data.Ajalapensis$sex), ]
 )
-
 # Compare models with likelihood ratio test (LRT)
 anova(m.Ajalapensis.sprint.refit$mer, m.Ajalapensis.sex.sprint$mer)
+
+check(getViz(m.Ajalapensis.sprint$gam))
+gam.check(m.Ajalapensis.sprint$gam)
 
 # Plot curve
 plot(
@@ -379,6 +383,8 @@ env.vars <- left_join(
   by = c("plot", "trap.int", "fieldtrip")
 )
 summary(env.vars)
+
+skimr::skim(env.vars)
 
 # Open cluster to speed up computation
 cl <- parallel::makeCluster(ncol(env.vars) - 1, setup_timeout = 0.5)
