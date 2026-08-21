@@ -8,7 +8,8 @@ This repository contains the data and code used to investigate how variation in 
 
 **Study System:** \
 \* **Species:** *Ameivula jalapensis* (Squamata: Teiidae) \
-\* **Location:** Serra Geral do Tocantins Ecological Station (EESGT), Jalapão, Brazil. \* **Context:** Integrated Fire Management (IFM) in a global biodiversity hotspot.
+\* **Location:** Serra Geral do Tocantins Ecological Station (EESGT), Jalapão, Brazil. \
+\* **Context:** Integrated Fire Management (IFM) in a global biodiversity hotspot.
 
 **Key Findings:** Using mark-recapture and Bayesian hierarchical models, we found that severe fire regimes act as environmental filters. They benefit resilient adults (improved body condition and activity due to open habitats) but constrain recruitment, likely due to thermal constraints on juveniles.
 
